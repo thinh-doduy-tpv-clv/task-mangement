@@ -34,7 +34,7 @@ Name          | Role
 Mr. Kai       | Front Developer
 Mr. Max       | Backend Developer
 Mr. Sheng     | Backend Developer
-Mr. Chou      | Tester
+Mr. Chou      | QC
 ```
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
