@@ -1,16 +1,13 @@
-@REQ_RDRAF-115 
+@REQ_TDRAF-115, @REQ_TDRAF-120
 Feature: Admin feature
     As a user, I can sign in.
     As a user, I can reset my password when I forgot it.
 
     Background:
       Given User have registered account
-      And acouut is <userID>, <Password>, <Email>
-      
-      Examples:
-      | userID     | Password   | Email                             |
-      | chauvu     | abC#123    | vuminhchaucyberlogictec@gamil.com |
-      | manhnguyen | 123456abc# | manhnguyen@gamil.com              |
+      And acouut is chauvu
+      And "password" is "abC#123"
+      And Email is "vuminhchaucyberlogictec@gamil.com"
     
     @id: 1
     Scenario Outline: Sign in unsuccessfully
@@ -67,29 +64,4 @@ Feature: Admin feature
         | chauvu | vuminhchaucyberlogictec@gamilcom  | Invalid User name and Email      |
         | chauv  | vuminhchaucyberlogictec@gamil.com | Invalid User name and Email      |
         | chauv  | vuminhchaucyberlogictec@gamilcom  | Invalid User name and Email      |
-    
-    # Background: User sign in successfully
-    #   Given User use account with <userID>, <Password>
-    #   And User is in "Task List"
 
-    #   Examples:
-    #     | userID     | Password   |
-    #     | chauvu     | abC#123    |
-
-    # @id: 8
-    # Scenario: Logout successfully
-    #   When User click on the "Log out" button
-    #   Then User go to the "Login Page"
-    
-    # @id: 9
-    # Scenario Outline: Change password
-    #   Given User openned the "Change Password" pop-up
-    #   When User input old <Password>, new <Password>
-    #   And User click on the "Submit" button
-    #   Then there is a <message>
-  
-    #   Examples:
-    #     | Password | Password | message                      |
-    #     | abC#123  | abC$$123 | Chagne password successfully |
-    #     | abC#12   | abC$$123 | Password invalid             |
-    #     |          |          | Nothing change               |

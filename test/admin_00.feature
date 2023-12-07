@@ -1,4 +1,4 @@
-@REQ_RDRAF-115 
+@REQ_TDRAF-115, @REQ_TDRAF-120
 Feature: Admin feature
     As a new user, I can register my account
     

@@ -1,15 +1,11 @@
-@REQ_RDRAF-115 
+@REQ_TDRAF-115 
 Feature: Admin feature
     As a user, after sign in, I can sign out
     As a user, after signning in, I can change password
     
     Background: User sign in successfully
-      Given User use account with <userID>, <Password>
+      Given User use account with chauvu, abC#123 
       And User is in "Task List"
-
-      Examples:
-        | userID     | Password   |
-        | chauvu     | abC#123    |
 
     @id: 1
     Scenario: Sign out successfully
