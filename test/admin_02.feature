@@ -1,7 +1,7 @@
-@REQ_TDRAF-115 
+@REQ_TDRAF-115, @REQ_TDRAF-120  
 Feature: Admin feature
     As a user, after sign in, I can sign out
-    As a user, after signning in, I can change password
+    As a user, after signing in, I can change password
     
     Background: User sign in successfully
       Given User use account with chauvu, abC#123 

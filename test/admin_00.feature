@@ -19,14 +19,14 @@ Feature: Admin feature
       And User click on the "Submit" button
       Then There is a <message> in below the textbox
         
-      Examples:
-        | userID   | Password | Email       | message                                                           |
-        | ChauVu   | 123abc   |  abc        | Email is invalid                                                  |
-        | chauvu   | chauvu   |             | Please input Email                                                |
-        |          |          |             | Please input User name; Please input password; Please input Email |
-        | chauvu   |          |             | Please input password; Please input Email                         |
-        | chau1vu  | abc1     | abc@dou.net | User name is invalid                                              |
-        | chau1vu# | abca1#$  | abc@dou.net | User name is invalid                                              |
+        Examples:
+          | userID   | Password | Email       | message                                                           |
+          | ChauVu   | 123abc   |  abc        | Email is invalid                                                  |
+          | chauvu   | chauvu   |             | Please input Email                                                |
+          |          |          |             | Please input User name; Please input password; Please input Email |
+          | chauvu   |          |             | Please input password; Please input Email                         |
+          | chau1vu  | abc1     | abc@dou.net | User name is invalid                                              |
+          | chau1vu# | abca1#$  | abc@dou.net | User name is invalid                                              |
   
     #AC1
     @id: 3
@@ -37,6 +37,6 @@ Feature: Admin feature
       Then There is a msg "Create successfully"
       And User go to the "Login Page"
 
-      Examples:
-      | userID | Password | Email                             |
-      | chauvu | abC#123  | vuminhchaucyberlogictec@gamil.com |
+        Examples:
+        | userID | Password | Email                             |
+        | chauvu | abC#123  | vuminhchaucyberlogictec@gamil.com |
