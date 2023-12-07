@@ -1,0 +1,46 @@
+
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+package task;
+
+service TasksService {
+    rpc CreateTask(CreateTaskDto) returns (Task) {}
+    rpc FindAllTask(Empty) returns (Tasks) {}
+    rpc FindOneTask (FindOneTaskDto) returns (Task) {}
+    rpc UpdateTask (UpdateTaskDto) returns (Task) {}
+    rpc RemoveTask (FindOneTaskDto) returns (Task) {}
+}  
+
+message UpdateTaskDto{
+    string id = 1;
+    string title = 2;
+    string description = 3;
+    string due_date = 4;
+    string status = 5;
+}
+
+message FindOneTaskDto {
+    string id = 1;
+}
+
+message Empty {};
+
+message Tasks {
+    repeated Task tasks = 1;
+}
+message CreateTaskDto {
+    string title = 2;
+    string description = 3;
+    string due_date = 4;
+    string status = 5;
+}
+
+message Task {
+    int32 id = 1;
+    string title = 2;
+    string description = 3;
+    string due_date = 4;
+    string status = 5;
+    google.protobuf.Timestamp created_at = 6;
+
+}
