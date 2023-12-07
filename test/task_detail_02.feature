@@ -1,16 +1,18 @@
-@REQ_TDRAF-117 @REQ_TDRAF-120
+@REQ_TDRAF-157, @REQ_TDRAF-120
 Feature: Task List (board)
     As a user, after sign in
     I can change status of task by drag and drop
 
     Background:
+        #@PRECOND_TDRAF-164
         Given User was signed in
         And User is at the Task List
 
+    @TEST_TDRAF-163
     Scenario Outline: Chagne status by drag and drop
         Given User created a <taskname>
         When User drag this task from <column>
-        And drop to  <column>
+        And drop to <column>
         Then There is a <message> 
         And The status of task is changed
 
