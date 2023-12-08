@@ -22,6 +22,9 @@ export class User {
   @IsNotEmpty()
   password: string;
 
+  @Column({ nullable: true, default: null })
+  refreshToken: string;
+
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 }

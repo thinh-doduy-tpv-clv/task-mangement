@@ -5,7 +5,11 @@ import { Observable } from "rxjs";
 
 export const protobufPackage = "auth";
 
-export interface AuthRequestDto {
+export interface RefreshTokenRequestDto {
+  refreshToken: string;
+}
+
+export interface LoginRequestDto {
   username: string;
   password: string;
 }
@@ -20,8 +24,14 @@ export interface ForgotPasswordRequestDto {
   email: string;
 }
 
-export interface AuthResponseDto {
-  token: string;
+export interface RegisterResponseDto {
+  username: string;
+  email: string;
+}
+
+export interface LoginResponseDto {
+  accessToken: string;
+  refreshToken: string;
 }
 
 export interface ErrorResponseDto {
@@ -57,6 +67,7 @@ export interface User {
   username: string;
   email: string;
   password: string;
+  refreshToken: string;
   createdAt: Date | undefined;
 }
 
@@ -82,11 +93,13 @@ export interface AuthServiceClient {
 
   removeUser(request: FindOneUserDto): Observable<User>;
 
-  login(request: AuthRequestDto): Observable<AuthResponseDto>;
+  login(request: LoginRequestDto): Observable<LoginResponseDto>;
 
-  register(request: RegisterRequestDto): Observable<AuthResponseDto>;
+  register(request: RegisterRequestDto): Observable<RegisterResponseDto>;
 
   forgotPassword(request: ForgotPasswordRequestDto): Observable<ErrorResponseDto>;
+
+  refreshToken(request: RefreshTokenRequestDto): Observable<LoginResponseDto>;
 }
 
 export interface AuthServiceController {
@@ -100,13 +113,19 @@ export interface AuthServiceController {
 
   removeUser(request: FindOneUserDto): Promise<User> | Observable<User> | User;
 
-  login(request: AuthRequestDto): Promise<AuthResponseDto> | Observable<AuthResponseDto> | AuthResponseDto;
+  login(request: LoginRequestDto): Promise<LoginResponseDto> | Observable<LoginResponseDto> | LoginResponseDto;
 
-  register(request: RegisterRequestDto): Promise<AuthResponseDto> | Observable<AuthResponseDto> | AuthResponseDto;
+  register(
+    request: RegisterRequestDto,
+  ): Promise<RegisterResponseDto> | Observable<RegisterResponseDto> | RegisterResponseDto;
 
   forgotPassword(
     request: ForgotPasswordRequestDto,
   ): Promise<ErrorResponseDto> | Observable<ErrorResponseDto> | ErrorResponseDto;
+
+  refreshToken(
+    request: RefreshTokenRequestDto,
+  ): Promise<LoginResponseDto> | Observable<LoginResponseDto> | LoginResponseDto;
 }
 
 export function AuthServiceControllerMethods() {
@@ -120,6 +139,7 @@ export function AuthServiceControllerMethods() {
       "login",
       "register",
       "forgotPassword",
+      "refreshToken",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

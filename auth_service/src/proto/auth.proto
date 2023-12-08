@@ -9,12 +9,17 @@ service AuthService {
     rpc FindOneUser(FindOneUserDto) returns (User) {}
     rpc UpdateUser(UpdateUserDto) returns (User) {}
     rpc RemoveUser (FindOneUserDto) returns (User) {}
-    rpc Login (AuthRequestDto) returns (AuthResponseDto);
-    rpc Register (RegisterRequestDto) returns (AuthResponseDto);
+    rpc Login (LoginRequestDto) returns (LoginResponseDto);
+    rpc Register (RegisterRequestDto) returns (RegisterResponseDto);
     rpc ForgotPassword (ForgotPasswordRequestDto) returns (ErrorResponseDto);
+    rpc RefreshToken(RefreshTokenRequestDto)  returns (LoginResponseDto);
 }  
 
-message AuthRequestDto {
+message RefreshTokenRequestDto {
+    string refreshToken = 1;
+}
+
+message LoginRequestDto {
     string username = 1;
     string password = 2;
 }
@@ -26,8 +31,14 @@ message RegisterRequestDto {
 message ForgotPasswordRequestDto {
     string email = 1;
 }
-message AuthResponseDto {
-    string token = 1;
+message RegisterResponseDto { 
+    string username = 1;
+    string email = 2;
+
+}
+message LoginResponseDto {
+    string accessToken = 1;
+    string refreshToken = 2;
 }
 message ErrorResponseDto {
     string error_message = 1;
@@ -58,6 +69,7 @@ message User {
     string username = 2;
     string email = 3;
     string password = 4;
+    string refreshToken=5;
     google.protobuf.Timestamp created_at = 6;
 
 }

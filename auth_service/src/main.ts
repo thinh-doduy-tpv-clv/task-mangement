@@ -9,8 +9,10 @@ async function bootstrap() {
     {
       transport: Transport.GRPC,
       options: {
+        url: 'localhost:5000',
         protoPath: 'src/proto/auth.proto',
         package: AUTH,
+        //url: 'http://localhost:5559',
       },
     },
   );

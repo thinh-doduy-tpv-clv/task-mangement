@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 const ormconfig: TypeOrmModuleOptions = {
   type: 'postgres',
   host: 'localhost',
@@ -15,7 +16,11 @@ const ormconfig: TypeOrmModuleOptions = {
   synchronize: true,
 };
 @Module({
-  imports: [AuthModule, TypeOrmModule.forRoot(ormconfig)],
+  imports: [
+    AuthModule,
+    TypeOrmModule.forRoot(ormconfig),
+    ConfigModule.forRoot(),
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
