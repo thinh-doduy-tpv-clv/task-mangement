@@ -65,9 +65,9 @@ export class TasksService {
       id: entity.id,
       title: entity.title,
       description: entity.description,
-      dueDate: entity.due_date,
+      dueDate: entity.dueDate,
       status: entity.status,
-      createdAt: entity.created_at,
+      createdAt: entity.createdAt,
     };
   }
 }

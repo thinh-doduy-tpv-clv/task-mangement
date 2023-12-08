@@ -9,7 +9,7 @@ export interface UpdateTaskDto {
   id: string;
   title: string;
   description: string;
-  dueDate: string;
+  dueDate: Date | undefined;
   status: string;
 }
 
@@ -27,7 +27,7 @@ export interface Tasks {
 export interface CreateTaskDto {
   title: string;
   description: string;
-  dueDate: string;
+  dueDate: Date | undefined;
   status: string;
 }
 
@@ -35,7 +35,7 @@ export interface Task {
   id: number;
   title: string;
   description: string;
-  dueDate: string;
+  dueDate: Date | undefined;
   status: string;
   createdAt: Date | undefined;
 }

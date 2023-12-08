@@ -21,12 +21,12 @@ export class Task {
 
   @Column()
   @IsNotEmpty()
-  due_date: string;
+  dueDate: Date;
 
   @Column({ default: 'TODO' })
   @IsNotEmpty()
   status: string;
 
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 }

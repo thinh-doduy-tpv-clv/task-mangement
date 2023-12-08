@@ -1,15 +1,15 @@
 /* eslint-disable */
-import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
-import { wrappers } from 'protobufjs';
-import { Observable } from 'rxjs';
+import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
+import { wrappers } from "protobufjs";
+import { Observable } from "rxjs";
 
-export const protobufPackage = 'task';
+export const protobufPackage = "task";
 
 export interface UpdateTaskDto {
   id: string;
   title: string;
   description: string;
-  dueDate: string;
+  dueDate: Date | undefined;
   status: string;
 }
 
@@ -17,7 +17,8 @@ export interface FindOneTaskDto {
   id: string;
 }
 
-export interface Empty {}
+export interface Empty {
+}
 
 export interface Tasks {
   tasks: Task[];
@@ -26,7 +27,7 @@ export interface Tasks {
 export interface CreateTaskDto {
   title: string;
   description: string;
-  dueDate: string;
+  dueDate: Date | undefined;
   status: string;
 }
 
@@ -34,19 +35,16 @@ export interface Task {
   id: number;
   title: string;
   description: string;
-  dueDate: string;
+  dueDate: Date | undefined;
   status: string;
   createdAt: Date | undefined;
 }
 
-export const TASK_PACKAGE_NAME = 'task';
+export const TASK_PACKAGE_NAME = "task";
 
-wrappers['.google.protobuf.Timestamp'] = {
+wrappers[".google.protobuf.Timestamp"] = {
   fromObject(value: Date) {
-    return {
-      seconds: value.getTime() / 1000,
-      nanos: (value.getTime() % 1000) * 1e6,
-    };
+    return { seconds: value.getTime() / 1000, nanos: (value.getTime() % 1000) * 1e6 };
   },
   toObject(message: { seconds: number; nanos: number }) {
     return new Date(message.seconds * 1000 + message.nanos / 1e6);
@@ -54,15 +52,15 @@ wrappers['.google.protobuf.Timestamp'] = {
 } as any;
 
 export interface TasksServiceClient {
-  createTask(request: CreateTaskDto): Promise<Task>;
+  createTask(request: CreateTaskDto): Observable<Task>;
 
-  findAllTask(request: Empty): Promise<Tasks>;
+  findAllTask(request: Empty): Observable<Tasks>;
 
-  findOneTask(request: FindOneTaskDto): Promise<Task>;
+  findOneTask(request: FindOneTaskDto): Observable<Task>;
 
-  updateTask(request: UpdateTaskDto): Promise<Task>;
+  updateTask(request: UpdateTaskDto): Observable<Task>;
 
-  removeTask(request: FindOneTaskDto): Promise<Task>;
+  removeTask(request: FindOneTaskDto): Observable<Task>;
 }
 
 export interface TasksServiceController {
@@ -79,37 +77,17 @@ export interface TasksServiceController {
 
 export function TasksServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = [
-      'createTask',
-      'findAllTask',
-      'findOneTask',
-      'updateTask',
-      'removeTask',
-    ];
+    const grpcMethods: string[] = ["createTask", "findAllTask", "findOneTask", "updateTask", "removeTask"];
     for (const method of grpcMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(
-        constructor.prototype,
-        method,
-      );
-      GrpcMethod('TasksService', method)(
-        constructor.prototype[method],
-        method,
-        descriptor,
-      );
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcMethod("TasksService", method)(constructor.prototype[method], method, descriptor);
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(
-        constructor.prototype,
-        method,
-      );
-      GrpcStreamMethod('TasksService', method)(
-        constructor.prototype[method],
-        method,
-        descriptor,
-      );
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcStreamMethod("TasksService", method)(constructor.prototype[method], method, descriptor);
     }
   };
 }
 
-export const TASKS_SERVICE_NAME = 'TasksService';
+export const TASKS_SERVICE_NAME = "TasksService";
