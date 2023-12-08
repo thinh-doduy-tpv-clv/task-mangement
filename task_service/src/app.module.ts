@@ -1,21 +1,18 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { DATABASE_CONFIG } from './config/database.config';
 import { TasksModule } from './tasks/tasks.module';
-import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { TypeOrmModule } from '@nestjs/typeorm';
-const ormconfig: TypeOrmModuleOptions = {
-  type: 'postgres',
-  host: 'localhost',
-  port: 5432,
-  username: 'postgres',
-  password: '123',
-  database: 'task-mngt',
-  entities: ['dist/**/*.entity.js'],
-  synchronize: true,
-};
 @Module({
-  imports: [TasksModule, TypeOrmModule.forRoot(ormconfig)],
+  imports: [
+    TasksModule,
+    TypeOrmModule.forRoot({
+      ...DATABASE_CONFIG,
+      entities: ['dist/**/*.entity.ts'],
+      synchronize: true,
+    }),
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
