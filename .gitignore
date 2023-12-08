@@ -8,3 +8,7 @@
 /task_service/node_modules
 /api_gateway/node_modules
 /auth_service/node_modules
+
+/api_gateway/dist
+/auth_service/dist
+/task_service/dist
