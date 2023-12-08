@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TasksModule } from './tasks/tasks.module';
+import { Task } from './tasks/entities/task.entity';
 @Module({
   imports: [
     TasksModule,
@@ -16,7 +17,7 @@ import { TasksModule } from './tasks/tasks.module';
         username: configService.get('POSTGRES_USERNAME'),
         password: configService.get('POSTGRES_PASSWORD'),
         database: configService.get('POSTGRES_DB'),
-        entities: ['dist/**/*.entity.ts'],
+        entities: [Task],
         synchronize: true,
       }),
       inject: [ConfigService],

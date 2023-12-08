@@ -10,12 +10,18 @@ export class TaskResolver {
 
   @Query(() => [TaskModel])
   async getTaskList(): Promise<TaskModel[]> {
-    const rawTasks: Tasks = await lastValueFrom(this.taskService.findAllTask());
-    const respTasks: TaskModel[] =
-      rawTasks && rawTasks.tasks && rawTasks.tasks.length > 0
-        ? rawTasks.tasks
-        : [];
-    return respTasks;
+    try {
+      const rawTasks: Tasks = await lastValueFrom(
+        this.taskService.findAllTask(),
+      );
+      const respTasks: TaskModel[] =
+        rawTasks && rawTasks.tasks && rawTasks.tasks.length > 0
+          ? rawTasks.tasks
+          : [];
+      return respTasks;
+    } catch (error) {
+      return [];
+    }
   }
 
   // @ResolveField()
