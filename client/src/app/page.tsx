@@ -1,6 +1,14 @@
-import Image from "next/image";
-import TaskManagementContainer from "src/view/task-management/task-management.container";
+import { getSession } from "./action";
+import { redirect } from "next/navigation";
 
-export default function Home() {
-  return <TaskManagementContainer />;
+export default async function Home() {
+  const session = await getSession();
+
+  if (!session.isLoggedIn) {
+    redirect("sign-in");
+  } else {
+    redirect("task-management");
+  }
+
+  return undefined;
 }

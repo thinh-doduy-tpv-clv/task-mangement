@@ -16,6 +16,9 @@ import {
   taskStatusData,
 } from "./lib";
 import { TaskStatusEnum } from "src/core/lib/constants";
+import useSession from "src/app/use-session";
+import { defaultSession } from "src/app/task-management/lib";
+import { useRouter } from "next/navigation";
 
 // fake data generator
 const getItems = (count: any, offset = 0) =>
@@ -28,8 +31,10 @@ const getItems = (count: any, offset = 0) =>
  */
 
 const TaskManagementComponent = () => {
+  const router = useRouter();
   const [state, setState] = useState<any>({});
-  console.log("state", state);
+  const { logout } = useSession();
+  // console.log("state", state);
 
   function onDragEnd(result: { source: any; destination: any }) {
     const { source, destination } = result;
@@ -85,6 +90,19 @@ const TaskManagementComponent = () => {
         }}
       >
         Add new item
+      </button>
+      <button
+        type="button"
+        onClick={(event) => {
+          event.preventDefault();
+          logout(null, {
+            optimisticData: defaultSession,
+          }).then(() => {
+            router.push("/sign-in");
+          });
+        }}
+      >
+        logout
       </button>
       <div className="bg-red flex-1 p-[24px] justify-center items-center flex">
         <div className="grid gap-x-8 gap-y-4 grid-cols-4 h-full w-[1600px]">

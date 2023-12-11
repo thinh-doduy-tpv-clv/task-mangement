@@ -1,6 +1,6 @@
-import SignInContainer from "src/view/auth/sign-in/sign-in.container";
+import Image from "next/image";
 import TaskManagementContainer from "src/view/task-management/task-management.container";
 
-export default function TaskManagement() {
+export default function Home() {
   return <TaskManagementContainer />;
 }
