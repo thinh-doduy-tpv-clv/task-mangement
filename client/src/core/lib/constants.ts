@@ -3,17 +3,9 @@ export enum ExampleEnum {
   One,
 }
 
-export enum LanguageEnum {
-  VN = "vn",
-  EN = "en",
+export enum TaskStatusEnum {
+  Todo = "todo",
+  Inprogress = "inprogress",
+  Compeleted = "compeleted",
+  Archived = "archived",
 }
-
-export enum ShipmentTrackingTypeEnum {
-  OceanImport = 0,
-  OceanExport,
-  AirImport,
-  AirExport,
-}
-
-export const SCROLLBAR_WIDTH =
-  window.innerWidth - document.documentElement.clientWidth || 5;
