@@ -61,49 +61,49 @@ const TaskManagementComponent = () => {
     }
   }
 
+  const renderHeader = (): React.ReactElement => {
+    return (
+      <div className={"w-full flex justify-between px-8 py-4"}>
+        <button
+          type="button"
+          onClick={(event) => {
+            event.preventDefault();
+            logout(null, {
+              optimisticData: defaultSession,
+            }).then(() => {
+              router.push("/sign-in");
+            });
+          }}
+        >
+          logout
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setState((prev: any) => ({
+              ...prev,
+              [TaskStatusEnum.Todo]: [
+                ...getItems(1),
+                ...(prev[TaskStatusEnum.Todo] || []),
+              ],
+            }));
+          }}
+          className={
+            "px-8 py-4 flex justify-center items-center bg-blue-600 rounded-xl text-white font-semibold"
+          }
+        >
+          Add new item
+        </button>
+      </div>
+    );
+  };
+
   return (
-    <div className={"flex flex-col w-screen h-screen"}>
-      <button
-        type="button"
-        onClick={() => {
-          setState((prev: any) => ({
-            ...prev,
-            [TaskStatusEnum.Todo]: [
-              ...getItems(1),
-              ...(prev[TaskStatusEnum.Todo] || []),
-            ],
-          }));
-        }}
-      >
-        Add new item
-      </button>
-      <button
-        type="button"
-        onClick={() => {
-          setState((prev: any) => ({
-            ...prev,
-            [TaskStatusEnum.Inprogress]: [
-              ...getItems(1),
-              ...(prev[TaskStatusEnum.Inprogress] || []),
-            ],
-          }));
-        }}
-      >
-        Add new item
-      </button>
-      <button
-        type="button"
-        onClick={(event) => {
-          event.preventDefault();
-          logout(null, {
-            optimisticData: defaultSession,
-          }).then(() => {
-            router.push("/sign-in");
-          });
-        }}
-      >
-        logout
-      </button>
+    <div
+      className={"flex flex-col w-screen h-screen"}
+      style={{ background: "#EBECEE" }}
+    >
+      {renderHeader()}
       <div className="bg-red flex-1 p-[24px] justify-center items-center flex">
         <div className="grid gap-x-8 gap-y-4 grid-cols-4 h-full w-[1600px]">
           <DragDropContext
@@ -116,21 +116,18 @@ const TaskManagementComponent = () => {
                 {(provided, snapshot) => (
                   <div
                     ref={provided.innerRef}
-                    style={getListStyle(snapshot.isDraggingOver)}
+                    style={getListStyle(snapshot.isDraggingOver, el)}
+                    // style={{
+
+                    // }}
                     className="px-2 rounded-sm"
                     {...provided.droppableProps}
                   >
-                    <div
-                      className="w-full flex items-center py-2 font-bold "
-                      style={{ color: "rgb(130, 143, 163)" }}
-                    >
-                      <div
-                        className=" w-4 h-4 rounded-2xl bg-slate-900 mr-4"
-                        style={{
-                          backgroundColor: getStatusColor(el),
-                        }}
-                      />
+                    <div className="w-full flex items-center py-2 font-bold justify-center flex-col text-lg">
                       {el}
+                      <span className={" text-slate-500 text-sm font-light"}>
+                        {"5 Cards"}
+                      </span>
                     </div>
 
                     {/* <h3 className=" text-center p-2">{el}</h3> */}
@@ -149,8 +146,11 @@ const TaskManagementComponent = () => {
                               snapshot.isDragging,
                               provided.draggableProps.style
                             )}
-                            className="rounded-sm py-4 px-2 mt-2 box"
+                            className="rounded-sm py-4 px-2 mt-2"
                           >
+                            <div className={"text-lg font-semibold"}>
+                              {"Title"}
+                            </div>
                             <div>{item.content}</div>
                           </div>
                         )}
