@@ -1,28 +1,15 @@
-import { IData, ITask, ITaskReponse, ITasks } from '../types/task';
+import { ITaskReponse } from '../types/task';
 
-export function toFormatResponse(rawData?: ITask | ITasks) {
-  if (rawData) {
-    const respData: IData = {};
-    if (
-      typeof rawData === 'object' &&
-      Array.isArray(rawData) &&
-      rawData != null
-    ) {
-      respData.tasks = rawData as ITasks;
-    } else {
-      respData.task = rawData as ITask;
-    }
-    const response: ITaskReponse = {
-      data: respData,
-      error: { errorCode: 200, errorMsg: '' },
-      isError: false,
-    };
-    return { ...response };
-  }
+export function toFormatResponse(
+  rawData?: any,
+  message?: string,
+  isError?: boolean,
+) {
   return {
-    data: {},
-    error: { errorCode: 204, errorMsg: '' },
-    isError: true,
+    data: rawData || undefined,
+    message: message || '',
+    error: isError ? { errorCode: 400, errorMsg: message } : null,
+    isError: isError,
   } as ITaskReponse;
 }
 

@@ -4,15 +4,17 @@ import { TasksService } from './tasks.service';
 import {
   ICreateTaskDto,
   IFindOneTaskDto,
+  IGetTaskUserDto,
   ITask,
   ITaskReponse,
+  ITasks,
   IUpdateTaskDto,
   TasksServiceController,
   TasksServiceControllerMethods,
 } from './types/task';
 import { toFormatResponse } from './utils/commonFunctions';
 import { GrpcExceptionFilter } from './utils/exceptions/exceptionHandler';
-import { Task } from './entities/task.entity';
+import { RESPONSE_MESSAGES } from './utils/constants/messages';
 
 @Controller('tasks')
 @TasksServiceControllerMethods()
@@ -41,7 +43,16 @@ export class TasksController implements TasksServiceController {
     return toFormatResponse(result);
   }
 
-  async findAllTask() {
-    return null;
+  async findAllTask(getTaskUserDto: IGetTaskUserDto): Promise<ITaskReponse> {
+    try {
+      const result: ITasks = await this.tasksService.getTasks(getTaskUserDto);
+      return toFormatResponse(
+        { tasks: result },
+        RESPONSE_MESSAGES.GET_TASK_LIST_SUCCESS,
+      );
+    } catch (err) {
+      console.log('err: ', err.message);
+      return toFormatResponse({ tasks: [] }, err.message, true);
+    }
   }
 }

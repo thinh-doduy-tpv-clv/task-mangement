@@ -4,7 +4,9 @@ import {
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
+  ManyToOne,
 } from 'typeorm';
+import { User } from './user.entity';
 
 @Entity()
 export class Task {
@@ -29,4 +31,8 @@ export class Task {
 
   @CreateDateColumn()
   createdAt?: Date;
+
+  // Help me create UserEntity based on interface User
+  @ManyToOne(() => User, (user) => user.tasks)
+  user: User;
 }

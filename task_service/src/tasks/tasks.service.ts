@@ -6,22 +6,26 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Task } from './entities/task.entity';
-import { ICreateTaskDto, ITask } from './types/task';
-
+import { ICreateTaskDto, IGetTaskUserDto, ITask, ITasks } from './types/task';
+import { RESPONSE_MESSAGES } from './utils/constants/messages';
 @Injectable()
 export class TasksService {
   constructor(
-    @InjectRepository(Task)
-    private readonly tasksRepository: Repository<ITask>,
+    @InjectRepository(Task) private readonly tasksRepository: Repository<Task>,
   ) {}
 
-  async getTasks(): Promise<Task[]> {
-    try {
-      const entities: Task[] = await this.tasksRepository.find();
-      return entities;
-    } catch (error) {
-      throw new Error('Could not fetch all tasks');
+  async getTasks(getTaskUserDto: IGetTaskUserDto): Promise<ITasks> {
+    if (!getTaskUserDto.userId) {
+      throw new NotFoundException(RESPONSE_MESSAGES.USER_ID_REQUIRED);
     }
+    // TODO: Check if user is existed
+    const tasksList: Task[] = await this.tasksRepository.find({
+      where: {
+        user: { id: getTaskUserDto.userId },
+      },
+    });
+    const mapTaskModel: ITask[] = this.mapTaskEntityToInterface(tasksList);
+    return { tasks: mapTaskModel } as ITasks;
   }
 
   /**
@@ -31,10 +35,11 @@ export class TasksService {
    */
   async getTaskById(id: number): Promise<ITask> {
     try {
-      const task: ITask = await this.tasksRepository.findOne({
+      const task: Task = await this.tasksRepository.findOne({
         where: { id: id },
+        relations: ['user'],
       });
-      return task;
+      return {} as ITask;
     } catch (error) {
       // Handle the case where no task is found
       if (error.name === 'EntityNotFound') {
@@ -61,17 +66,32 @@ export class TasksService {
         'Provide all necessary fields for new task',
       );
     }
-    const newTask: Task = {
+    let newTask: Task = new Task();
+    newTask = {
+      ...newTask,
       title: createTaskDto.title,
       description: createTaskDto.description,
       dueDate:
         createTaskDto.dueDate !== '' ? new Date(createTaskDto.dueDate) : null,
       status: createTaskDto.status,
     };
-    const task: ITask = await this.tasksRepository.create(newTask);
-    const savedSingleTask: ITask = await this.tasksRepository.save(task);
+    const task: Task = await this.tasksRepository.create(newTask);
+    const savedSingleTask: Task = await this.tasksRepository.save(task);
 
     const newCreatedTask = await this.getTaskById(savedSingleTask.id);
-    return newCreatedTask;
+    return {} as ITask;
   }
+
+  mapTaskEntityToInterface = (tasks: Task[]) => {
+    return tasks.map((task) => {
+      return {
+        id: task.id,
+        title: task.title,
+        description: task.description,
+        dueDate: task.dueDate,
+        status: task.status,
+        createdAt: task.createdAt,
+      } as ITask;
+    });
+  };
 }
