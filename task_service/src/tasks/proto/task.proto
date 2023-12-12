@@ -1,41 +1,58 @@
-
 syntax = "proto3";
 import "google/protobuf/timestamp.proto";
 package task;
 
 service TasksService {
-    rpc CreateTask(CreateTaskDto) returns (Task) {}
-    rpc FindAllTask(Empty) returns (Tasks) {}
-    rpc FindOneTask (FindOneTaskDto) returns (Task) {}
-    rpc UpdateTask (UpdateTaskDto) returns (Task) {}
-    rpc RemoveTask (FindOneTaskDto) returns (Task) {}
+    rpc CreateTask(ICreateTaskDto) returns (ITaskReponse) {}
+    rpc FindAllTask(IEmpty) returns (ITaskReponse) {}
+    rpc FindOneTask (IFindOneTaskDto) returns (ITaskReponse) {}
+    rpc UpdateTask (IUpdateTaskDto) returns (ITaskReponse) {}
+    rpc RemoveTask (IFindOneTaskDto) returns (ITaskReponse) {}
 }  
 
-message UpdateTaskDto{
-    string id = 1;
+message IError {
+    int32 errorCode = 1;
+    string errorMsg = 2;
+}
+
+message IData {
+    oneof task_type {
+        ITasks tasks = 1; 
+        ITask task = 2;
+    }
+}
+
+message ITaskReponse {
+    IData data = 1;
+    IError error = 2;
+    bool isError = 3;    
+}
+
+message IUpdateTaskDto{
+    int32 id = 1;
     string title = 2;
     string description = 3;
-    google.protobuf.Timestamp due_date = 4;
+    string due_date = 4;
     string status = 5;
 }
 
-message FindOneTaskDto {
-    string id = 1;
+message IFindOneTaskDto {
+    int32 id = 1;
 }
 
-message Empty {};
+message IEmpty {};
 
-message Tasks {
-    repeated Task tasks = 1;
+message ITasks {
+    repeated ITask tasks = 1;
 }
-message CreateTaskDto {
+message ICreateTaskDto {
     string title = 2;
     string description = 3;
-    google.protobuf.Timestamp due_date = 4;
+    string due_date = 4;
     string status = 5;
 }
 
-message Task {
+message ITask {
     int32 id = 1;
     string title = 2;
     string description = 3;

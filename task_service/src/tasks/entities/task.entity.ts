@@ -9,7 +9,7 @@ import {
 @Entity()
 export class Task {
   @PrimaryGeneratedColumn()
-  id: number;
+  id?: number;
 
   @Column()
   @IsNotEmpty()
@@ -28,5 +28,5 @@ export class Task {
   status: string;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt?: Date;
 }
