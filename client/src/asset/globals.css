@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    background-color: rgb(244, 247, 253);
+}
+
+.box {
+    box-shadow: rgba(54, 78, 126, 0.1) 0px 4px 6px;
+    background-color: rgb(255, 255, 255);
+    margin-bottom: 20px;
+    border-radius: 6px;
+    padding: 23px 16px 15px;
+}
