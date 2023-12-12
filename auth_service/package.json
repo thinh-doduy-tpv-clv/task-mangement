@@ -18,7 +18,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "generate:proto3": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto.cmd --proto_path=./src/proto --ts_proto_out=./src/auth/types ./src/proto/*.proto --ts_proto_opt=fileSuffix= --ts_proto_opt=useDate=true,nestJs=true"
+    "generate:proto3": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto.cmd --proto_path=./src/proto --ts_proto_out=./src/shared/types ./src/proto/*.proto --ts_proto_opt=fileSuffix= --ts_proto_opt=useDate=true,nestJs=true"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.9.12",
@@ -31,6 +31,7 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/typeorm": "^10.0.1",
     "bcrypt": "^5.1.1",
+    "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "pg": "^8.11.3",
     "postgres": "^3.4.3",
