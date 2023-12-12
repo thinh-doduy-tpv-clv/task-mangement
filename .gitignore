@@ -12,3 +12,7 @@
 /api_gateway/dist
 /auth_service/dist
 /task_service/dist
+
+/auth_service/.vscode
+/task_service/.vscode
+/api_gateway/.vscode
