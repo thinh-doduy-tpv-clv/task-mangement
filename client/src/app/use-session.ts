@@ -17,10 +17,11 @@ async function fetchJson<JSON = unknown>(
   }).then((res) => res?.json());
 }
 
-function doLogin(url: string, { arg }: { arg: string }) {
+function doLogin(url: string, { arg }: { arg: any }) {
+  const { username, token } = arg;
   return fetchJson<SessionData>(url, {
     method: "POST",
-    body: JSON.stringify({ username: arg }),
+    body: JSON.stringify({ username, token }),
   });
 }
 

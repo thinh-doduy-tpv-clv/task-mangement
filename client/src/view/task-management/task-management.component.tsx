@@ -117,9 +117,9 @@ const TaskManagementComponent = () => {
                   <div
                     ref={provided.innerRef}
                     style={getListStyle(snapshot.isDraggingOver, el)}
-                    // style={{
-
-                    // }}
+                    onLoad={(e) => {
+                      console.log(e.target);
+                    }}
                     className="px-2 rounded-sm"
                     {...provided.droppableProps}
                   >
@@ -131,31 +131,33 @@ const TaskManagementComponent = () => {
                     </div>
 
                     {/* <h3 className=" text-center p-2">{el}</h3> */}
-                    {(state[el] || []).map((item: any, index: number) => (
-                      <Draggable
-                        key={item.id}
-                        draggableId={item.id}
-                        index={index}
-                      >
-                        {(provided, snapshot) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            style={getItemStyle(
-                              snapshot.isDragging,
-                              provided.draggableProps.style
-                            )}
-                            className="rounded-sm py-4 px-2 mt-2"
-                          >
-                            <div className={"text-lg font-semibold"}>
-                              {"Title"}
+                    <div className="w-100 h-100 overflow-y-scroll max-h-[70vh]">
+                      {(state[el] || []).map((item: any, index: number) => (
+                        <Draggable
+                          key={item.id}
+                          draggableId={item.id}
+                          index={index}
+                        >
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              style={getItemStyle(
+                                snapshot.isDragging,
+                                provided.draggableProps.style
+                              )}
+                              className="rounded-sm py-4 px-2 mt-2"
+                            >
+                              <div className={"text-lg font-semibold"}>
+                                {"Title"}
+                              </div>
+                              <div>{item.content}</div>
                             </div>
-                            <div>{item.content}</div>
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
+                          )}
+                        </Draggable>
+                      ))}
+                    </div>
                     {provided.placeholder}
                   </div>
                 )}
