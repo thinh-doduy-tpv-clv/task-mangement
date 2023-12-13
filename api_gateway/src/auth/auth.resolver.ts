@@ -11,9 +11,9 @@ export class AuthResolver {
   @Mutation(() => AuthModel)
   async login(@Args('input') input: LoginInput): Promise<AuthModel> {
     // Call your AuthService method to handle registration logic
-    const registeredUser: AuthModel = await this.authService.loginUser(input);
+    const loginUser: AuthModel = await this.authService.loginUser(input);
     // Return the registered user
-    return registeredUser;
+    return loginUser;
   }
 
   @Mutation(() => AuthModel)

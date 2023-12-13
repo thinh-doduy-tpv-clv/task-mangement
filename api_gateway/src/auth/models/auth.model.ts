@@ -17,6 +17,9 @@ export class AuthModel {
   @Field(() => String)
   refreshToken?: string;
 
+  @Field(() => String, { nullable: true })
+  accessToken?: string;
+
   @Field(() => Date, { nullable: true })
   createdAt?: Date;
 }

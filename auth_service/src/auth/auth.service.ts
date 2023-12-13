@@ -202,7 +202,6 @@ export class AuthService {
       //Generate access_token and refresh_token
       const payload = { id: user.id, email: user.email };
       const token = await this.generateToken(payload);
-      console.log('token: ', token);
       //Update refresh token into database
       await this.authRepository.update(
         {
@@ -225,7 +224,6 @@ export class AuthService {
           createdAt: user.createdAt,
         },
       };
-      console.log('result: ', result);
       return this.authResponse.generateAuthResponse(result, null, false);
     } catch (error) {
       errorResponse.errorMessage = error;

@@ -36,7 +36,6 @@ export class AuthService implements OnModuleInit {
     if (newUserResponse.isError) {
       throw new Error(newUserResponse.error.errorMsg);
     }
-    console.log('newUserResponse: ', newUserResponse);
     return this.mapInterfaceToAuthModel(newUserResponse.data.user);
   }
 
@@ -45,15 +44,12 @@ export class AuthService implements OnModuleInit {
       username: input.username,
       password: input.password,
     };
-    console.log('loginUserDto: ', loginUserDto);
     const loginUserResponse: IAuthReponse = await lastValueFrom(
       this.authService.login(loginUserDto),
     );
-    console.log('loginUserResponse: ', loginUserResponse);
     if (loginUserResponse.isError) {
       throw new Error(loginUserResponse.error.errorMsg);
     }
-    console.log('loginUserResponse: ', loginUserResponse);
     return this.mapInterfaceToAuthModel(loginUserResponse.data.user);
   }
 
@@ -65,6 +61,7 @@ export class AuthService implements OnModuleInit {
       password: data?.password || '',
       id: data?.id || -1,
       refreshToken: data?.refreshToken || '',
+      accessToken: data?.accessToken || '',
     } as AuthModel;
   };
 }
