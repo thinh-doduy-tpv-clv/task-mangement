@@ -5,16 +5,13 @@ import {
   ICreateTaskDto,
   IFindOneTaskDto,
   IGetTaskUserDto,
-  ITask,
   ITaskReponse,
-  ITasks,
   IUpdateTaskDto,
   TasksServiceController,
   TasksServiceControllerMethods,
 } from './types/task';
 import { toFormatResponse } from './utils/commonFunctions';
 import { GrpcExceptionFilter } from './utils/exceptions/exceptionHandler';
-import { RESPONSE_MESSAGES } from './utils/constants/messages';
 
 @Controller('tasks')
 @TasksServiceControllerMethods()

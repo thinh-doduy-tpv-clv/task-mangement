@@ -11,7 +11,7 @@ export class TaskModel {
   @Field(() => String)
   description: string;
 
-  @Field()
+  @Field(() => Date)
   dueDate: Date;
 
   @Field(() => String, { defaultValue: 'TODO' })

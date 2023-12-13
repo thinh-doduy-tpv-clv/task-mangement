@@ -66,7 +66,7 @@ export class TasksService {
     const mapTaskModel: ITaskReponse = toFormatResponse(
       tasksList,
       null,
-      '',
+      RESPONSE_MESSAGES.GET_TASK_LIST_SUCCESS,
       false,
     );
     return mapTaskModel;
