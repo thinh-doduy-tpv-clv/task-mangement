@@ -5,6 +5,7 @@ import { RegisterMutation } from "../api";
 import { useRouter } from "next/navigation";
 import { routerPaths } from "src/core/lib/router";
 import { toast } from "react-toastify";
+import Spinner from "src/components/spinner";
 
 interface ComponentProps {
   user?: any;
@@ -30,7 +31,12 @@ const SignUpContainer: React.FunctionComponent<Props> = () => {
     toast.success("Register new account success!");
     router.push(routerPaths.signin);
   };
-  return <SignUpComponent onRegister={onRegister} />;
+  return (
+    <>
+      <Spinner show={mutation.isLoading} />
+      <SignUpComponent onRegister={onRegister} />
+    </>
+  );
 };
 
 export default SignUpContainer;
