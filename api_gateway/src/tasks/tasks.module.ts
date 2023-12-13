@@ -13,6 +13,7 @@ import { TASK_PACKAGE_NAME } from 'src/types/task';
         name: TASK_SERVICE,
         transport: Transport.GRPC,
         options: {
+          url: '0.0.0.0:9000',
           package: TASK_PACKAGE_NAME,
           protoPath: 'src/proto/task.proto',
         },

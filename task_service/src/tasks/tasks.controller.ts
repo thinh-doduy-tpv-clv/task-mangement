@@ -4,7 +4,7 @@ import { TasksService } from './tasks.service';
 import {
   ICreateTaskDto,
   IFindOneTaskDto,
-  ITask,
+  IGetTaskUserDto,
   ITaskReponse,
   IUpdateTaskDto,
   TasksServiceController,
@@ -12,7 +12,6 @@ import {
 } from './types/task';
 import { toFormatResponse } from './utils/commonFunctions';
 import { GrpcExceptionFilter } from './utils/exceptions/exceptionHandler';
-import { Task } from './entities/task.entity';
 
 @Controller('tasks')
 @TasksServiceControllerMethods()
@@ -21,8 +20,16 @@ export class TasksController implements TasksServiceController {
   constructor(private readonly tasksService: TasksService) {}
 
   async findOneTask(request: IFindOneTaskDto): Promise<ITaskReponse> {
-    const result: ITask = await this.tasksService.getTaskById(request.id);
-    return toFormatResponse(result);
+    try {
+      return await this.tasksService.getTaskById(request.id);
+    } catch (err) {
+      return toFormatResponse(
+        [],
+        { errorCode: err.statusCode, errorMsg: err.message },
+        '',
+        true,
+      );
+    }
   }
   updateTask(
     request: IUpdateTaskDto,
@@ -37,11 +44,32 @@ export class TasksController implements TasksServiceController {
 
   // TODO: Implement create new task
   async createTask(createTaskDto: ICreateTaskDto): Promise<ITaskReponse> {
-    const result: ITask = await this.tasksService.createTask(createTaskDto);
-    return toFormatResponse(result);
+    try {
+      return await this.tasksService.createTask(createTaskDto);
+    } catch (err) {
+      return toFormatResponse(
+        [],
+        { errorCode: err.statusCode, errorMsg: err.message },
+        '',
+        true,
+      );
+    }
   }
 
-  async findAllTask() {
-    return null;
+  async findAllTask(getTaskUserDto: IGetTaskUserDto): Promise<ITaskReponse> {
+    try {
+      const result: ITaskReponse = await this.tasksService.getTasks(
+        getTaskUserDto,
+      );
+      return result;
+    } catch (err) {
+      console.log('err: ', err);
+      return toFormatResponse(
+        [],
+        { errorCode: err?.status, errorMsg: err.response?.message },
+        '',
+        true,
+      );
+    }
   }
 }

@@ -1,31 +1,30 @@
 syntax = "proto3";
 import "google/protobuf/timestamp.proto";
+
 package task;
 
 service TasksService {
     rpc CreateTask(ICreateTaskDto) returns (ITaskReponse) {}
-    rpc FindAllTask(IEmpty) returns (ITaskReponse) {}
+    rpc FindAllTask(IGetTaskUserDto) returns (ITaskReponse) {}
     rpc FindOneTask (IFindOneTaskDto) returns (ITaskReponse) {}
     rpc UpdateTask (IUpdateTaskDto) returns (ITaskReponse) {}
     rpc RemoveTask (IFindOneTaskDto) returns (ITaskReponse) {}
-}  
+} 
+
+message IGetTaskUserDto {
+    int32 userId = 1;
+}
 
 message IError {
     int32 errorCode = 1;
     string errorMsg = 2;
 }
 
-message IData {
-    oneof task_type {
-        ITasks tasks = 1; 
-        ITask task = 2;
-    }
-}
-
 message ITaskReponse {
-    IData data = 1;
+    repeated ITask data = 1;
     IError error = 2;
-    bool isError = 3;    
+    string message = 3;
+    bool isError = 4;    
 }
 
 message IUpdateTaskDto{
@@ -50,6 +49,7 @@ message ICreateTaskDto {
     string description = 3;
     string due_date = 4;
     string status = 5;
+    string user_id = 6;
 }
 
 message ITask {
@@ -58,6 +58,16 @@ message ITask {
     string description = 3;
     google.protobuf.Timestamp due_date = 4;
     string status = 5;
+    google.protobuf.Timestamp created_at = 6;
+    User user = 7;
+}
+
+message User {
+    int32 id = 1;
+    string username = 2;
+    string email = 3;
+    string password = 4;
+    string refreshToken=5;
     google.protobuf.Timestamp created_at = 6;
 
 }
