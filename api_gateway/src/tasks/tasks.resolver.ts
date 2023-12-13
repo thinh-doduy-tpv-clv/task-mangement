@@ -1,22 +1,25 @@
-import { Query, Resolver } from '@nestjs/graphql';
+import { Args, Query, Resolver } from '@nestjs/graphql';
 import { TaskModel } from './models/tasks.model';
 import { TasksService } from './tasks.service';
-import { Tasks } from './types/task';
 import { lastValueFrom } from 'rxjs';
+import { ITaskReponse } from './types/task';
+import { GetTasksListDto } from './inputs/getTaskListDto';
 
 @Resolver(() => TaskModel)
 export class TaskResolver {
   constructor(private taskService: TasksService) {}
 
   @Query(() => [TaskModel])
-  async getTaskList(): Promise<TaskModel[]> {
+  async getTaskList(
+    @Args('input') input: GetTasksListDto,
+  ): Promise<TaskModel[]> {
     try {
-      const rawTasks: Tasks = await lastValueFrom(
-        this.taskService.findAllTask(),
+      const rawTasks: ITaskReponse = await lastValueFrom(
+        this.taskService.findAllTask({ userId: input.userId }),
       );
       const respTasks: TaskModel[] =
-        rawTasks && rawTasks.tasks && rawTasks.tasks.length > 0
-          ? rawTasks.tasks
+        rawTasks && rawTasks.data && rawTasks.data.length > 0
+          ? rawTasks.data
           : [];
       return respTasks;
     } catch (error) {

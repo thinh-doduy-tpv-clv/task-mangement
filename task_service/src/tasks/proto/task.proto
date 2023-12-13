@@ -20,15 +20,8 @@ message IError {
     string errorMsg = 2;
 }
 
-message IData {
-    oneof task_type {
-        ITasks tasks = 1; 
-        ITask task = 2;
-    }
-}
-
 message ITaskReponse {
-    IData data = 1;
+    repeated ITask data = 1;
     IError error = 2;
     string message = 3;
     bool isError = 4;    
@@ -56,6 +49,7 @@ message ICreateTaskDto {
     string description = 3;
     string due_date = 4;
     string status = 5;
+    string user_id = 6;
 }
 
 message ITask {

@@ -14,13 +14,8 @@ export interface IError {
   errorMsg: string;
 }
 
-export interface IData {
-  tasks?: ITasks | undefined;
-  task?: ITask | undefined;
-}
-
 export interface ITaskReponse {
-  data: IData | undefined;
+  data: ITask[];
   error: IError | undefined;
   message: string;
   isError: boolean;
@@ -50,6 +45,7 @@ export interface ICreateTaskDto {
   description: string;
   dueDate: string;
   status: string;
+  userId: string;
 }
 
 export interface ITask {

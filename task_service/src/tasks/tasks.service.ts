@@ -1,31 +1,75 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { ClientGrpc } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
+import { lastValueFrom } from 'rxjs';
 import { Repository } from 'typeorm';
 import { Task } from './entities/task.entity';
-import { ICreateTaskDto, IGetTaskUserDto, ITask, ITasks } from './types/task';
+import {
+  AUTH_PACKAGE_NAME,
+  AUTH_SERVICE_NAME,
+  AuthServiceClient,
+  IAuthReponse,
+} from './types/auth';
+import {
+  ICreateTaskDto,
+  IGetTaskUserDto,
+  ITask,
+  ITaskReponse,
+} from './types/task';
+import { toFormatResponse } from './utils/commonFunctions';
 import { RESPONSE_MESSAGES } from './utils/constants/messages';
+import {
+  HttpStatusConstants,
+  HttpStatusMessages,
+} from './utils/constants/statusCode';
+import { CustomException } from './utils/exceptions/customException';
+
 @Injectable()
 export class TasksService {
+  private authService: AuthServiceClient;
+
   constructor(
-    @InjectRepository(Task) private readonly tasksRepository: Repository<Task>,
+    @InjectRepository(Task) private readonly tasksRepository: Repository<ITask>,
+    @Inject(AUTH_PACKAGE_NAME) private client: ClientGrpc,
   ) {}
 
-  async getTasks(getTaskUserDto: IGetTaskUserDto): Promise<ITasks> {
+  /**
+   * Inject service from services
+   */
+  onModuleInit() {
+    this.authService =
+      this.client.getService<AuthServiceClient>(AUTH_SERVICE_NAME);
+  }
+
+  async getTasks(getTaskUserDto: IGetTaskUserDto): Promise<ITaskReponse> {
     if (!getTaskUserDto.userId) {
-      throw new NotFoundException(RESPONSE_MESSAGES.USER_ID_REQUIRED);
+      throw new CustomException(
+        HttpStatusMessages[HttpStatusConstants.USER_ID_REQUIRED],
+        HttpStatusConstants.USER_ID_REQUIRED,
+      );
     }
-    // TODO: Check if user is existed
-    const tasksList: Task[] = await this.tasksRepository.find({
+    // const user: IAuthReponse = await lastValueFrom(
+    //   this.authService.findOneUser({ id: `${getTaskUserDto.userId}` }),
+    // );
+    // console.log('user: ', user);
+    // if (!user.data.user) {
+    //   throw new CustomException(
+    //     HttpStatusMessages[HttpStatusConstants.USER_NOT_EXISTED],
+    //     HttpStatusConstants.USER_NOT_EXISTED,
+    //   );
+    // }
+    const tasksList: ITask[] = await this.tasksRepository.find({
       where: {
         user: { id: getTaskUserDto.userId },
       },
     });
-    const mapTaskModel: ITask[] = this.mapTaskEntityToInterface(tasksList);
-    return { tasks: mapTaskModel } as ITasks;
+    const mapTaskModel: ITaskReponse = toFormatResponse(
+      tasksList,
+      null,
+      '',
+      false,
+    );
+    return mapTaskModel;
   }
 
   /**
@@ -33,13 +77,13 @@ export class TasksService {
    * @param id hold the id of the task
    * @returns the founded task
    */
-  async getTaskById(id: number): Promise<ITask> {
+  async getTaskById(id: number): Promise<ITaskReponse> {
     try {
-      const task: Task = await this.tasksRepository.findOne({
+      const task: ITask = await this.tasksRepository.findOne({
         where: { id: id },
         relations: ['user'],
       });
-      return {} as ITask;
+      return toFormatResponse([task], null, '', false);
     } catch (error) {
       // Handle the case where no task is found
       if (error.name === 'EntityNotFound') {
@@ -55,43 +99,58 @@ export class TasksService {
    * @param createTaskDto hold data for new task information
    * @returns new created task
    */
-  async createTask(createTaskDto: ICreateTaskDto): Promise<ITask> {
+  async createTask(createTaskDto: ICreateTaskDto): Promise<ITaskReponse> {
+    if (!createTaskDto.userId) {
+      throw new CustomException(RESPONSE_MESSAGES.USER_ID_REQUIRED);
+    }
+    const user: IAuthReponse = await lastValueFrom(
+      this.authService.findOneUser({ id: `${createTaskDto.userId}` }),
+    );
+    if (!user.data.user) {
+      throw new CustomException(
+        HttpStatusMessages[HttpStatusConstants.USER_NOT_EXISTED],
+        HttpStatusConstants.USER_NOT_EXISTED,
+      );
+    }
     if (
-      !createTaskDto.description ||
       !createTaskDto.dueDate ||
       !createTaskDto.status ||
       !createTaskDto.title
     ) {
-      throw new UnprocessableEntityException(
-        'Provide all necessary fields for new task',
-      );
+      throw new CustomException(RESPONSE_MESSAGES.ALL_FIELD_REQUIRED);
     }
-    let newTask: Task = new Task();
-    newTask = {
-      ...newTask,
+    const newTask = {
       title: createTaskDto.title,
       description: createTaskDto.description,
       dueDate:
         createTaskDto.dueDate !== '' ? new Date(createTaskDto.dueDate) : null,
       status: createTaskDto.status,
-    };
-    const task: Task = await this.tasksRepository.create(newTask);
-    const savedSingleTask: Task = await this.tasksRepository.save(task);
+    } as ITask;
+    const task: ITask = await this.tasksRepository.create(newTask);
+    const savedSingleTask: ITask = await this.tasksRepository.save(task);
 
-    const newCreatedTask = await this.getTaskById(savedSingleTask.id);
-    return {} as ITask;
+    const newCreatedTask: ITaskReponse = await this.getTaskById(
+      savedSingleTask.id,
+    );
+
+    // Format response
+    const newTaskResponse: ITaskReponse = toFormatResponse(
+      newCreatedTask.data,
+      null,
+      '',
+      false,
+    );
+    return newTaskResponse;
   }
 
-  mapTaskEntityToInterface = (tasks: Task[]) => {
-    return tasks.map((task) => {
-      return {
-        id: task.id,
-        title: task.title,
-        description: task.description,
-        dueDate: task.dueDate,
-        status: task.status,
-        createdAt: task.createdAt,
-      } as ITask;
-    });
+  mapTaskEntityToInterface = (task: ITask) => {
+    return {
+      id: task.id,
+      title: task.title,
+      description: task.description,
+      dueDate: task.dueDate,
+      status: task.status,
+      createdAt: task.createdAt,
+    } as ITask;
   };
 }

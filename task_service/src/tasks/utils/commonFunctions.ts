@@ -1,19 +1,27 @@
-import { ITaskReponse } from '../types/task';
+import { IError, ITask, ITaskReponse } from '../types/task';
+import {
+  HttpStatusConstants,
+  HttpStatusMessages,
+} from './constants/statusCode';
 
 export function toFormatResponse(
-  rawData?: any,
+  rawData?: ITask[],
+  error?: IError,
   message?: string,
   isError?: boolean,
 ) {
+  if (rawData) {
+    const response: ITaskReponse = {
+      data: rawData,
+      error: error && isError ? error : null,
+      isError: isError,
+      message: message || '',
+    };
+    return response;
+  }
   return {
-    data: rawData || undefined,
-    message: message || '',
-    error: isError ? { errorCode: 400, errorMsg: message } : null,
-    isError: isError,
+    data: [],
+    error: error || { errorCode: 204, errorMsg: '' },
+    isError: true,
   } as ITaskReponse;
 }
-
-export const parseToTimeStamp = (inputDate: Date) => {
-  // TODO: This function need updating more logic
-  return new Date(inputDate);
-};

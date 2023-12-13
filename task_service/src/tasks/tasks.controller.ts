@@ -23,8 +23,16 @@ export class TasksController implements TasksServiceController {
   constructor(private readonly tasksService: TasksService) {}
 
   async findOneTask(request: IFindOneTaskDto): Promise<ITaskReponse> {
-    const result: ITask = await this.tasksService.getTaskById(request.id);
-    return toFormatResponse(result);
+    try {
+      return await this.tasksService.getTaskById(request.id);
+    } catch (err) {
+      return toFormatResponse(
+        [],
+        { errorCode: err.statusCode, errorMsg: err.message },
+        '',
+        true,
+      );
+    }
   }
   updateTask(
     request: IUpdateTaskDto,
@@ -39,20 +47,32 @@ export class TasksController implements TasksServiceController {
 
   // TODO: Implement create new task
   async createTask(createTaskDto: ICreateTaskDto): Promise<ITaskReponse> {
-    const result: ITask = await this.tasksService.createTask(createTaskDto);
-    return toFormatResponse(result);
+    try {
+      return await this.tasksService.createTask(createTaskDto);
+    } catch (err) {
+      return toFormatResponse(
+        [],
+        { errorCode: err.statusCode, errorMsg: err.message },
+        '',
+        true,
+      );
+    }
   }
 
   async findAllTask(getTaskUserDto: IGetTaskUserDto): Promise<ITaskReponse> {
     try {
-      const result: ITasks = await this.tasksService.getTasks(getTaskUserDto);
-      return toFormatResponse(
-        { tasks: result },
-        RESPONSE_MESSAGES.GET_TASK_LIST_SUCCESS,
+      const result: ITaskReponse = await this.tasksService.getTasks(
+        getTaskUserDto,
       );
+      return result;
     } catch (err) {
-      console.log('err: ', err.message);
-      return toFormatResponse({ tasks: [] }, err.message, true);
+      console.log('err: ', err);
+      return toFormatResponse(
+        [],
+        { errorCode: err?.status, errorMsg: err.response?.message },
+        '',
+        true,
+      );
     }
   }
 }
