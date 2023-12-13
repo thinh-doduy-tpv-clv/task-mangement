@@ -35,3 +35,9 @@
 //     }
 //   }
 // }
+Cypress.Commands.add("loginViaUser", (user) => {
+  cy.visit("/auth/login");
+  cy.get("[data-cy=email]").type(user.email);
+  cy.get("[data-cy=password]").type(user.password);
+  cy.get("[data-cy=login-btn]").click();
+});

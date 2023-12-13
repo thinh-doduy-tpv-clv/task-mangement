@@ -13,3 +13,8 @@ body {
     border-radius: 6px;
     padding: 23px 16px 15px;
 }
+
+.error-field {
+    color: red !important;
+    font-size: 12px;
+}

@@ -2,9 +2,9 @@
 
 describe("first test suite", () => {
   it("first test ", () => {
-    cy.visit("/sign-in");
-    cy.get("#email").type("nkmanh");
-    cy.get("#password").type("123456789");
+    cy.visit("http://localhost:3000/sign-in");
+    cy.get("#username").type("nkmanh");
+    cy.get("#password").type("Manh@123");
     cy.get('[type="submit"]').click();
   });
 });

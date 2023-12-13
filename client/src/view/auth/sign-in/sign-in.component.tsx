@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 import useSession from "src/app/use-session";
 
 interface ComponentProps {
@@ -16,6 +17,12 @@ type SignInFormData = {
 
 const SignInComponent: React.FunctionComponent<Props> = (props) => {
   const { login } = useSession();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({ mode: "all" });
   const [signInFormData, setSignInFormData] = useState<SignInFormData>({
     username: "",
     password: "",
@@ -41,36 +48,34 @@ const SignInComponent: React.FunctionComponent<Props> = (props) => {
               Sign in to your account
             </h1>
             <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                props.onSignInClick(
-                  signInFormData.username,
-                  signInFormData.password
-                );
-              }}
+              onSubmit={handleSubmit((data) => {
+                props.onSignInClick(data.username, data.password);
+              })}
               method="POST"
             >
               <div>
                 <label
-                  htmlFor="email"
+                  htmlFor="username"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
                   Your email
                 </label>
                 <input
-                  type="email"
-                  name="email"
-                  id="email"
+                  {...register("username", { required: true })}
+                  id="username"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="name@company.com"
-                  required
-                  onChange={(e) => {
-                    setSignInFormData((prev) => ({
-                      ...prev,
-                      username: e.target?.value || "",
-                    }));
-                  }}
+                  placeholder="Enter your username"
+                  // onChange={(e) => {
+                  //   setSignInFormData((prev) => ({
+                  //     ...prev,
+                  //     username: e.target?.value || "",
+                  //   }));
+                  // }}
                 />
+
+                {errors.username && (
+                  <p className={"error-field"}>Last name is required.</p>
+                )}
               </div>
               <div>
                 <label
@@ -80,19 +85,15 @@ const SignInComponent: React.FunctionComponent<Props> = (props) => {
                   Password
                 </label>
                 <input
+                  {...register("password", { required: true })}
                   type="password"
-                  name="password"
                   id="password"
                   placeholder="••••••••"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  required
-                  onChange={(e) => {
-                    setSignInFormData((prev) => ({
-                      ...prev,
-                      password: e.target?.value || "",
-                    }));
-                  }}
                 />
+                {errors.password && (
+                  <p className="error-field">password is required.</p>
+                )}
               </div>
               <div className="flex items-center justify-between my-2">
                 <Link
@@ -102,12 +103,10 @@ const SignInComponent: React.FunctionComponent<Props> = (props) => {
                   Forgot password?
                 </Link>
               </div>
-              <button
+              <input
                 type="submit"
                 className="w-full text-white bg-slate-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-              >
-                Sign in
-              </button>
+              />
               <p className="text-sm font-light text-gray-500 dark:text-gray-400 mt-2">
                 {`Don’t have an account yet?`}
                 <Link

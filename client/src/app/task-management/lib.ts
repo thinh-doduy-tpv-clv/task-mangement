@@ -3,7 +3,7 @@ import { SessionOptions } from "iron-session";
 export interface SessionData {
   username: string;
   password: string;
-  token?: string;
+  token: string;
   isLoggedIn: boolean;
 }
 
@@ -11,6 +11,7 @@ export const defaultSession: SessionData = {
   username: "",
   isLoggedIn: false,
   password: "",
+  token: "",
 };
 
 export const sessionOptions: SessionOptions = {
