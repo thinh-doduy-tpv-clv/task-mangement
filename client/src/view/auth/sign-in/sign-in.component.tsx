@@ -58,7 +58,7 @@ const SignInComponent: React.FunctionComponent<Props> = (props) => {
                   htmlFor="username"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Your email
+                  User name
                 </label>
                 <input
                   {...register("username", { required: true })}

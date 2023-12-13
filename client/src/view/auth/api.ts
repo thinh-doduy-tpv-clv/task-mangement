@@ -46,3 +46,51 @@ export const SignInMutation = () => {
     },
   });
 };
+
+export const RegisterMutation = () => {
+  return useMutation({
+    mutationFn: async ({
+      username,
+      password,
+      email,
+      onSuccess,
+    }: {
+      username: string;
+      password: string;
+      email: string;
+      onSuccess: () => void;
+    }) => {
+      const data = await graphQLClient
+        .request(
+          gql`
+            mutation Register(
+              $username: String!
+              $password: String!
+              $email: String!
+            ) {
+              register(
+                input: {
+                  email: $email
+                  password: $password
+                  username: $username
+                }
+              ) {
+                id
+              }
+            }
+          `,
+          { password, username, email }
+        )
+        .then((res: any) => {
+          onSuccess();
+        })
+        .catch((err) => {
+          catchHandle(err);
+
+          return undefined;
+        });
+
+      return data;
+    },
+  });
+};
