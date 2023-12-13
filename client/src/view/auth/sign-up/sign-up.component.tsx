@@ -130,7 +130,7 @@ const SignUpComponent: React.FunctionComponent<Props> = (props) => {
                       message: "Entered value does not match email format",
                     },
                   })}
-                  // type="password"
+                  type="password"
                   name="password"
                   id="password"
                   placeholder="••••••••"
@@ -160,7 +160,7 @@ const SignUpComponent: React.FunctionComponent<Props> = (props) => {
                       message: "Entered value does not match email format",
                     },
                   })}
-                  // type="confirm-password"
+                  type="password"
                   name="confirmPassword"
                   id="confirmPassword"
                   placeholder="••••••••"
