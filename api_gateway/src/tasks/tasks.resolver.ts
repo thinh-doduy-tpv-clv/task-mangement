@@ -1,9 +1,8 @@
-import { Args, Query, Resolver } from '@nestjs/graphql';
+import { Query, Resolver } from '@nestjs/graphql';
+import { lastValueFrom } from 'rxjs';
 import { TaskModel } from './models/tasks.model';
 import { TasksService } from './tasks.service';
-import { lastValueFrom } from 'rxjs';
-import { ITaskReponse } from './types/task';
-import { GetTasksListDto } from './inputs/getTaskListDto';
+import { Tasks } from 'src/types/task';
 
 @Resolver(() => TaskModel)
 export class TaskResolver {

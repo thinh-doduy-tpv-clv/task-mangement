@@ -1,25 +1,21 @@
 import { toast } from "react-toastify";
-import { ApiResult } from "../data-transfer/api-result";
-import { onClearSession } from "../store/reducer/session/actions";
 
-export const catchHandle = (e: any, dispatch: any): void => {
-  const { message }: ApiResult = e;
+export const catchHandle = (e: any): void => {
+  const { errors, status } = e.response;
 
   try {
-    if (e.response.status) {
-      switch (e.response.status) {
-        case 401: {
-          dispatch(onClearSession());
-          toast.warning("Login session expired");
-
-          break;
-        }
-        default: {
-          toast.warning(message);
-        }
-      }
+    if (status === 401) {
+      // dispatch(onClearSession());
     }
+
+    errors.forEach((item: any) => {
+      if (item?.message) {
+        toast.warn(item?.message);
+      } else {
+        toast.warn(item);
+      }
+    });
   } catch {
-    toast.warning(message);
+    toast.warning(e);
   }
 };

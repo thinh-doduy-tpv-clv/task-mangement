@@ -4,12 +4,13 @@ Feature: Admin feature
     As a user, I can reset my password when I forgot it.
 
     Background:
+      #@PRECOND_TDRAF-145
       Given User have registered account
       And acouut is chauvu
       And "password" is "abC#123"
       And Email is "vuminhchaucyberlogictec@gamil.com"
     
-    @id: 1
+    @TEST_TDRAF-141
     Scenario Outline: Sign in unsuccessfully
       Given User is in the "Login Page"
       When User input <userID>, <Password>
@@ -24,7 +25,7 @@ Feature: Admin feature
         |        |          | Invalid User name and Password |
 
     #AC2
-    @id: 2
+    @TEST_TDRAF-142
     Scenario Outline: Sign in successfully
       Given User is in the "Login Page"
       When User input <userID>, <Password>
@@ -37,7 +38,7 @@ Feature: Admin feature
         | manhnguyen | 123456abc# |
     
     #AC4: Forgot password 
-    @id: 3
+    @TEST_TDRAF-143
     Scenario Outline: Reset Password successfully
       Given User is at the "Forgot Password Page"
       When User input <userID>, <Email>
@@ -50,7 +51,7 @@ Feature: Admin feature
         | userID | Email                             | Password |
         | chauvu | vuminhchaucyberlogictec@gamil.com | 12345678 |
 
-    @id: 4
+    @@TEST_TDRAF-144
     Scenario Outline: Reset Password unsuccessfully
       Given User is at the "Forgot Password Page"
       When User input <userID>, <Email>

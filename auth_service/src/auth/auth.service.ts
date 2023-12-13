@@ -128,10 +128,21 @@ export class AuthService {
         true,
       );
     }
+    const registeredUser = await this.authRepository.findOne({
+      where: { username: registerRequestDto.username },
+    });
     const registerResponse = {
       registerResponse: {
         username: registerRequestDto.username,
         email: registerRequestDto.email,
+      },
+      user: {
+        id: registeredUser.id,
+        createdAt: registeredUser.createdAt,
+        email: registeredUser.email,
+        password: registeredUser.password,
+        refreshToken: registeredUser.refreshToken,
+        username: registeredUser.username,
       },
     } as IData;
     return this.authResponse.generateAuthResponse(
@@ -202,6 +213,15 @@ export class AuthService {
         loginResponse: {
           accessToken: token.accessToken,
           refreshToken: token.refreshToken,
+        },
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          password: user.password,
+          refreshToken: token?.refreshToken || '',
+          accessToken: token?.accessToken || '',
+          createdAt: user.createdAt,
         },
       };
       return this.authResponse.generateAuthResponse(result, null, false);

@@ -92,5 +92,8 @@ message IUser {
     string password = 4;
     string refreshToken=5;
     google.protobuf.Timestamp created_at = 6;
+    oneof user_token {
+        string accessToken = 7;
+    }
 
 }

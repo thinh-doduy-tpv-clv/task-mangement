@@ -4,15 +4,16 @@ Feature: Admin feature
     As a user, after signing in, I can change password
     
     Background: User sign in successfully
+      #@PRECOND_TDRAF-140
       Given User use account with chauvu, abC#123 
       And User is in "Task List"
 
-    @id: 1
+    @TEST_TDRAF-138
     Scenario: Sign out successfully
       When User click on the "Sign out" button
       Then User go to the "Login Page"
     
-    @id: 2
+    @TEST_TDRAF-139
     Scenario Outline: Change password
       Given User openned the "Change Password" pop-up
       When User input old <Password>, new <Password>
