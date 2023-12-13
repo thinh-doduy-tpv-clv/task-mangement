@@ -128,10 +128,21 @@ export class AuthService {
         true,
       );
     }
+    const registeredUser = await this.authRepository.findOne({
+      where: { username: registerRequestDto.username },
+    });
     const registerResponse = {
       registerResponse: {
         username: registerRequestDto.username,
         email: registerRequestDto.email,
+      },
+      user: {
+        id: registeredUser.id,
+        createdAt: registeredUser.createdAt,
+        email: registeredUser.email,
+        password: registeredUser.password,
+        refreshToken: registeredUser.refreshToken,
+        username: registeredUser.username,
       },
     } as IData;
     return this.authResponse.generateAuthResponse(
@@ -191,6 +202,7 @@ export class AuthService {
       //Generate access_token and refresh_token
       const payload = { id: user.id, email: user.email };
       const token = await this.generateToken(payload);
+      console.log('token: ', token);
       //Update refresh token into database
       await this.authRepository.update(
         {
@@ -203,7 +215,17 @@ export class AuthService {
           accessToken: token.accessToken,
           refreshToken: token.refreshToken,
         },
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          password: user.password,
+          refreshToken: token?.refreshToken || '',
+          accessToken: token?.accessToken || '',
+          createdAt: user.createdAt,
+        },
       };
+      console.log('result: ', result);
       return this.authResponse.generateAuthResponse(result, null, false);
     } catch (error) {
       errorResponse.errorMessage = error;

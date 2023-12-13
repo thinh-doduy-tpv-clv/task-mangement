@@ -3,8 +3,8 @@ import { TasksController } from './tasks.controller';
 import { TasksService } from './tasks.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { TASK_SERVICE } from '../constants/packages';
-import { TASK_PACKAGE_NAME } from './types/task';
 import { TaskResolver } from './tasks.resolver';
+import { TASK_PACKAGE_NAME } from 'src/types/task';
 
 @Module({
   imports: [

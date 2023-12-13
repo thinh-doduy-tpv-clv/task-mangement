@@ -1,0 +1,98 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+package auth;
+
+service AuthService {
+    rpc CreateUser(ICreateUserDto) returns (IUser) {}
+    rpc FindAllUser(IEmpty) returns (IUsers) {}
+    rpc FindOneUser(IFindOneUserDto) returns (IAuthReponse) {}
+    rpc UpdateUser(IUpdateUserDto) returns (IAuthReponse) {}
+    rpc RemoveUser (IFindOneUserDto) returns (IUser) {}
+    rpc Login (ILoginRequestDto) returns (IAuthReponse);
+    rpc Register (IRegisterRequestDto) returns (IAuthReponse);
+    rpc ForgotPassword (IForgotPasswordRequestDto) returns (IAuthReponse);
+    rpc RefreshToken(IRefreshTokenRequestDto)  returns (IAuthReponse);
+}  
+
+
+message IAuthReponse {
+    IData data = 1;
+    IError error = 2;
+    bool isError = 3;    
+}
+message IError {
+    int32 errorCode = 1;
+    string errorMsg = 2;
+}
+
+message IData {
+    oneof task_type {
+        ILoginResponseDto loginResponse = 1; 
+        IRegisterResponseDto registerResponse = 2;
+        IUser user = 3;
+    }
+
+}
+
+message IRefreshTokenRequestDto {
+    string refreshToken = 1;
+    
+}
+message ILoginRequestDto {
+    string username = 1;
+    string password = 2;
+}
+message IRegisterRequestDto {
+    string username = 1;
+    string email = 2;
+    string password = 3;
+}
+message IForgotPasswordRequestDto {
+    string email = 1;
+}
+message IRegisterResponseDto { 
+    string username = 1;
+    string email = 2;
+
+}
+message ILoginResponseDto {
+    string accessToken = 1;
+    string refreshToken = 2;
+}
+message IErrorResponseDto {
+    string error_message = 1;
+}
+
+message IUpdateUserDto{
+    string id = 1;
+    string username = 2;
+    string email = 3;
+    string password = 4;
+    string due_date = 5;
+}
+
+message IFindOneUserDto {
+    string id = 1;
+}
+message ICreateUserDto {
+    string username = 2;
+    string email = 3;
+    string password = 4;
+}
+message IEmpty {};
+
+message IUsers {
+    repeated IUser users = 1;
+}
+message IUser {
+    int32 id = 1;
+    string username = 2;
+    string email = 3;
+    string password = 4;
+    string refreshToken=5;
+    google.protobuf.Timestamp created_at = 6;
+    oneof user_token {
+        string accessToken = 7;
+    }
+
+}
