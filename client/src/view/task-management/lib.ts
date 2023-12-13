@@ -30,18 +30,26 @@ export const MoveItem = (
 export const getItemStyle = (
   isDragging: boolean,
   draggableStyle: DraggingStyle | NotDraggingStyle | undefined
-): any => ({
+): React.CSSProperties => ({
   // change background colour if dragging
   // background: isDragging ? "lightgreen" : "#fff",
-  transform: isDragging ? "rotate(180)" : "rotate(45deg)",
-
-  // styles we need to apply on draggables
+  borderWidth: "1px",
+  borderColor: "#E0E0E0",
+  background: "#FEFEFE",
+  padding: "16px",
   ...draggableStyle,
 });
-const grid = 12;
 
-export const getListStyle = (isDraggingOver: boolean) => ({
+export const getListStyle = (
+  isDraggingOver: boolean,
+  el: string
+): React.CSSProperties => ({
   // background: isDraggingOver ? "rgba(130, 143, 163,0.4)" : "rgb(244, 247, 253)",
+  background: "#FEFEFE",
+  borderWidth: "1px",
+  borderTopWidth: "3px",
+  borderColor: "#E0E0E0",
+  borderTopColor: getStatusColor(el),
 });
 
 export const reorder = (
@@ -59,13 +67,13 @@ export const reorder = (
 export const getStatusColor = (value: string) => {
   switch (value) {
     case TaskStatusEnum.Todo:
-      return "rgb(73, 196, 229)";
+      return "#B8B9BB";
     case TaskStatusEnum.Inprogress:
-      return "rgb(132, 113, 242)";
-    case TaskStatusEnum.Todo:
-      return "rgb(103, 226, 174)";
-    case TaskStatusEnum.Todo:
-      return "red";
+      return "#EFD279";
+    case TaskStatusEnum.Compeleted:
+      return "#677EE6";
+    case TaskStatusEnum.Archived:
+      return "#E477CF";
 
     default:
       break;

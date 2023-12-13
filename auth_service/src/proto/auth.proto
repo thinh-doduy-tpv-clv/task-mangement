@@ -4,67 +4,88 @@ import "google/protobuf/timestamp.proto";
 package auth;
 
 service AuthService {
-    rpc CreateUser(CreateUserDto) returns (User) {}
-    rpc FindAllUser(Empty) returns (Users) {}
-    rpc FindOneUser(FindOneUserDto) returns (User) {}
-    rpc UpdateUser(UpdateUserDto) returns (User) {}
-    rpc RemoveUser (FindOneUserDto) returns (User) {}
-    rpc Login (LoginRequestDto) returns (LoginResponseDto);
-    rpc Register (RegisterRequestDto) returns (RegisterResponseDto);
-    rpc ForgotPassword (ForgotPasswordRequestDto) returns (ErrorResponseDto);
-    rpc RefreshToken(RefreshTokenRequestDto)  returns (LoginResponseDto);
+    rpc CreateUser(ICreateUserDto) returns (IUser) {}
+    rpc FindAllUser(IEmpty) returns (IUsers) {}
+    rpc FindOneUser(IFindOneUserDto) returns (IAuthReponse) {}
+    rpc UpdateUser(IUpdateUserDto) returns (IAuthReponse) {}
+    rpc RemoveUser (IFindOneUserDto) returns (IUser) {}
+    rpc Login (ILoginRequestDto) returns (IAuthReponse);
+    rpc Register (IRegisterRequestDto) returns (IAuthReponse);
+    rpc ForgotPassword (IForgotPasswordRequestDto) returns (IAuthReponse);
+    rpc RefreshToken(IRefreshTokenRequestDto)  returns (IAuthReponse);
 }  
 
-message RefreshTokenRequestDto {
-    string refreshToken = 1;
+
+message IAuthReponse {
+    IData data = 1;
+    IError error = 2;
+    bool isError = 3;    
+}
+message IError {
+    int32 errorCode = 1;
+    string errorMsg = 2;
 }
 
-message LoginRequestDto {
+message IData {
+    oneof task_type {
+        ILoginResponseDto loginResponse = 1; 
+        IRegisterResponseDto registerResponse = 2;
+        IUser user = 3;
+    }
+
+}
+
+message IRefreshTokenRequestDto {
+    string refreshToken = 1;
+    
+}
+message ILoginRequestDto {
     string username = 1;
     string password = 2;
 }
-message RegisterRequestDto {
+message IRegisterRequestDto {
     string username = 1;
     string email = 2;
     string password = 3;
 }
-message ForgotPasswordRequestDto {
+message IForgotPasswordRequestDto {
     string email = 1;
 }
-message RegisterResponseDto { 
+message IRegisterResponseDto { 
     string username = 1;
     string email = 2;
 
 }
-message LoginResponseDto {
+message ILoginResponseDto {
     string accessToken = 1;
     string refreshToken = 2;
 }
-message ErrorResponseDto {
+message IErrorResponseDto {
     string error_message = 1;
 }
 
-message UpdateUserDto{
-    string username = 1;
-    string email = 2;
-    string password = 3;
-    string due_date = 4;
+message IUpdateUserDto{
+    string id = 1;
+    string username = 2;
+    string email = 3;
+    string password = 4;
+    string due_date = 5;
 }
 
-message FindOneUserDto {
+message IFindOneUserDto {
     string id = 1;
 }
-message CreateUserDto {
+message ICreateUserDto {
     string username = 2;
     string email = 3;
     string password = 4;
 }
-message Empty {};
+message IEmpty {};
 
-message Users {
-    repeated User users = 1;
+message IUsers {
+    repeated IUser users = 1;
 }
-message User {
+message IUser {
     int32 id = 1;
     string username = 2;
     string email = 3;
