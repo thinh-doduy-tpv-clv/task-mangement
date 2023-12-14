@@ -26,6 +26,10 @@ import { TasksModule } from './tasks/tasks.module';
             return graphQLFormattedError;
           }
         }
+        return {
+          message: error?.message,
+          extensions: { code: error?.extensions.code },
+        } as GraphQLFormattedError;
       },
     }),
     TasksModule,

@@ -62,10 +62,11 @@ export class AuthController implements AuthServiceController {
   ): Promise<IAuthReponse> {
     return await this.authService.refreshToken(refreshTokenRequestDto);
   }
-  @UseGuards(AuthGuard)
+
   async findOneUser(request: IFindOneUserDto): Promise<IAuthReponse> {
     return await this.authService.findOneUser(request.id);
   }
+
   @UseGuards(AuthGuard)
   async updateUser(request: IUpdateUserDto) {
     //todo

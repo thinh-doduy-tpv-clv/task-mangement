@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 import { TasksController } from './tasks.controller';
 import { TasksService } from './tasks.service';
 import { AUTH_PACKAGE_NAME } from './types/auth';
+import { JwtModule } from '@nestjs/jwt';
 @Module({
   imports: [
     ClientsModule.register([
@@ -21,6 +22,13 @@ import { AUTH_PACKAGE_NAME } from './types/auth';
     ]),
     TypeOrmModule.forFeature([Task]),
     TypeOrmModule.forFeature([User]),
+    JwtModule.register({
+      global: true,
+      secret: '123456',
+      signOptions: {
+        expiresIn: '1h',
+      },
+    }),
   ],
   controllers: [TasksController],
   providers: [TasksService],

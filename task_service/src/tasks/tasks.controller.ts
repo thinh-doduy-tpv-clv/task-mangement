@@ -1,10 +1,11 @@
-import { Controller, UseFilters } from '@nestjs/common';
+import { Controller, UseFilters, UseGuards } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { TasksService } from './tasks.service';
 import {
   ICreateTaskDto,
   IFindOneTaskDto,
   IGetTaskUserDto,
+  ITask,
   ITaskReponse,
   IUpdateTaskDto,
   TasksServiceController,
@@ -21,7 +22,7 @@ export class TasksController implements TasksServiceController {
 
   async findOneTask(request: IFindOneTaskDto): Promise<ITaskReponse> {
     try {
-      return await this.tasksService.getTaskById(request.id);
+      return await this.tasksService.getTaskById(request.id, request.userId);
     } catch (err) {
       return toFormatResponse(
         [],
@@ -31,10 +32,21 @@ export class TasksController implements TasksServiceController {
       );
     }
   }
-  updateTask(
-    request: IUpdateTaskDto,
-  ): ITaskReponse | Promise<ITaskReponse> | Observable<ITaskReponse> {
-    throw new Error('Method not implemented.');
+  async updateTask(request: IUpdateTaskDto): Promise<ITaskReponse> {
+    try {
+      const updatedTask: ITaskReponse = await this.tasksService.updateTask(
+        request,
+      );
+      return updatedTask;
+    } catch (err) {
+      console.log('err: ', err);
+      return toFormatResponse(
+        [],
+        { errorCode: err.statusCode, errorMsg: err.message },
+        '',
+        true,
+      );
+    }
   }
   removeTask(
     request: IFindOneTaskDto,
@@ -42,10 +54,11 @@ export class TasksController implements TasksServiceController {
     throw new Error('Method not implemented.');
   }
 
-  // TODO: Implement create new task
+  // [ ]: Implement create new task
   async createTask(createTaskDto: ICreateTaskDto): Promise<ITaskReponse> {
     try {
-      return await this.tasksService.createTask(createTaskDto);
+      const ITaskResponse = await this.tasksService.createTask(createTaskDto);
+      return ITaskResponse;
     } catch (err) {
       return toFormatResponse(
         [],
