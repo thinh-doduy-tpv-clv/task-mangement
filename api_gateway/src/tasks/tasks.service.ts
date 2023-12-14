@@ -21,7 +21,7 @@ export class TasksService implements OnModuleInit, TasksServiceClient {
     return this.tasksService.createTask(request);
   }
   findAllTask(request: IGetTaskUserDto): Observable<ITaskReponse> {
-    throw new Error('Method not implemented.');
+    return this.tasksService.findAllTask({ userId: request.userId });
   }
   findOneTask(request: IFindOneTaskDto): Observable<ITaskReponse> {
     throw new Error('Method not implemented.');
@@ -39,13 +39,5 @@ export class TasksService implements OnModuleInit, TasksServiceClient {
   onModuleInit() {
     this.tasksService =
       this.client.getService<TasksServiceClient>(TASKS_SERVICE_NAME);
-  }
-
-  /**
-   *
-   * @returns
-   */
-  findalltask(request: IGetTaskUserDto): Observable<ITaskReponse> {
-    return this.tasksService.findAllTask({ userId: request.userId });
   }
 }

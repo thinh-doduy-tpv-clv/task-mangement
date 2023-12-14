@@ -2,12 +2,16 @@ import { Module } from '@nestjs/common';
 import { TasksController } from './tasks.controller';
 import { TasksService } from './tasks.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { TASK_SERVICE } from '../constants/packages';
+import { AUTH_SERVICE, TASK_SERVICE } from '../constants/packages';
 import { TaskResolver } from './tasks.resolver';
 import { TASK_PACKAGE_NAME } from 'src/types/task';
+import { ConfigModule } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { AUTH_PACKAGE_NAME } from 'src/types/auth';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     ClientsModule.register([
       {
         name: TASK_SERVICE,
@@ -21,6 +25,6 @@ import { TASK_PACKAGE_NAME } from 'src/types/task';
     ]),
   ],
   controllers: [TasksController],
-  providers: [TasksService, TaskResolver],
+  providers: [TasksService, TaskResolver, JwtService],
 })
 export class TasksModule {}
