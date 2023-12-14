@@ -9,7 +9,7 @@ async function bootstrap() {
     {
       transport: Transport.GRPC,
       options: {
-        url: '0.0.0.0:9000',
+        url: '0.0.0.0:9001',
         protoPath: 'src/tasks/proto/task.proto',
         package: TASK,
       },
