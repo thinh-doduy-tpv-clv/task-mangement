@@ -13,9 +13,13 @@ service AuthService {
     rpc Register (IRegisterRequestDto) returns (IAuthReponse);
     rpc ForgotPassword (IForgotPasswordRequestDto) returns (IAuthReponse);
     rpc RefreshToken(IRefreshTokenRequestDto)  returns (IAuthReponse);
+    rpc ResetPassword(IResetPasswordRequestDto) returns (IAuthReponse);
 }  
 
-
+message IResetPasswordRequestDto {
+    string encryptInput = 1;
+    string newPassword = 2;
+}
 message IAuthReponse {
     IData data = 1;
     IError error = 2;
@@ -50,6 +54,7 @@ message IRegisterRequestDto {
 }
 message IForgotPasswordRequestDto {
     string email = 1;
+    string username = 2;
 }
 message IRegisterResponseDto { 
     string username = 1;
@@ -95,5 +100,6 @@ message IUser {
     oneof user_token {
         string accessToken = 7;
     }
+    string link = 8;
 
 }

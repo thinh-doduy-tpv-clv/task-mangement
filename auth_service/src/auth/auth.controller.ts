@@ -10,6 +10,7 @@ import {
   IRefreshTokenRequestDto,
   IUsers as UsersProto,
   IAuthReponse,
+  IResetPasswordRequestDto,
 } from '../shared/types/auth';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
@@ -62,7 +63,7 @@ export class AuthController implements AuthServiceController {
   ): Promise<IAuthReponse> {
     return await this.authService.refreshToken(refreshTokenRequestDto);
   }
-  @UseGuards(AuthGuard)
+  //@UseGuards(AuthGuard)
   async findOneUser(request: IFindOneUserDto): Promise<IAuthReponse> {
     return await this.authService.findOneUser(request.id);
   }
@@ -71,9 +72,11 @@ export class AuthController implements AuthServiceController {
     //todo
     return null;
   }
-
   async forgotPassword(request: IForgotPasswordRequestDto) {
-    return null;
+    return await this.authService.forgotPassword(request);
+  }
+  async resetPassword(request: IResetPasswordRequestDto) {
+    return await this.authService.resetPassword(request);
   }
   async createUser(request: ICreateUserDto) {
     return null;
