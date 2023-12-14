@@ -12,6 +12,14 @@ type AuthModel {
   username: String!
 }
 
+input CreateTaskDto {
+  description: String
+  dueDate: DateTime
+  status: String! = "TODO"
+  title: String!
+  userId: Int!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -27,8 +35,10 @@ input LoginInput {
 }
 
 type Mutation {
+  createTask(input: CreateTaskDto!): TaskModel!
   login(input: LoginInput!): AuthModel!
   register(input: RegisterInput!): AuthModel!
+  updateTask(input: UpdateTaskDto!): TaskModel!
 }
 
 type Query {
@@ -42,10 +52,19 @@ input RegisterInput {
 }
 
 type TaskModel {
-  createdAt: DateTime!
+  createdAt: DateTime
   description: String!
   dueDate: DateTime!
   id: Int!
   status: String!
   title: String!
+}
+
+input UpdateTaskDto {
+  description: String
+  dueDate: DateTime
+  status: String! = "TODO"
+  taskId: Int!
+  title: String!
+  userId: Int!
 }

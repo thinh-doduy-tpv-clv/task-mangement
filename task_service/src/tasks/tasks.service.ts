@@ -15,6 +15,7 @@ import {
   IGetTaskUserDto,
   ITask,
   ITaskReponse,
+  IUpdateTaskDto,
 } from './types/task';
 import { toFormatResponse } from './utils/commonFunctions';
 import { RESPONSE_MESSAGES } from './utils/constants/messages';
@@ -23,6 +24,7 @@ import {
   HttpStatusMessages,
 } from './utils/constants/statusCode';
 import { CustomException } from './utils/exceptions/customException';
+import { TASK_STATUS } from './utils/constants/constants';
 
 @Injectable()
 export class TasksService {
@@ -41,6 +43,7 @@ export class TasksService {
       this.client.getService<AuthServiceClient>(AUTH_SERVICE_NAME);
   }
 
+  // [ ]: Get task list
   async getTasks(getTaskUserDto: IGetTaskUserDto): Promise<ITaskReponse> {
     if (!getTaskUserDto.userId) {
       throw new CustomException(
@@ -48,16 +51,15 @@ export class TasksService {
         HttpStatusConstants.USER_ID_REQUIRED,
       );
     }
-    // const user: IAuthReponse = await lastValueFrom(
-    //   this.authService.findOneUser({ id: `${getTaskUserDto.userId}` }),
-    // );
-    // console.log('user: ', user);
-    // if (!user.data.user) {
-    //   throw new CustomException(
-    //     HttpStatusMessages[HttpStatusConstants.USER_NOT_EXISTED],
-    //     HttpStatusConstants.USER_NOT_EXISTED,
-    //   );
-    // }
+    const user: IAuthReponse = await lastValueFrom(
+      this.authService.findOneUser({ id: `${getTaskUserDto.userId}` }),
+    );
+    if (!user.data.user) {
+      throw new CustomException(
+        HttpStatusMessages[HttpStatusConstants.USER_NOT_EXISTED],
+        HttpStatusConstants.USER_NOT_EXISTED,
+      );
+    }
     const tasksList: ITask[] = await this.tasksRepository.find({
       where: {
         user: { id: getTaskUserDto.userId },
@@ -77,12 +79,14 @@ export class TasksService {
    * @param id hold the id of the task
    * @returns the founded task
    */
-  async getTaskById(id: number): Promise<ITaskReponse> {
+  async getTaskById(id: number, userId: number): Promise<ITaskReponse> {
     try {
-      const task: ITask = await this.tasksRepository.findOne({
-        where: { id: id },
-        relations: ['user'],
-      });
+      const task: ITask = await this.tasksRepository
+        .createQueryBuilder('task')
+        .leftJoinAndSelect('task.user', 'user') // Assuming the property in User entity for the many-to-many relation is named 'roles'
+        .where('task.id = :taskId', { taskId: id })
+        .where('user.id = :userId', { userId })
+        .getOne();
       return toFormatResponse([task], null, '', false);
     } catch (error) {
       // Handle the case where no task is found
@@ -103,34 +107,32 @@ export class TasksService {
     if (!createTaskDto.userId) {
       throw new CustomException(RESPONSE_MESSAGES.USER_ID_REQUIRED);
     }
-    const user: IAuthReponse = await lastValueFrom(
+    const currentUser: IAuthReponse = await lastValueFrom(
       this.authService.findOneUser({ id: `${createTaskDto.userId}` }),
     );
-    if (!user.data.user) {
+    if (!currentUser.data.user) {
       throw new CustomException(
         HttpStatusMessages[HttpStatusConstants.USER_NOT_EXISTED],
         HttpStatusConstants.USER_NOT_EXISTED,
       );
     }
-    if (
-      !createTaskDto.dueDate ||
-      !createTaskDto.status ||
-      !createTaskDto.title
-    ) {
+    if (!createTaskDto.status || !createTaskDto.title) {
       throw new CustomException(RESPONSE_MESSAGES.ALL_FIELD_REQUIRED);
     }
     const newTask = {
       title: createTaskDto.title,
       description: createTaskDto.description,
       dueDate:
-        createTaskDto.dueDate !== '' ? new Date(createTaskDto.dueDate) : null,
+        createTaskDto.dueDate !== null ? new Date(createTaskDto.dueDate) : null,
       status: createTaskDto.status,
+      user: { id: createTaskDto.userId },
     } as ITask;
     const task: ITask = await this.tasksRepository.create(newTask);
-    const savedSingleTask: ITask = await this.tasksRepository.save(task);
+    const savedTask: ITask = await this.tasksRepository.save(task);
 
     const newCreatedTask: ITaskReponse = await this.getTaskById(
-      savedSingleTask.id,
+      savedTask.id,
+      createTaskDto.userId,
     );
 
     // Format response
@@ -141,6 +143,59 @@ export class TasksService {
       false,
     );
     return newTaskResponse;
+  }
+
+  async updateTask(updateTaskDto: IUpdateTaskDto): Promise<ITaskReponse> {
+    if (!updateTaskDto.id) {
+      throw new CustomException(RESPONSE_MESSAGES.TASK_ID_REQUIRED);
+    }
+    if (!updateTaskDto.userId) {
+      throw new CustomException(RESPONSE_MESSAGES.USER_ID_REQUIRED);
+    }
+    if (
+      !Object.values(TASK_STATUS).includes(updateTaskDto.status as TASK_STATUS)
+    ) {
+      throw new CustomException(RESPONSE_MESSAGES.TASK_STATUS_INVALID);
+    }
+    // Retrieve information for user & task
+    const currentUser: IAuthReponse = await lastValueFrom(
+      this.authService.findOneUser({ id: `${updateTaskDto.userId}` }),
+    );
+    const currentTaskResponse: ITaskReponse = await this.getTaskById(
+      updateTaskDto.id,
+      updateTaskDto.userId,
+    );
+    let currentTask: ITask = currentTaskResponse?.data[0];
+
+    if (!currentTask) {
+      throw new CustomException(RESPONSE_MESSAGES.TASK_NOT_FOUND);
+    }
+    if (!currentUser) {
+      throw new CustomException(RESPONSE_MESSAGES.USER_NOT_EXISTED);
+    }
+
+    // Update task info
+    currentTask = {
+      ...currentTask,
+      description: updateTaskDto.description,
+      dueDate: updateTaskDto.dueDate,
+      status: updateTaskDto.status,
+      title: updateTaskDto.title,
+    };
+    await this.tasksRepository.save(currentTask);
+    const updatedTaskData: ITaskReponse = await this.getTaskById(
+      updateTaskDto.id,
+      updateTaskDto.userId,
+    );
+
+    // Format response
+    const updatedTask: ITaskReponse = toFormatResponse(
+      updatedTaskData.data,
+      null,
+      '',
+      false,
+    );
+    return updatedTask;
   }
 
   mapTaskEntityToInterface = (task: ITask) => {

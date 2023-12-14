@@ -17,12 +17,10 @@ export class Task {
   @IsNotEmpty()
   title: string;
 
-  @Column()
-  @IsNotEmpty()
+  @Column({ nullable: true })
   description: string;
 
-  @Column()
-  @IsNotEmpty()
+  @Column({ nullable: true })
   dueDate: Date;
 
   @Column({ default: 'TODO' })
