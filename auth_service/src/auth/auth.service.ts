@@ -10,6 +10,8 @@ import {
   IData,
   IAuthReponse,
   IUpdateUserDto,
+  IForgotPasswordRequestDto,
+  IResetPasswordRequestDto,
 } from '../shared/types/auth';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -20,6 +22,7 @@ import { Metadata } from '@grpc/grpc-js';
 import { AuthValidator } from '../shared/services/auth-validator.service';
 import { AuthResponse } from '../shared/untils';
 import { AuthErrorResponseDto } from './dto/auth-error-response.dto';
+import { CryptoService } from '../shared/services/crypto.service';
 @Injectable()
 export class AuthService {
   constructor(
@@ -29,6 +32,7 @@ export class AuthService {
     private configService: ConfigService,
     private readonly authValidator: AuthValidator,
     private readonly authResponse: AuthResponse,
+    private readonly cryptoService: CryptoService,
   ) {}
 
   async updateUser(updateUserDto: IUpdateUserDto): Promise<IAuthReponse> {
@@ -222,6 +226,7 @@ export class AuthService {
           refreshToken: token?.refreshToken || '',
           accessToken: token?.accessToken || '',
           createdAt: user.createdAt,
+          link: '',
         },
       };
       return this.authResponse.generateAuthResponse(result, null, false);
@@ -290,6 +295,131 @@ export class AuthService {
       return this.authResponse.generateAuthResponse(
         null,
         { errorCode: 400, errorMsg: error },
+        true,
+      );
+    }
+  }
+  async forgotPassword(
+    forgotPasswordRequestDto: IForgotPasswordRequestDto,
+  ): Promise<IAuthReponse> {
+    try {
+      if (
+        this.authValidator.isNullOrEmpty(forgotPasswordRequestDto.email) ||
+        this.authValidator.isNullOrEmpty(forgotPasswordRequestDto.username)
+      ) {
+        return this.authResponse.generateAuthResponse(
+          null,
+          { errorCode: 400, errorMsg: 'Email or Username is not empty.' },
+          true,
+        );
+      }
+      //Check input in Db
+      const user = await this.authRepository.findOneBy({
+        email: forgotPasswordRequestDto.email,
+        username: forgotPasswordRequestDto.username,
+      });
+      if (!user) {
+        return this.authResponse.generateAuthResponse(
+          null,
+          { errorCode: 400, errorMsg: 'User not found.' },
+          true,
+        );
+      }
+      const encryptText = this.cryptoService.encrypt(user.username);
+      //Return 1 link userName ma hoa
+      return this.authResponse.generateAuthResponse(
+        {
+          user: {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            password: '',
+            refreshToken: '',
+            accessToken: '',
+            createdAt: null,
+            link: encryptText,
+          },
+        },
+        null,
+        false,
+      );
+    } catch (error) {
+      return this.authResponse.generateAuthResponse(
+        null,
+        { errorCode: 400, errorMsg: error.message },
+        true,
+      );
+    }
+  }
+  async resetPassword(
+    resetPasswordRequestDto: IResetPasswordRequestDto,
+  ): Promise<IAuthReponse> {
+    if (
+      this.authValidator.isNullOrEmpty(resetPasswordRequestDto.encryptInput) ||
+      this.authValidator.isNullOrEmpty(resetPasswordRequestDto.newPassword)
+    ) {
+      return this.authResponse.generateAuthResponse(
+        null,
+        { errorCode: 400, errorMsg: 'Input is not empty.' },
+        true,
+      );
+    }
+    try {
+      const decryptText = this.cryptoService.decrypt(
+        resetPasswordRequestDto.encryptInput,
+      );
+      //check in db
+      const user = await this.authRepository.findOneBy({
+        username: decryptText,
+      });
+      if (!user) {
+        return this.authResponse.generateAuthResponse(
+          null,
+          { errorCode: 400, errorMsg: 'User not found.' },
+          true,
+        );
+      }
+      //check format of password
+      const password = this.authValidator.checkValidPassword(
+        resetPasswordRequestDto.newPassword,
+      );
+      //hash password
+      if (password.isError) {
+        return this.authResponse.generateAuthResponse(
+          null,
+          { errorCode: password.errorCode, errorMsg: password.errorMessage },
+          true,
+        );
+      }
+      const hashPassword = await this.hashPassword(
+        resetPasswordRequestDto.newPassword,
+      );
+      await this.authRepository.update(
+        {
+          username: decryptText,
+        },
+        { password: hashPassword },
+      );
+      return this.authResponse.generateAuthResponse(
+        {
+          user: {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            password: '',
+            refreshToken: '',
+            accessToken: '',
+            createdAt: null,
+            link: '',
+          },
+        },
+        null,
+        false,
+      );
+    } catch (error) {
+      return this.authResponse.generateAuthResponse(
+        null,
+        { errorCode: 400, errorMsg: error.message },
         true,
       );
     }

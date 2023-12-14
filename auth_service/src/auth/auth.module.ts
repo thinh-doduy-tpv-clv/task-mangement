@@ -7,6 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { AuthValidator } from '../shared/services/auth-validator.service';
 import { AuthResponse } from '../shared/untils';
+import { CryptoService } from '../shared/services/crypto.service';
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
@@ -20,7 +21,7 @@ import { AuthResponse } from '../shared/untils';
     ConfigModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, AuthValidator, AuthResponse],
+  providers: [AuthService, AuthValidator, AuthResponse, CryptoService],
   exports: [AuthService],
 })
 export class AuthModule {}

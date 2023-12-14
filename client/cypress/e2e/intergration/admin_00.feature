@@ -34,8 +34,8 @@ Feature: Admin feature
     Scenario Outline: Create a new account successfully
       Given User is in the "Register Page" 
       When User input <userID>, <Password>, <Email>
-      And User click on the "Submit" button
-      Then There is a msg "Create successfully"
+      And User click on the "Sign up" button
+      Then There is a msg "Register new account success!"
       And User go to the "Login Page"
 
         Examples:

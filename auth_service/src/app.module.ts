@@ -10,7 +10,7 @@ const ormconfig: TypeOrmModuleOptions = {
   host: 'localhost',
   port: 5432,
   username: 'postgres',
-  password: '123',
+  password: '1234',
   database: 'task-mngt',
   entities: ['dist/**/*.entity.js'],
   synchronize: true,
