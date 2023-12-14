@@ -1,32 +1,27 @@
-import { Query, Resolver } from '@nestjs/graphql';
+import { Args, Query, Resolver } from '@nestjs/graphql';
+import { validate } from 'class-validator';
+import { GraphQLError } from 'graphql';
 import { lastValueFrom } from 'rxjs';
+import { ITaskReponse } from 'src/types/task';
+import { GetTasksListDto } from './inputs/getTaskListDto';
 import { TaskModel } from './models/tasks.model';
 import { TasksService } from './tasks.service';
-import { Tasks } from 'src/types/task';
 
 @Resolver(() => TaskModel)
 export class TaskResolver {
   constructor(private taskService: TasksService) {}
 
   @Query(() => [TaskModel])
-  async getTaskList(): Promise<TaskModel[]> {
-    try {
-      const rawTasks: Tasks = await lastValueFrom(
-        this.taskService.findAllTask(),
-      );
-      const respTasks: TaskModel[] =
-        rawTasks && rawTasks.tasks && rawTasks.tasks.length > 0
-          ? rawTasks.tasks
-          : [];
-      return respTasks;
-    } catch (error) {
-      return [];
-    }
+  async getTaskList(
+    @Args('input') input: GetTasksListDto,
+  ): Promise<TaskModel[]> {
+    const rawTasks: ITaskReponse = await lastValueFrom(
+      this.taskService.findAllTask({ userId: input.userId }),
+    );
+    const respTasks: TaskModel[] =
+      rawTasks && rawTasks.data && rawTasks.data.length > 0
+        ? rawTasks.data
+        : [];
+    return respTasks;
   }
-
-  // @ResolveField()
-  // async posts(@Parent() author: Author) {
-  //   const { id } = author;
-  //   return this.postsService.findAll({ authorId: id });
-  // }
 }

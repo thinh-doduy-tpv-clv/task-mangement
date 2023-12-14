@@ -5,38 +5,65 @@ import { Observable } from "rxjs";
 
 export const protobufPackage = "task";
 
-export interface UpdateTaskDto {
-  id: string;
+export interface IGetTaskUserDto {
+  userId: number;
+}
+
+export interface IError {
+  errorCode: number;
+  errorMsg: string;
+}
+
+export interface ITaskReponse {
+  data: ITask[];
+  error: IError | undefined;
+  message: string;
+  isError: boolean;
+}
+
+export interface IUpdateTaskDto {
+  id: number;
   title: string;
   description: string;
-  dueDate: Date | undefined;
+  dueDate: string;
   status: string;
 }
 
-export interface FindOneTaskDto {
-  id: string;
+export interface IFindOneTaskDto {
+  id: number;
 }
 
-export interface Empty {
+export interface IEmpty {
 }
 
-export interface Tasks {
-  tasks: Task[];
+export interface ITasks {
+  tasks: ITask[];
 }
 
-export interface CreateTaskDto {
+export interface ICreateTaskDto {
   title: string;
   description: string;
-  dueDate: Date | undefined;
+  dueDate: string;
   status: string;
+  userId: string;
 }
 
-export interface Task {
+export interface ITask {
   id: number;
   title: string;
   description: string;
   dueDate: Date | undefined;
   status: string;
+  createdAt: Date | undefined;
+  user: User | undefined;
+}
+
+export interface User {
+  id: number;
+  username: string;
+  email: string;
+  password: string;
+  refreshToken: string;
   createdAt: Date | undefined;
 }
 
@@ -52,27 +79,27 @@ wrappers[".google.protobuf.Timestamp"] = {
 } as any;
 
 export interface TasksServiceClient {
-  createTask(request: CreateTaskDto): Observable<Task>;
+  createTask(request: ICreateTaskDto): Observable<ITaskReponse>;
 
-  findAllTask(request: Empty): Observable<Tasks>;
+  findAllTask(request: IGetTaskUserDto): Observable<ITaskReponse>;
 
-  findOneTask(request: FindOneTaskDto): Observable<Task>;
+  findOneTask(request: IFindOneTaskDto): Observable<ITaskReponse>;
 
-  updateTask(request: UpdateTaskDto): Observable<Task>;
+  updateTask(request: IUpdateTaskDto): Observable<ITaskReponse>;
 
-  removeTask(request: FindOneTaskDto): Observable<Task>;
+  removeTask(request: IFindOneTaskDto): Observable<ITaskReponse>;
 }
 
 export interface TasksServiceController {
-  createTask(request: CreateTaskDto): Promise<Task> | Observable<Task> | Task;
+  createTask(request: ICreateTaskDto): Promise<ITaskReponse> | Observable<ITaskReponse> | ITaskReponse;
 
-  findAllTask(request: Empty): Promise<Tasks> | Observable<Tasks> | Tasks;
+  findAllTask(request: IGetTaskUserDto): Promise<ITaskReponse> | Observable<ITaskReponse> | ITaskReponse;
 
-  findOneTask(request: FindOneTaskDto): Promise<Task> | Observable<Task> | Task;
+  findOneTask(request: IFindOneTaskDto): Promise<ITaskReponse> | Observable<ITaskReponse> | ITaskReponse;
 
-  updateTask(request: UpdateTaskDto): Promise<Task> | Observable<Task> | Task;
+  updateTask(request: IUpdateTaskDto): Promise<ITaskReponse> | Observable<ITaskReponse> | ITaskReponse;
 
-  removeTask(request: FindOneTaskDto): Promise<Task> | Observable<Task> | Task;
+  removeTask(request: IFindOneTaskDto): Promise<ITaskReponse> | Observable<ITaskReponse> | ITaskReponse;
 }
 
 export function TasksServiceControllerMethods() {

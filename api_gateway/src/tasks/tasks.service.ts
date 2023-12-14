@@ -1,11 +1,15 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
-import { TASK_SERVICE } from '../constants';
 import { ClientGrpc } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
-import { TASKS_SERVICE_NAME, Tasks, TasksServiceClient } from 'src/types/task';
+import {
+  ITaskReponse,
+  TASKS_SERVICE_NAME,
+  TasksServiceClient,
+} from 'src/types/task';
+import { TASK_SERVICE } from '../constants';
+import { GetTasksListDto } from './dto/get.tasklist.dto';
 @Injectable()
 export class TasksService implements OnModuleInit {
-
   private tasksService: TasksServiceClient;
   constructor(@Inject(TASK_SERVICE) private client: ClientGrpc) {}
 
@@ -18,10 +22,10 @@ export class TasksService implements OnModuleInit {
   }
 
   /**
-   * 
-   * @returns 
+   *
+   * @returns
    */
-  findAllTask(): Observable<Tasks> {
-    return this.tasksService.findAllTask({});
+  findAllTask(getTasksListDto: GetTasksListDto): Observable<ITaskReponse> {
+    return this.tasksService.findAllTask({ userId: getTasksListDto.userId });
   }
 }

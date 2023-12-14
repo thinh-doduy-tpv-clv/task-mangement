@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TasksModule } from './tasks/tasks.module';
 import { Task } from './tasks/entities/task.entity';
+import { User } from './tasks/entities/user.entity';
 @Module({
   imports: [
     TasksModule,
@@ -17,7 +18,7 @@ import { Task } from './tasks/entities/task.entity';
         username: configService.get('POSTGRES_USERNAME'),
         password: configService.get('POSTGRES_PASSWORD'),
         database: configService.get('POSTGRES_DB'),
-        entities: [Task],
+        entities: [Task, User],
         synchronize: true,
       }),
       inject: [ConfigService],

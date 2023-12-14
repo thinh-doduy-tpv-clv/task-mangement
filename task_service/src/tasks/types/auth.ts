@@ -5,64 +5,82 @@ import { Observable } from "rxjs";
 
 export const protobufPackage = "auth";
 
-export interface RefreshTokenRequestDto {
+export interface IAuthReponse {
+  data: IData | undefined;
+  error: IError | undefined;
+  isError: boolean;
+}
+
+export interface IError {
+  errorCode: number;
+  errorMsg: string;
+}
+
+export interface IData {
+  loginResponse?: ILoginResponseDto | undefined;
+  registerResponse?: IRegisterResponseDto | undefined;
+  user?: IUser | undefined;
+}
+
+export interface IRefreshTokenRequestDto {
   refreshToken: string;
 }
 
-export interface LoginRequestDto {
+export interface ILoginRequestDto {
   username: string;
   password: string;
 }
 
-export interface RegisterRequestDto {
+export interface IRegisterRequestDto {
   username: string;
   email: string;
   password: string;
 }
 
-export interface ForgotPasswordRequestDto {
+export interface IForgotPasswordRequestDto {
   email: string;
 }
 
-export interface RegisterResponseDto {
+export interface IRegisterResponseDto {
   username: string;
   email: string;
 }
 
-export interface LoginResponseDto {
+export interface ILoginResponseDto {
   accessToken: string;
   refreshToken: string;
 }
 
-export interface ErrorResponseDto {
+export interface IErrorResponseDto {
   errorMessage: string;
 }
 
-export interface UpdateUserDto {
+export interface IUpdateUserDto {
+  id: string;
   username: string;
   email: string;
   password: string;
   dueDate: string;
 }
 
-export interface FindOneUserDto {
+export interface IFindOneUserDto {
   id: string;
 }
 
-export interface CreateUserDto {
+export interface ICreateUserDto {
   username: string;
   email: string;
   password: string;
 }
 
-export interface Empty {
+export interface IEmpty {
 }
 
-export interface Users {
-  users: User[];
+export interface IUsers {
+  users: IUser[];
 }
 
-export interface User {
+export interface IUser {
   id: number;
   username: string;
   email: string;
@@ -83,49 +101,43 @@ wrappers[".google.protobuf.Timestamp"] = {
 } as any;
 
 export interface AuthServiceClient {
-  createUser(request: CreateUserDto): Observable<User>;
+  createUser(request: ICreateUserDto): Observable<IUser>;
 
-  findAllUser(request: Empty): Observable<Users>;
+  findAllUser(request: IEmpty): Observable<IUsers>;
 
-  findOneUser(request: FindOneUserDto): Observable<User>;
+  findOneUser(request: IFindOneUserDto): Observable<IAuthReponse>;
 
-  updateUser(request: UpdateUserDto): Observable<User>;
+  updateUser(request: IUpdateUserDto): Observable<IAuthReponse>;
 
-  removeUser(request: FindOneUserDto): Observable<User>;
+  removeUser(request: IFindOneUserDto): Observable<IUser>;
 
-  login(request: LoginRequestDto): Observable<LoginResponseDto>;
+  login(request: ILoginRequestDto): Observable<IAuthReponse>;
 
-  register(request: RegisterRequestDto): Observable<RegisterResponseDto>;
+  register(request: IRegisterRequestDto): Observable<IAuthReponse>;
 
-  forgotPassword(request: ForgotPasswordRequestDto): Observable<ErrorResponseDto>;
+  forgotPassword(request: IForgotPasswordRequestDto): Observable<IAuthReponse>;
 
-  refreshToken(request: RefreshTokenRequestDto): Observable<LoginResponseDto>;
+  refreshToken(request: IRefreshTokenRequestDto): Observable<IAuthReponse>;
 }
 
 export interface AuthServiceController {
-  createUser(request: CreateUserDto): Promise<User> | Observable<User> | User;
+  createUser(request: ICreateUserDto): Promise<IUser> | Observable<IUser> | IUser;
 
-  findAllUser(request: Empty): Promise<Users> | Observable<Users> | Users;
+  findAllUser(request: IEmpty): Promise<IUsers> | Observable<IUsers> | IUsers;
 
-  findOneUser(request: FindOneUserDto): Promise<User> | Observable<User> | User;
+  findOneUser(request: IFindOneUserDto): Promise<IAuthReponse> | Observable<IAuthReponse> | IAuthReponse;
 
-  updateUser(request: UpdateUserDto): Promise<User> | Observable<User> | User;
+  updateUser(request: IUpdateUserDto): Promise<IAuthReponse> | Observable<IAuthReponse> | IAuthReponse;
 
-  removeUser(request: FindOneUserDto): Promise<User> | Observable<User> | User;
+  removeUser(request: IFindOneUserDto): Promise<IUser> | Observable<IUser> | IUser;
 
-  login(request: LoginRequestDto): Promise<LoginResponseDto> | Observable<LoginResponseDto> | LoginResponseDto;
+  login(request: ILoginRequestDto): Promise<IAuthReponse> | Observable<IAuthReponse> | IAuthReponse;
 
-  register(
-    request: RegisterRequestDto,
-  ): Promise<RegisterResponseDto> | Observable<RegisterResponseDto> | RegisterResponseDto;
+  register(request: IRegisterRequestDto): Promise<IAuthReponse> | Observable<IAuthReponse> | IAuthReponse;
 
-  forgotPassword(
-    request: ForgotPasswordRequestDto,
-  ): Promise<ErrorResponseDto> | Observable<ErrorResponseDto> | ErrorResponseDto;
+  forgotPassword(request: IForgotPasswordRequestDto): Promise<IAuthReponse> | Observable<IAuthReponse> | IAuthReponse;
 
-  refreshToken(
-    request: RefreshTokenRequestDto,
-  ): Promise<LoginResponseDto> | Observable<LoginResponseDto> | LoginResponseDto;
+  refreshToken(request: IRefreshTokenRequestDto): Promise<IAuthReponse> | Observable<IAuthReponse> | IAuthReponse;
 }
 
 export function AuthServiceControllerMethods() {

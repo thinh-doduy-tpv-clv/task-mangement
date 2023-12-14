@@ -5,6 +5,8 @@ import SignInComponent from "./sign-in.component";
 import useSession from "src/app/use-session";
 import { useRouter } from "next/navigation";
 import { SignInMutation } from "../api";
+import { toast } from "react-toastify";
+import Spinner from "src/components/spinner";
 
 interface ComponentProps {}
 
@@ -14,8 +16,6 @@ const SignInContainer: React.FunctionComponent<Props> = (props) => {
   const { login } = useSession();
   const loginMutation = SignInMutation();
   const router = useRouter();
-
-  // useEffect(() => {})
 
   const onSigninSuccess = (username: string, token: string) => {
     console.log("token", token);
@@ -29,6 +29,7 @@ const SignInContainer: React.FunctionComponent<Props> = (props) => {
         },
       }
     ).then((e) => {
+      toast.success("Wellcome!");
       router.push("/");
     });
   };
@@ -44,7 +45,12 @@ const SignInContainer: React.FunctionComponent<Props> = (props) => {
     []
   );
 
-  return <SignInComponent onSignInClick={onSignInClick} />;
+  return (
+    <>
+      <SignInComponent onSignInClick={onSignInClick} />
+      <Spinner show={loginMutation.isLoading} />
+    </>
+  );
 };
 
 export default SignInContainer;

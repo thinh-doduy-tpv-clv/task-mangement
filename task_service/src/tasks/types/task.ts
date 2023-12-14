@@ -5,19 +5,19 @@ import { Observable } from "rxjs";
 
 export const protobufPackage = "task";
 
+export interface IGetTaskUserDto {
+  userId: number;
+}
+
 export interface IError {
   errorCode: number;
   errorMsg: string;
 }
 
-export interface IData {
-  tasks?: ITasks | undefined;
-  task?: ITask | undefined;
-}
-
 export interface ITaskReponse {
-  data: IData | undefined;
+  data: ITask[];
   error: IError | undefined;
+  message: string;
   isError: boolean;
 }
 
@@ -45,6 +45,7 @@ export interface ICreateTaskDto {
   description: string;
   dueDate: string;
   status: string;
+  userId: string;
 }
 
 export interface ITask {
@@ -53,6 +54,16 @@ export interface ITask {
   description: string;
   dueDate: Date | undefined;
   status: string;
+  createdAt: Date | undefined;
+  user: User | undefined;
+}
+
+export interface User {
+  id: number;
+  username: string;
+  email: string;
+  password: string;
+  refreshToken: string;
   createdAt: Date | undefined;
 }
 
@@ -70,7 +81,7 @@ wrappers[".google.protobuf.Timestamp"] = {
 export interface TasksServiceClient {
   createTask(request: ICreateTaskDto): Observable<ITaskReponse>;
 
-  findAllTask(request: IEmpty): Observable<ITaskReponse>;
+  findAllTask(request: IGetTaskUserDto): Observable<ITaskReponse>;
 
   findOneTask(request: IFindOneTaskDto): Observable<ITaskReponse>;
 
@@ -82,7 +93,7 @@ export interface TasksServiceClient {
 export interface TasksServiceController {
   createTask(request: ICreateTaskDto): Promise<ITaskReponse> | Observable<ITaskReponse> | ITaskReponse;
 
-  findAllTask(request: IEmpty): Promise<ITaskReponse> | Observable<ITaskReponse> | ITaskReponse;
+  findAllTask(request: IGetTaskUserDto): Promise<ITaskReponse> | Observable<ITaskReponse> | ITaskReponse;
 
   findOneTask(request: IFindOneTaskDto): Promise<ITaskReponse> | Observable<ITaskReponse> | ITaskReponse;
 

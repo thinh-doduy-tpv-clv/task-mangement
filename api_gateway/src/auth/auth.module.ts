@@ -13,6 +13,7 @@ import { AuthResolver } from './auth.resolver';
         name: AUTH_SERVICE,
         transport: Transport.GRPC,
         options: {
+          url: 'localhost:9001',
           package: AUTH_PACKAGE_NAME,
           protoPath: 'src/proto/auth.proto',
         },
