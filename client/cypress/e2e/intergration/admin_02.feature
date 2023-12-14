@@ -6,10 +6,10 @@ Feature: Admin feature
     Background: User sign in successfully
       #@PRECOND_TDRAF-140
       Given User use account with chauvu, abC#123 
-      And User is in "Task List"
 
     @TEST_TDRAF-138
     Scenario: Sign out successfully
+      Given User is in "Task List"
       When User click on the "Sign out" button
       Then User go to the "Login Page"
     

@@ -8,7 +8,7 @@
 // commands please read more here:
 // https://on.cypress.io/custom-commands
 // ***********************************************
-//
+//s
 //
 // -- This is a parent command --
 // Cypress.Commands.add('login', (email, password) => { ... })
@@ -35,9 +35,3 @@
 //     }
 //   }
 // }
-Cypress.Commands.add("loginViaUser", (user) => {
-  cy.visit("/auth/login");
-  cy.get("[data-cy=email]").type(user.email);
-  cy.get("[data-cy=password]").type(user.password);
-  cy.get("[data-cy=login-btn]").click();
-});
