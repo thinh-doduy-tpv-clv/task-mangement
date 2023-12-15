@@ -1,13 +1,14 @@
+import { BadRequestException, UseGuards, ValidationPipe } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { lastValueFrom } from 'rxjs';
+import { JwtAuthGuard } from 'src/auth/utils/jwt.guard';
 import { ITaskReponse } from 'src/types/task';
 import { CreateTaskDto } from './inputs/createTaskDto';
 import { GetTasksListDto } from './inputs/getTaskListDto';
 import { UpdateTaskDto } from './inputs/updateTaskDto';
 import { TaskModel } from './models/tasks.model';
 import { TasksService } from './tasks.service';
-import { UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/utils/jwt.guard';
+import { validate } from 'class-validator';
 
 @Resolver(() => TaskModel)
 export class TaskResolver {
@@ -21,8 +22,14 @@ export class TaskResolver {
   @UseGuards(JwtAuthGuard)
   @Query(() => [TaskModel])
   async getTaskList(
-    @Args('input') input: GetTasksListDto,
+    @Args('input', new ValidationPipe({ transform: true, whitelist: true }))
+    input: GetTasksListDto,
   ): Promise<TaskModel[]> {
+    const errors = validate(input);
+    if ((await errors).length > 0) {
+      console.log('error: ', errors);
+      throw new BadRequestException(errors[0].message);
+    }
     const rawTasks: ITaskReponse = await lastValueFrom(
       this.taskService.findAllTask({ userId: input.userId }),
     );

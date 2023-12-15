@@ -1,13 +1,17 @@
 import { Module } from '@nestjs/common';
-import { TasksController } from './tasks.controller';
-import { TasksService } from './tasks.service';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import { AUTH_SERVICE, TASK_SERVICE } from '../constants/packages';
-import { TaskResolver } from './tasks.resolver';
-import { TASK_PACKAGE_NAME } from 'src/types/task';
 import { ConfigModule } from '@nestjs/config';
+import { APP_FILTER } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
-import { AUTH_PACKAGE_NAME } from 'src/types/auth';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { TASK_PACKAGE_NAME } from 'src/types/task';
+import { TASK_SERVICE } from '../constants/packages';
+import { TasksController } from './tasks.controller';
+import { TaskResolver } from './tasks.resolver';
+import { TasksService } from './tasks.service';
+import {
+  AuthExceptionFilter,
+  ValidationExceptionFilter,
+} from 'src/utils/exceptions/custom-filter.exception';
 
 @Module({
   imports: [
@@ -25,6 +29,18 @@ import { AUTH_PACKAGE_NAME } from 'src/types/auth';
     ]),
   ],
   controllers: [TasksController],
-  providers: [TasksService, TaskResolver, JwtService],
+  providers: [
+    TasksService,
+    TaskResolver,
+    JwtService,
+    {
+      provide: APP_FILTER,
+      useClass: ValidationExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: AuthExceptionFilter,
+    },
+  ],
 })
 export class TasksModule {}

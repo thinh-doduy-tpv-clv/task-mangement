@@ -1,14 +1,14 @@
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
-import { GraphQLError, GraphQLFormattedError } from 'graphql';
+import { JwtModule, JwtService } from '@nestjs/jwt';
+import { GraphQLError } from 'graphql';
 import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { TasksModule } from './tasks/tasks.module';
-import { JwtModule, JwtService } from '@nestjs/jwt';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -18,21 +18,19 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       autoSchemaFile: join(process.cwd(), 'src/graphql/schema.gql'),
       sortSchema: true,
       formatError: (error: GraphQLError) => {
-        if (error?.extensions?.code === 'GRAPHQL_VALIDATION_FAILED') {
-          if (error.message.startsWith('Expected value of type "Int!"')) {
-            const graphQLFormattedError: GraphQLFormattedError = {
-              message: 'Please provide input of user Id',
-              extensions: {
-                code: error?.extensions.code,
-              },
-            };
-            return graphQLFormattedError;
-          }
+        const originalError: any = error?.extensions?.originalError;
+        if (originalError) {
+          return {
+            message: originalError.message || '',
+            statusCode: originalError.statusCode,
+            errorCode: originalError.error,
+          };
         }
         return {
-          message: error?.message,
-          extensions: { code: error?.extensions.code },
-        } as GraphQLFormattedError;
+          message: error.message,
+          statusCode: 'ERROR_CODE',
+          errorCode: error?.extensions.code,
+        };
       },
     }),
     JwtModule.registerAsync({
