@@ -73,7 +73,7 @@ export class AuthService {
   }
   async findOneUser(id: string): Promise<IAuthReponse> {
     const userId = this.authValidator.tryParseInt(id);
-    if (!userId)
+    if (userId === null)
       return this.authResponse.generateAuthResponse(
         null,
         { errorCode: 400, errorMsg: 'User not found.' },
@@ -94,7 +94,7 @@ export class AuthService {
     } catch (error) {
       return this.authResponse.generateAuthResponse(
         null,
-        { errorCode: 400, errorMsg: 'User not found.' },
+        { errorCode: 400, errorMsg: 'User not found.5' },
         true,
       );
     }
@@ -147,6 +147,7 @@ export class AuthService {
         password: registeredUser.password,
         refreshToken: registeredUser.refreshToken,
         username: registeredUser.username,
+        link: '',
       },
     } as IData;
     return this.authResponse.generateAuthResponse(
