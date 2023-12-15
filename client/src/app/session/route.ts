@@ -12,14 +12,20 @@ import {
 export async function POST(request: NextRequest) {
   const session = await getIronSession<SessionData>(cookies(), sessionOptions);
 
-  const { username = "No username", token = "" } = (await request.json()) as {
+  const {
+    username = "No username",
+    token = "",
+    id = "",
+  } = (await request.json()) as {
     username: string;
     token: string;
+    id: string;
   };
 
   session.isLoggedIn = true;
   session.username = username;
   session.token = token;
+  session.id = id;
   await session.save();
 
   // simulate looking up the user in db

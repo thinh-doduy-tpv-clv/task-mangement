@@ -34,11 +34,11 @@ const Popup: React.FunctionComponent<Props> = (props) => {
 
   const onClickOutside = (e: any) => {
     if (e.target?.id && e.target?.id === "popup-container") {
-      return;
+      props.onClose();
     }
     // close popup
 
-    props.onClose();
+    return;
   };
 
   if (!props.isVisible) {
@@ -47,18 +47,15 @@ const Popup: React.FunctionComponent<Props> = (props) => {
 
   return (
     <div
+      id={"popup-container"}
       className={
         "absolute w-screen h-screen bg-slate-400 top-0 left-0 bg-opacity-40 flex justify-center items-center z-10"
       }
       onClick={onClickOutside}
     >
       {/* box  */}
-      <div
-        id={"popup-container"}
-        className={"w-1/2 h-2/3 bg-white rounded-lg p-4 z-20"}
-      >
-        <div className={"opacity-100"}>This is header</div>
-        <div>{props.children}</div>
+      <div className={"w-1/2 h-2/3 bg-white rounded-lg p-4 z-20"}>
+        {props.children}
       </div>
     </div>
   );

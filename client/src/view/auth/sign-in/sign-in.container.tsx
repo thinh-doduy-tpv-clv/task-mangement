@@ -17,15 +17,15 @@ const SignInContainer: React.FunctionComponent<Props> = (props) => {
   const loginMutation = SignInMutation();
   const router = useRouter();
 
-  const onSigninSuccess = (username: string, token: string) => {
-    console.log("token", token);
+  const onSigninSuccess = (username: string, token: string, id: string) => {
     login(
-      { username, token },
+      { username, token, id },
       {
         optimisticData: {
           isLoggedIn: true,
           username,
           token,
+          id,
         },
       }
     ).then((e) => {
