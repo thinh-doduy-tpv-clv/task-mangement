@@ -1,11 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { TaskHandleMode } from "src/core/lib/constants";
 
 interface ComponentProps {
   isVisible: boolean;
   onClose: () => void;
   children: React.ReactNode;
+  mode?: TaskHandleMode,
 }
 
 type Props = ComponentProps;

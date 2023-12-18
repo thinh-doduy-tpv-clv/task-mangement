@@ -1,13 +1,15 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import TaskManagementComponent from "./task-management.component";
-import { TaskMutation, useGetTasks } from "./useRequest";
-import PopupComponent from "src/components/popup.component";
-import CreateNewTask from "./components/create-task.component";
-import { TaskItemVM } from "src/core/view-models/task/task-vm";
 import { toast } from "react-toastify";
+import PopupComponent from "src/components/popup.component";
 import Spinner from "src/components/spinner";
+import { TaskHandleMode } from "src/core/lib/constants";
+import { TaskItemVM } from "src/core/view-models/task/task-vm";
+import TaskFormComponent from "./components/create-task.component";
+import TaskManagementComponent from "./task-management.component";
+import { useGetTasks } from "./useRequest";
+import { addTaskMutation, updateTaskMutation } from "./useRequest";
 
 interface ComponentProps {
   token: string;
@@ -26,12 +28,14 @@ type DropType = {
 };
 
 const TaskManagementContainer: React.FunctionComponent<Props> = (props) => {
-  const [showModal, setShowModal] = useState<TaskItemVM | undefined>(undefined);
-  const { data, error, isLoading, isSuccess } = useGetTasks(
+  const [showModal, setShowModal] = useState<TaskItemVM>();
+  const [mode, setMode] = useState<TaskHandleMode>();
+  const { data, error, isLoading, isSuccess, refetch } = useGetTasks(
     props.token,
     +props.userId
   );
-  const mutation = TaskMutation(props.token);
+  const addTaskMutate = addTaskMutation();
+  const updateTaskMutate = updateTaskMutation();
   const [tasks, setTask] = useState<TaskObjectType>({});
 
   useEffect(() => {
@@ -39,7 +43,7 @@ const TaskManagementContainer: React.FunctionComponent<Props> = (props) => {
       const dataTemp = convertData(data);
       setTask(dataTemp);
     }
-  }, [isLoading, data]);
+  }, [isLoading, data, isSuccess]);
 
   const convertData = (taskData: TaskItemVM[]) => {
     const groupedTasks = taskData.reduce((acc: TaskObjectType, task) => {
@@ -89,6 +93,10 @@ const TaskManagementContainer: React.FunctionComponent<Props> = (props) => {
           }
         ),
       }));
+      const sourceTask = tasks[source.droppableId][source.index];
+      if (sourceTask) {
+        onUpdateTask({ ...sourceTask, status: destination.droppableId });
+      }
     }
   };
 
@@ -111,19 +119,40 @@ const TaskManagementContainer: React.FunctionComponent<Props> = (props) => {
     return newArr;
   }
 
-  const onAddNewTask = (newTask: TaskItemVM) => {
-    mutation.mutate({
+  const onAddNewTask = async (newTask: TaskItemVM) => {
+    console.log("onAddNewTask", newTask);
+    addTaskMutate.mutate({
+      sessionToken: props.token,
       userId: +props.userId,
       newTask,
       onSuccess: onAddTaskSuccess,
     });
   };
 
-  const onAddTaskSuccess = (isSuccess: boolean) => {
+  const onUpdateTask = async (task: TaskItemVM) => {
+    console.log("updating task info: ", task);
+    updateTaskMutate.mutate({
+      sessionToken: props.token,
+      userId: +props.userId,
+      task,
+      onSuccess: onUpdateTaskSuccess,
+    });
+  };
+
+  const onUpdateTaskSuccess = (isSuccess: boolean) => {
     //
     if (isSuccess) {
       setShowModal(undefined);
+      toast.success("Update task successfully");
+    }
+  };
+
+  const onAddTaskSuccess = (isSuccess: boolean, data?: any) => {
+    console.log('onAddTaskSuccess: ', isSuccess);
+    if (isSuccess) {
+      setShowModal(undefined);
       toast.success("New task has been created!");
+      refetch();
     }
   };
 
@@ -144,16 +173,25 @@ const TaskManagementContainer: React.FunctionComponent<Props> = (props) => {
         }}
         tasks={tasks}
         swapped={swapped}
+        setMode={setMode}
       />
       <PopupComponent
         isVisible={!!showModal}
         onClose={() => setShowModal(undefined)}
       >
-        <CreateNewTask
-          currentTask={showModal?.id ? showModal : undefined}
-          onSubmit={onAddNewTask}
-          onCancel={() => setShowModal(undefined)}
-        />
+        {mode === TaskHandleMode.ADD ? (
+          <TaskFormComponent
+            currentTask={showModal?.id ? showModal : undefined}
+            onSubmit={onAddNewTask}
+            onCancel={() => setShowModal(undefined)}
+          />
+        ) : (
+          <TaskFormComponent
+            currentTask={showModal?.id ? showModal : undefined}
+            onSubmit={onUpdateTask}
+            onCancel={() => setShowModal(undefined)}
+          />
+        )}
       </PopupComponent>
     </>
   );

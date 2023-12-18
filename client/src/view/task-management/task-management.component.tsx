@@ -1,35 +1,31 @@
 "use client";
-import React, { useEffect, useState } from "react";
 import {
   DragDropContext,
-  Droppable,
   Draggable,
-  DraggingStyle,
-  NotDraggingStyle,
+  Droppable
 } from "@hello-pangea/dnd";
-import {
-  MoveItem,
-  getItemStyle,
-  getListStyle,
-  getStatusColor,
-  reorder,
-  taskStatusData,
-} from "./lib";
-import { TaskStatusEnum } from "src/core/lib/constants";
-import useSession from "src/app/use-session";
-import { defaultSession } from "src/app/task-management/lib";
-import { useRouter } from "next/navigation";
-import { TaskItemVM } from "src/core/view-models/task/task-vm";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import React from "react";
+import { defaultSession } from "src/app/task-management/lib";
+import useSession from "src/app/use-session";
 import EditIcon from "src/asset/edit.png";
 import RemoveIcon from "src/asset/remove.png";
+import { TaskHandleMode } from "src/core/lib/constants";
 import { routerPaths } from "src/core/lib/router";
+import { TaskItemVM } from "src/core/view-models/task/task-vm";
+import {
+  getItemStyle,
+  getListStyle,
+  taskStatusData
+} from "./lib";
 import { TaskObjectType } from "./task-management.container";
 
 interface ComponentProps {
   setShowModal: (task?: TaskItemVM) => void;
   tasks: TaskObjectType;
   swapped: (result: { source: any; destination: any }) => void;
+  setMode: any; // TODO: need adding type for function setState
 }
 
 const TaskManagementComponent: React.FunctionComponent<ComponentProps> = (
@@ -43,6 +39,7 @@ const TaskManagementComponent: React.FunctionComponent<ComponentProps> = (
       <div className={"w-full flex justify-between px-8 py-4"}>
         <button
           type="button"
+          className={"px-8 py-4 justify-between items-center bg-gray-400 rounded-xl text-white font-semibold"}
           onClick={(event) => {
             event.preventDefault();
             logout(null, {
@@ -56,7 +53,10 @@ const TaskManagementComponent: React.FunctionComponent<ComponentProps> = (
         </button>
         <button
           type="button"
-          onClick={() => props.setShowModal()}
+          onClick={() => {
+            props.setShowModal();
+            props.setMode(TaskHandleMode.ADD);
+          }}
           className={
             "px-8 py-4 flex justify-center items-center bg-blue-600 rounded-xl text-white font-semibold"
           }
@@ -66,6 +66,12 @@ const TaskManagementComponent: React.FunctionComponent<ComponentProps> = (
       </div>
     );
   };
+
+  function onClickTaskHandler(item: TaskItemVM, mode: TaskHandleMode) {
+    console.log(`onlick mode ${mode} - item: ${item}`)
+    props.setShowModal(item)
+    props.setMode(mode);
+  }
 
   return (
     <div
@@ -125,13 +131,16 @@ const TaskManagementComponent: React.FunctionComponent<ComponentProps> = (
                                     height={24}
                                     src={EditIcon}
                                     alt="Edit Task"
-                                    onClick={() => props.setShowModal(item)}
+                                    // TODO: Edit task information
+                                    onClick={() => onClickTaskHandler(item, TaskHandleMode.EDIT)}
                                   />
                                   <Image
                                     width={24}
                                     height={24}
                                     src={RemoveIcon}
                                     alt="Remove Task"
+                                    // TODO: Remove task information
+                                    onClick={() => onClickTaskHandler(item, TaskHandleMode.DELETE)}
                                   />
                                 </div>
                               </div>
