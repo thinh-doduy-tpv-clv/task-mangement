@@ -5,7 +5,11 @@ import { TaskItemVM } from "src/core/view-models/task/task-vm";
 
 const API_URL = `http://localhost:8000/graphql`;
 
-export const useGetTasks = (sessionToken: string, userId: number) => {
+export const useGetTasks = (
+  sessionToken: string,
+  userId: number,
+  logout: () => void
+) => {
   return useQuery("graphql", async () => {
     const graphQLClient = new GraphQLClient(API_URL, {
       headers: {
@@ -29,7 +33,7 @@ export const useGetTasks = (sessionToken: string, userId: number) => {
         { userId }
       )
       .catch((err) => {
-        catchHandle(err);
+        catchHandle(err, logout);
       });
     return (data?.getTaskList as TaskItemVM[]) || [];
   });
@@ -85,7 +89,7 @@ export const addTaskMutation = () => {
           { description, dueDate, status, title, userId }
         )
         .then((res: any) => {
-          console.log('added success')
+          console.log("added success");
           onSuccess(true, null);
         })
         .catch((err) => {
@@ -105,7 +109,7 @@ export const updateTaskMutation = () => {
       task,
       onSuccess,
     }: {
-      sessionToken: string,
+      sessionToken: string;
       userId: number;
       task: TaskItemVM;
       onSuccess: (isSuccess: boolean) => void;

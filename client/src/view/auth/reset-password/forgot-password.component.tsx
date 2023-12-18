@@ -1,4 +1,7 @@
+"use client";
+
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 
 interface ComponentProps {
   user?: any;
@@ -7,6 +10,14 @@ interface ComponentProps {
 type Props = ComponentProps;
 
 const ForgotPasswordComponent: React.FunctionComponent<Props> = () => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({ mode: "all" });
+  const newPassword = watch("password", "");
+
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
@@ -25,7 +36,13 @@ const ForgotPasswordComponent: React.FunctionComponent<Props> = () => {
           <h2 className="mb-1 text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
             Change Password
           </h2>
-          <form className="mt-4 space-y-4 lg:mt-5 md:space-y-5" action="#">
+          <form
+            className="mt-4 space-y-4 lg:mt-5 md:space-y-5"
+            action="#"
+            onSubmit={handleSubmit((data) => {
+              // props.onSignInClick(data.username, data.password);
+            })}
+          >
             <div>
               <label
                 htmlFor="email"
@@ -35,11 +52,32 @@ const ForgotPasswordComponent: React.FunctionComponent<Props> = () => {
               </label>
               <input
                 type="email"
-                name="email"
                 id="email"
                 className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="name@company.com"
+                {...register("email", { required: true })}
               />
+              {errors.email && (
+                <p className={"error-field"}>Last name is required.</p>
+              )}
+            </div>
+            <div>
+              <label
+                htmlFor="username"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Your email
+              </label>
+              <input
+                type="username"
+                id="username"
+                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="name@company.com"
+                {...register("username", { required: true })}
+              />
+              {errors.username && (
+                <p className={"error-field"}>Last name is required.</p>
+              )}
             </div>
             <div>
               <label
@@ -49,12 +87,25 @@ const ForgotPasswordComponent: React.FunctionComponent<Props> = () => {
                 New Password
               </label>
               <input
-                type="password"
-                name="password"
-                id="password"
+                type="newpassword"
+                id="newpassword"
                 placeholder="••••••••"
                 className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                {...register("newpassword", {
+                  required: true,
+                  pattern: {
+                    // value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*[W_]).{9,}$/,
+                    value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*[\W_]).{9,}$/,
+                    message: "Entered value does not match email format",
+                  },
+                })}
               />
+              {errors.newpassword && (
+                <p className={"error-field"}>
+                  {(errors?.newpassword?.message as string) ||
+                    "Password is required."}
+                </p>
+              )}
             </div>
             <div>
               <label
@@ -65,11 +116,25 @@ const ForgotPasswordComponent: React.FunctionComponent<Props> = () => {
               </label>
               <input
                 type="confirm-password"
-                name="confirm-password"
                 id="confirm-password"
                 placeholder="••••••••"
                 className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                {...register("confirmPassword", {
+                  required: true,
+                  validate: (value) =>
+                    value === newPassword || "Passwords do not match",
+                  pattern: {
+                    value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*[\W_]).{9,}$/,
+                    message: "Entered value does not match email format",
+                  },
+                })}
               />
+              {errors.confirmPassword && (
+                <p className={"error-field"}>
+                  {(errors?.confirmPassword?.message as string) ||
+                    "Password is required."}
+                </p>
+              )}
             </div>
             <div className="flex items-start">
               <div className="flex items-center h-5">
