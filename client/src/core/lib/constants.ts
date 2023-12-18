@@ -9,3 +9,9 @@ export enum TaskStatusEnum {
   Compeleted = "DONE",
   Archived = "ARCHIVED",
 }
+
+export enum TaskHandleMode {
+  EDIT = "EDIT",
+  ADD = "ADD",
+  DELETE = "DELETE"
+}
