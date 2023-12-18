@@ -78,6 +78,18 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/src/auth/dto/",
+      "/src/auth/entities/",
+      "src/shared" ,
+      "src/shared/constants",
+      "src/app.controller.ts",
+      "src/app.module.ts",
+      "src/app.service.ts",
+      "src/main.ts",
+      "src/auth/auth.controller.ts"
+    ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   }

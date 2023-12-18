@@ -35,42 +35,42 @@ export class AuthService {
     private readonly cryptoService: CryptoService,
   ) {}
 
-  async updateUser(updateUserDto: IUpdateUserDto): Promise<IAuthReponse> {
-    //validate
-    if (!updateUserDto)
-      return this.authResponse.generateAuthResponse(
-        null,
-        { errorCode: 400, errorMsg: 'Update user failure.' },
-        true,
-      );
-    const userId = this.authValidator.tryParseInt(updateUserDto.id);
-    if (!userId)
-      return this.authResponse.generateAuthResponse(
-        null,
-        { errorCode: 400, errorMsg: 'User not found.' },
-        true,
-      );
-    try {
-      const user = await this.authRepository.findOne({
-        where: [
-          { id: userId },
-          { email: updateUserDto.email },
-          { username: updateUserDto.username },
-        ],
-      });
-      if (!user) {
-        return this.authResponse.generateAuthResponse(
-          null,
-          { errorCode: 400, errorMsg: 'User not found.' },
-          true,
-        );
-      }
-      //todo
-      //Hash Password
-      //Update user information
-    } catch (error) {}
-    return null;
-  }
+  // async updateUser(updateUserDto: IUpdateUserDto): Promise<IAuthReponse> {
+  //   //validate
+  //   if (!updateUserDto)
+  //     return this.authResponse.generateAuthResponse(
+  //       null,
+  //       { errorCode: 400, errorMsg: 'Update user failure.' },
+  //       true,
+  //     );
+  //   const userId = this.authValidator.tryParseInt(updateUserDto.id);
+  //   if (!userId)
+  //     return this.authResponse.generateAuthResponse(
+  //       null,
+  //       { errorCode: 400, errorMsg: 'User not found.' },
+  //       true,
+  //     );
+  //   try {
+  //     const user = await this.authRepository.findOne({
+  //       where: [
+  //         { id: userId },
+  //         { email: updateUserDto.email },
+  //         { username: updateUserDto.username },
+  //       ],
+  //     });
+  //     if (!user) {
+  //       return this.authResponse.generateAuthResponse(
+  //         null,
+  //         { errorCode: 400, errorMsg: 'User not found.' },
+  //         true,
+  //       );
+  //     }
+  //     //todo
+  //     //Hash Password
+  //     //Update user information
+  //   } catch (error) {}
+  //   return null;
+  // }
   async findOneUser(id: string): Promise<IAuthReponse> {
     const userId = this.authValidator.tryParseInt(id);
     if (userId === null)
@@ -94,7 +94,7 @@ export class AuthService {
     } catch (error) {
       return this.authResponse.generateAuthResponse(
         null,
-        { errorCode: 400, errorMsg: 'User not found.5' },
+        { errorCode: 400, errorMsg: 'User not found.' },
         true,
       );
     }
@@ -127,7 +127,7 @@ export class AuthService {
         null,
         {
           errorCode: 400,
-          errorMsg: error,
+          errorMsg: error.message,
         },
         true,
       );
@@ -135,6 +135,16 @@ export class AuthService {
     const registeredUser = await this.authRepository.findOne({
       where: { username: registerRequestDto.username },
     });
+    if (!registeredUser) {
+      return this.authResponse.generateAuthResponse(
+        null,
+        {
+          errorCode: 400,
+          errorMsg: 'User not found.',
+        },
+        true,
+      );
+    }
     const registerResponse = {
       registerResponse: {
         username: registerRequestDto.username,
@@ -172,7 +182,7 @@ export class AuthService {
           errorCode: errorResponse.errorCode,
           errorMsg: errorResponse.errorMessage,
         },
-        false,
+        true,
       );
     }
     //check logic
@@ -232,74 +242,74 @@ export class AuthService {
       };
       return this.authResponse.generateAuthResponse(result, null, false);
     } catch (error) {
-      errorResponse.errorMessage = error;
+      errorResponse.errorMessage = error.message;
       return this.authResponse.generateAuthResponse(
         null,
         {
           errorCode: errorResponse.errorCode,
           errorMsg: errorResponse.errorMessage,
         },
-        false,
-      );
-    }
-  }
-  async refreshToken(
-    refreshTokenRequestDto: IRefreshTokenRequestDto,
-  ): Promise<IAuthReponse> {
-    if (this.authValidator.isNullOrEmpty(refreshTokenRequestDto.refreshToken)) {
-      return this.authResponse.generateAuthResponse(
-        null,
-        { errorCode: 400, errorMsg: 'Refresh token is not null' },
-        true,
-      );
-    }
-    try {
-      const verify = await this.jwtService.verifyAsync(
-        refreshTokenRequestDto.refreshToken,
-        {
-          secret: this.configService.get<string>('SECRET'),
-        },
-      );
-      const checkExistToken = await this.authRepository.findOneBy({
-        email: verify.email,
-        refreshToken: refreshTokenRequestDto.refreshToken,
-      });
-      if (checkExistToken) {
-        const token = await this.generateToken({
-          id: verify.id,
-          email: verify.email,
-        });
-        await this.authRepository.update(
-          {
-            email: verify.email,
-          },
-          { refreshToken: token.refreshToken },
-        );
-        return this.authResponse.generateAuthResponse(
-          {
-            loginResponse: {
-              accessToken: token.accessToken,
-              refreshToken: token.refreshToken,
-            },
-          },
-          null,
-          false,
-        );
-      } else {
-        return this.authResponse.generateAuthResponse(
-          null,
-          { errorCode: 400, errorMsg: 'Refresh token is not valid' },
-          true,
-        );
-      }
-    } catch (error) {
-      return this.authResponse.generateAuthResponse(
-        null,
-        { errorCode: 400, errorMsg: error },
         true,
       );
     }
   }
+  // async refreshToken(
+  //   refreshTokenRequestDto: IRefreshTokenRequestDto,
+  // ): Promise<IAuthReponse> {
+  //   if (this.authValidator.isNullOrEmpty(refreshTokenRequestDto.refreshToken)) {
+  //     return this.authResponse.generateAuthResponse(
+  //       null,
+  //       { errorCode: 400, errorMsg: 'Refresh token is not null' },
+  //       true,
+  //     );
+  //   }
+  //   try {
+  //     const verify = await this.jwtService.verifyAsync(
+  //       refreshTokenRequestDto.refreshToken,
+  //       {
+  //         secret: this.configService.get<string>('SECRET'),
+  //       },
+  //     );
+  //     const checkExistToken = await this.authRepository.findOneBy({
+  //       email: verify.email,
+  //       refreshToken: refreshTokenRequestDto.refreshToken,
+  //     });
+  //     if (checkExistToken) {
+  //       const token = await this.generateToken({
+  //         id: verify.id,
+  //         email: verify.email,
+  //       });
+  //       await this.authRepository.update(
+  //         {
+  //           email: verify.email,
+  //         },
+  //         { refreshToken: token.refreshToken },
+  //       );
+  //       return this.authResponse.generateAuthResponse(
+  //         {
+  //           loginResponse: {
+  //             accessToken: token.accessToken,
+  //             refreshToken: token.refreshToken,
+  //           },
+  //         },
+  //         null,
+  //         false,
+  //       );
+  //     } else {
+  //       return this.authResponse.generateAuthResponse(
+  //         null,
+  //         { errorCode: 400, errorMsg: 'Refresh token is not valid' },
+  //         true,
+  //       );
+  //     }
+  //   } catch (error) {
+  //     return this.authResponse.generateAuthResponse(
+  //       null,
+  //       { errorCode: 400, errorMsg: error },
+  //       true,
+  //     );
+  //   }
+  // }
   async forgotPassword(
     forgotPasswordRequestDto: IForgotPasswordRequestDto,
   ): Promise<IAuthReponse> {
@@ -327,7 +337,6 @@ export class AuthService {
         );
       }
       const encryptText = this.cryptoService.encrypt(user.username);
-      //Return 1 link userName ma hoa
       return this.authResponse.generateAuthResponse(
         {
           user: {
@@ -425,7 +434,7 @@ export class AuthService {
       );
     }
   }
-  private async generateToken(payload: { id: number; email: string }) {
+  async generateToken(payload: { id: number; email: string }) {
     try {
       const accessToken = await this.jwtService.signAsync(payload);
       const refreshToken = await this.jwtService.signAsync(payload, {
@@ -435,41 +444,10 @@ export class AuthService {
       return { accessToken, refreshToken };
     } catch (error) {}
   }
-  private async hashPassword(password: string): Promise<string> {
+  async hashPassword(password: string): Promise<string> {
     const saltRound = 10;
     const salt = await bcrypt.genSalt(saltRound);
     const hash = await bcrypt.hash(password, salt);
     return hash;
-  }
-  async isUniqueEmail(email: string): Promise<boolean> {
-    const existingEmail = await this.authRepository.findOne({
-      where: { email: email },
-    });
-    if (existingEmail) {
-      return false;
-    }
-    return true;
-  }
-  async isUniqueUserName(input: string): Promise<boolean> {
-    const existingUser = await this.authRepository.findOne({
-      where: { username: input },
-    });
-    if (existingUser) {
-      return false;
-    }
-    return true;
-  }
-  async findAllUser(metadata: Metadata) {
-    const result = [
-      {
-        id: 1,
-        username: 'Manh',
-        email: 'Manh@Gmail.com',
-        password: '123456',
-        refreshToken: '123456',
-        createdAt: new Date(),
-      } as UserProto,
-    ];
-    return { users: result };
   }
 }

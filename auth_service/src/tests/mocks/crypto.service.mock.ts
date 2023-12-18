@@ -9,6 +9,7 @@ export class CryptoServiceMock {
     .digest()
     .slice(0, 16);
   private readonly iv = crypto.randomBytes(16);
+
   encrypt(text: string): string {
     // Mock the encrypt method
     return 'mocked-encrypted-text';

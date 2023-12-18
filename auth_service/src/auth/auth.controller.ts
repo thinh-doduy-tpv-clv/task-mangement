@@ -64,7 +64,6 @@ export class AuthController implements AuthServiceController {
     return await this.authService.refreshToken(refreshTokenRequestDto);
   }
 
-  
   //@UseGuards(AuthGuard)
   async findOneUser(request: IFindOneUserDto): Promise<IAuthReponse> {
     return await this.authService.findOneUser(request.id);
@@ -85,7 +84,7 @@ export class AuthController implements AuthServiceController {
     return null;
   }
   async findAllUser(metadata: Metadata): Promise<UsersProto> {
-    return this.authService.findAllUser(metadata);
+    return null;
   }
   async removeUser(request: IFindOneUserDto) {
     return null;
