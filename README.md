@@ -27,6 +27,11 @@ Task Management! This application provides a comprehensive solution for managing
 - Applies gRPC
 - All projects should write unit tests, E2E test
 
+## Guides
+### API Documentation for Graphql
+- npm i -g @magidoc/cli@latest && magidoc generate
+- magidoc preview
+
 ## Contributor / Members
 ```
 Name          | Role

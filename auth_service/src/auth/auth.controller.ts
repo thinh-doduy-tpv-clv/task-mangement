@@ -61,12 +61,15 @@ export class AuthController implements AuthServiceController {
   async refreshToken(
     refreshTokenRequestDto: IRefreshTokenRequestDto,
   ): Promise<IAuthReponse> {
-    return await this.authService.refreshToken(refreshTokenRequestDto);
+    // return await this.authService.refreshToken(refreshTokenRequestDto);
+    throw new Error('Method not implemented');
   }
+
   //@UseGuards(AuthGuard)
   async findOneUser(request: IFindOneUserDto): Promise<IAuthReponse> {
     return await this.authService.findOneUser(request.id);
   }
+
   @UseGuards(AuthGuard)
   async updateUser(request: IUpdateUserDto) {
     //todo
@@ -82,7 +85,7 @@ export class AuthController implements AuthServiceController {
     return null;
   }
   async findAllUser(metadata: Metadata): Promise<UsersProto> {
-    return this.authService.findAllUser(metadata);
+    return null;
   }
   async removeUser(request: IFindOneUserDto) {
     return null;

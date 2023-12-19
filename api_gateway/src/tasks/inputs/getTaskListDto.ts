@@ -1,10 +1,11 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
-import { IsInt, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsNumberString, Min } from 'class-validator';
 
 @InputType()
 export class GetTasksListDto {
   @Field(() => Int)
-  @IsInt({ message: 'Value must be integer' })
-  @IsNotEmpty({ message: 'userId must not empty' })
+  @IsNumber()
+  @IsNotEmpty({ message: 'userId is required' })
+  @Min(1, { message: 'userId should be positive number' })
   userId: number;
 }

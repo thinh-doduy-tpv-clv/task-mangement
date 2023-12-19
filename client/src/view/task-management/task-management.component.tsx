@@ -1,77 +1,51 @@
 "use client";
-import React, { useState } from "react";
 import {
   DragDropContext,
-  Droppable,
   Draggable,
-  DraggingStyle,
-  NotDraggingStyle,
+  Droppable
 } from "@hello-pangea/dnd";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import React from "react";
+import { defaultSession } from "src/app/task-management/lib";
+import useSession from "src/app/use-session";
+import EditIcon from "src/asset/edit.png";
+import RemoveIcon from "src/asset/remove.png";
+import { TaskHandleMode } from "src/core/lib/constants";
+import { routerPaths } from "src/core/lib/router";
+import { TaskItemVM } from "src/core/view-models/task/task-vm";
 import {
-  MoveItem,
   getItemStyle,
   getListStyle,
-  getStatusColor,
-  reorder,
-  taskStatusData,
+  taskStatusData
 } from "./lib";
-import { TaskStatusEnum } from "src/core/lib/constants";
-import useSession from "src/app/use-session";
-import { defaultSession } from "src/app/task-management/lib";
-import { useRouter } from "next/navigation";
+import { TaskObjectType } from "./task-management.container";
 
-// fake data generator
-const getItems = (count: any, offset = 0) =>
-  Array.from({ length: count }, (v, k) => k).map((k) => ({
-    id: `item-${k + offset}-${new Date().getTime()}`,
-    content: `item ${k + offset}`,
-  }));
-/**
- * Moves an item from one list to another list.
- */
+interface ComponentProps {
+  setShowModal: (task?: TaskItemVM) => void;
+  tasks: TaskObjectType;
+  swapped: (result: { source: any; destination: any }) => void;
+  setMode: any; // TODO: need adding type for function setState
+}
 
-const TaskManagementComponent = () => {
+const TaskManagementComponent: React.FunctionComponent<ComponentProps> = (
+  props
+) => {
   const router = useRouter();
-  const [state, setState] = useState<any>({});
   const { logout } = useSession();
-  // console.log("state", state);
-
-  function onDragEnd(result: { source: any; destination: any }) {
-    const { source, destination } = result;
-
-    // dropped outside the list
-    if (!destination) {
-      return;
-    }
-    const sInd = +source.droppableId;
-    const dInd = +destination.droppableId;
-
-    if (sInd === dInd) {
-      const items = reorder(state[sInd], source.index, destination.index);
-      const newState: any = [...state];
-      newState[sInd] = items;
-      setState(newState);
-    } else {
-      const result = MoveItem(state[sInd], state[dInd], source, destination);
-      const newState = [...state];
-      newState[sInd] = result[sInd];
-      newState[dInd] = result[dInd];
-
-      setState(newState.filter((group) => group.length));
-    }
-  }
 
   const renderHeader = (): React.ReactElement => {
     return (
       <div className={"w-full flex justify-between px-8 py-4"}>
         <button
           type="button"
+          className={"px-8 py-4 justify-between items-center bg-gray-400 rounded-xl text-white font-semibold"}
           onClick={(event) => {
             event.preventDefault();
             logout(null, {
               optimisticData: defaultSession,
             }).then(() => {
-              router.push("/sign-in");
+              router.push(routerPaths.signin);
             });
           }}
         >
@@ -80,13 +54,8 @@ const TaskManagementComponent = () => {
         <button
           type="button"
           onClick={() => {
-            setState((prev: any) => ({
-              ...prev,
-              [TaskStatusEnum.Todo]: [
-                ...getItems(1),
-                ...(prev[TaskStatusEnum.Todo] || []),
-              ],
-            }));
+            props.setShowModal();
+            props.setMode(TaskHandleMode.ADD);
           }}
           className={
             "px-8 py-4 flex justify-center items-center bg-blue-600 rounded-xl text-white font-semibold"
@@ -98,6 +67,12 @@ const TaskManagementComponent = () => {
     );
   };
 
+  function onClickTaskHandler(item: TaskItemVM, mode: TaskHandleMode) {
+    console.log(`onlick mode ${mode} - item: ${item}`)
+    props.setShowModal(item)
+    props.setMode(mode);
+  }
+
   return (
     <div
       className={"flex flex-col w-screen h-screen"}
@@ -106,11 +81,7 @@ const TaskManagementComponent = () => {
       {renderHeader()}
       <div className="bg-red flex-1 p-[24px] justify-center items-center flex">
         <div className="grid gap-x-8 gap-y-4 grid-cols-4 h-full w-[1600px]">
-          <DragDropContext
-            onDragEnd={() => {
-              // onDragEnd
-            }}
-          >
+          <DragDropContext onDragEnd={props.swapped}>
             {taskStatusData.map((el, ind) => (
               <Droppable key={el} droppableId={`${el}`}>
                 {(provided, snapshot) => (
@@ -118,7 +89,7 @@ const TaskManagementComponent = () => {
                     ref={provided.innerRef}
                     style={getListStyle(snapshot.isDraggingOver, el)}
                     onLoad={(e) => {
-                      console.log(e.target);
+                      // console.log(e.target);
                     }}
                     className="px-2 rounded-sm"
                     {...provided.droppableProps}
@@ -131,32 +102,52 @@ const TaskManagementComponent = () => {
                     </div>
 
                     {/* <h3 className=" text-center p-2">{el}</h3> */}
-                    <div className="w-100 h-100 overflow-y-scroll max-h-[70vh]">
-                      {(state[el] || []).map((item: any, index: number) => (
-                        <Draggable
-                          key={item.id}
-                          draggableId={item.id}
-                          index={index}
-                        >
-                          {(provided, snapshot) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              style={getItemStyle(
-                                snapshot.isDragging,
-                                provided.draggableProps.style
-                              )}
-                              className="rounded-sm py-4 px-2 mt-2"
-                            >
-                              <div className={"text-lg font-semibold"}>
-                                {"Title"}
+                    <div className="w-100 h-100">
+                      {(props.tasks[el] || []).map(
+                        (item: any, index: number) => (
+                          <Draggable
+                            key={item.id?.toString()}
+                            draggableId={item.id?.toString()}
+                            index={index}
+                          >
+                            {(provided, snapshot) => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                style={getItemStyle(
+                                  snapshot.isDragging,
+                                  provided.draggableProps.style
+                                )}
+                                className="rounded-sm py-4 px-2 mt-2"
+                              >
+                                <div className={"text-lg font-semibold"}>
+                                  {item.title}
+                                </div>
+                                <div>{item.description}</div>
+                                <div className={"w-100 flex justify-end gap-4"}>
+                                  <Image
+                                    width={24}
+                                    height={24}
+                                    src={EditIcon}
+                                    alt="Edit Task"
+                                    // TODO: Edit task information
+                                    onClick={() => onClickTaskHandler(item, TaskHandleMode.EDIT)}
+                                  />
+                                  <Image
+                                    width={24}
+                                    height={24}
+                                    src={RemoveIcon}
+                                    alt="Remove Task"
+                                    // TODO: Remove task information
+                                    onClick={() => onClickTaskHandler(item, TaskHandleMode.DELETE)}
+                                  />
+                                </div>
                               </div>
-                              <div>{item.content}</div>
-                            </div>
-                          )}
-                        </Draggable>
-                      ))}
+                            )}
+                          </Draggable>
+                        )
+                      )}
                     </div>
                     {provided.placeholder}
                   </div>

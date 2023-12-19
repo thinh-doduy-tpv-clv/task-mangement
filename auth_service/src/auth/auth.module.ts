@@ -15,7 +15,7 @@ import { CryptoService } from '../shared/services/crypto.service';
       global: true,
       secret: '123456',
       signOptions: {
-        expiresIn: '1h',
+        expiresIn: '1m',
       },
     }),
     ConfigModule,

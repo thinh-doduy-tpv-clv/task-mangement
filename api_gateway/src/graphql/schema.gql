@@ -7,9 +7,18 @@ type AuthModel {
   createdAt: DateTime
   email: String!
   id: Int!
+  link: String!
   password: String!
   refreshToken: String!
   username: String!
+}
+
+input CreateTaskDto {
+  description: String
+  dueDate: DateTime
+  status: String! = "TODO"
+  title: String!
+  userId: Int!
 }
 
 """
@@ -27,8 +36,17 @@ input LoginInput {
 }
 
 type Mutation {
+  createTask(input: CreateTaskDto!): TaskModel!
   login(input: LoginInput!): AuthModel!
   register(input: RegisterInput!): AuthModel!
+  requestResetPassword(input: RequestResetPasswordInput!): AuthModel!
+  resetPassword(input: NewResetPasswordInput!): AuthModel!
+  updateTask(input: UpdateTaskDto!): TaskModel!
+}
+
+input NewResetPasswordInput {
+  encodedUsername: String!
+  password: String!
 }
 
 type Query {
@@ -41,11 +59,25 @@ input RegisterInput {
   username: String!
 }
 
+input RequestResetPasswordInput {
+  email: String!
+  username: String!
+}
+
 type TaskModel {
-  createdAt: DateTime!
+  createdAt: DateTime
   description: String!
   dueDate: DateTime!
   id: Int!
   status: String!
   title: String!
+}
+
+input UpdateTaskDto {
+  description: String
+  dueDate: DateTime
+  status: String! = "TODO"
+  taskId: Int!
+  title: String!
+  userId: Int!
 }

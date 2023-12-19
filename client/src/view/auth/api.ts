@@ -19,7 +19,7 @@ export const SignInMutation = () => {
     }: {
       username: string;
       password: string;
-      onSuccess: (username: string, token: string) => void;
+      onSuccess: (username: string, token: string, id: string) => void;
     }) => {
       const data = await graphQLClient
         .request(
@@ -28,13 +28,14 @@ export const SignInMutation = () => {
               login(input: { password: $password, username: $username }) {
                 accessToken
                 username
+                id
               }
             }
           `,
           { password, username }
         )
         .then((res: any) => {
-          onSuccess(username, res?.login?.accessToken || "");
+          onSuccess(username, res?.login?.accessToken || "", res?.login?.id);
         })
         .catch((err) => {
           catchHandle(err);

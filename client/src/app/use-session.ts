@@ -18,10 +18,10 @@ async function fetchJson<JSON = unknown>(
 }
 
 function doLogin(url: string, { arg }: { arg: any }) {
-  const { username, token } = arg;
+  const { username, token, id } = arg;
   return fetchJson<SessionData>(url, {
     method: "POST",
-    body: JSON.stringify({ username, token }),
+    body: JSON.stringify({ username, token, id }),
   });
 }
 

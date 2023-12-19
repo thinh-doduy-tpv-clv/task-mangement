@@ -4,8 +4,14 @@ export enum ExampleEnum {
 }
 
 export enum TaskStatusEnum {
-  Todo = "todo",
-  Inprogress = "inprogress",
-  Compeleted = "compeleted",
-  Archived = "archived",
+  Todo = "TODO",
+  Inprogress = "IN PROGRESS",
+  Compeleted = "DONE",
+  Archived = "ARCHIVED",
+}
+
+export enum TaskHandleMode {
+  EDIT = "EDIT",
+  ADD = "ADD",
+  DELETE = "DELETE"
 }

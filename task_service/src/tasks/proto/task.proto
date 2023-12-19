@@ -31,12 +31,14 @@ message IUpdateTaskDto{
     int32 id = 1;
     string title = 2;
     string description = 3;
-    string due_date = 4;
+    google.protobuf.Timestamp due_date = 4;
     string status = 5;
+    int32 user_id = 6;
 }
 
 message IFindOneTaskDto {
     int32 id = 1;
+    int32 user_id = 2;
 }
 
 message IEmpty {};
@@ -47,9 +49,9 @@ message ITasks {
 message ICreateTaskDto {
     string title = 2;
     string description = 3;
-    string due_date = 4;
+    google.protobuf.Timestamp due_date = 4;
     string status = 5;
-    string user_id = 6;
+    int32 user_id = 6;
 }
 
 message ITask {

@@ -22,4 +22,7 @@ export class AuthModel {
 
   @Field(() => Date, { nullable: true })
   createdAt?: Date;
+
+  @Field(() => String)
+  link: string;
 }

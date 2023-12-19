@@ -25,12 +25,14 @@ export interface IUpdateTaskDto {
   id: number;
   title: string;
   description: string;
-  dueDate: string;
+  dueDate: Date | undefined;
   status: string;
+  userId: number;
 }
 
 export interface IFindOneTaskDto {
   id: number;
+  userId: number;
 }
 
 export interface IEmpty {
@@ -43,9 +45,9 @@ export interface ITasks {
 export interface ICreateTaskDto {
   title: string;
   description: string;
-  dueDate: string;
+  dueDate: Date | undefined;
   status: string;
-  userId: string;
+  userId: number;
 }
 
 export interface ITask {

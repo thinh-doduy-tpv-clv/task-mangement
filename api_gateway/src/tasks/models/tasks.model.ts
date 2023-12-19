@@ -17,6 +17,6 @@ export class TaskModel {
   @Field(() => String, { defaultValue: 'TODO' })
   status: string;
 
-  @Field()
-  createdAt: Date;
+  @Field(() => Date, { nullable: true })
+  createdAt?: Date;
 }
