@@ -18,6 +18,8 @@ import {
 import { RegisterInput } from './inputs/resgister.input';
 import { AuthModel } from './models/auth.model';
 import { GraphQLError } from 'graphql';
+import { CustomError } from 'src/utils/exceptions/custom-exception.format';
+import { ERROR_CODE } from 'src/utils/constants';
 
 @Injectable()
 export class AuthService implements OnModuleInit {
@@ -68,7 +70,17 @@ export class AuthService implements OnModuleInit {
       }),
     );
     if (resetRequestResponse.isError) {
-      throw new GraphQLError(`${resetRequestResponse.error}`);
+      throw new GraphQLError(resetRequestResponse.error.errorMsg, {
+        extensions: {
+          code: resetRequestResponse.error.errorCode,
+          message: resetRequestResponse.error.errorMsg,
+          errorCode: ERROR_CODE.USER_NOT_FOUND,
+        },
+        originalError: new CustomError(
+          resetRequestResponse.error.errorMsg,
+          resetRequestResponse.error.errorCode,
+        ),
+      });
     }
     return {
       email: resetRequestResponse.data.user.email,
@@ -90,7 +102,17 @@ export class AuthService implements OnModuleInit {
       }),
     );
     if (resetResponse.isError) {
-      throw new GraphQLError(`${resetResponse.error}`);
+      throw new GraphQLError(resetResponse.error.errorMsg, {
+        extensions: {
+          code: resetResponse.error.errorCode,
+          message: resetResponse.error.errorMsg,
+          errorCode: ERROR_CODE.RESET_PASSWORD_FAILED,
+        },
+        originalError: new CustomError(
+          resetResponse.error.errorMsg,
+          resetResponse.error.errorCode,
+        ),
+      });
     }
     return {
       email: resetResponse.data.user.email,
