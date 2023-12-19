@@ -12,6 +12,10 @@ export const useGetTasks = (
   logout: () => void
 ) => {
   return useQuery("graphql", async () => {
+    if (!sessionToken) {
+      return [];
+    }
+
     const graphQLClient = new GraphQLClient(API_URL, {
       headers: {
         Authorization: `Bearer ${sessionToken}`,
@@ -53,6 +57,10 @@ export const addTaskMutation = () => {
       newTask: TaskItemVM;
       onSuccess: (isSuccess: boolean, data?: any) => void;
     }) => {
+      if (!sessionToken) {
+        return;
+      }
+
       const graphQLClient = new GraphQLClient(API_URL, {
         headers: {
           Authorization: `Bearer ${sessionToken}`,

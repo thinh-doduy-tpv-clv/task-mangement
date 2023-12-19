@@ -28,8 +28,9 @@ type DropType = {
   droppableId: string;
 };
 
-const TaskManagementContainer: React.FunctionComponent<Props> = (props) => {
+const TaskManagementContainer: React.FunctionComponent<Props> = () => {
   const { logout, session } = useSession();
+
   const router = useRouter();
   const [showModal, setShowModal] = useState<TaskItemVM>();
   const [mode, setMode] = useState<TaskHandleMode>();
@@ -42,7 +43,7 @@ const TaskManagementContainer: React.FunctionComponent<Props> = (props) => {
     });
   };
 
-  const { data, error, isLoading, isSuccess, refetch } = useGetTasks(
+  const { data, isLoading, refetch } = useGetTasks(
     session.token,
     +session.id,
     callback
@@ -50,6 +51,12 @@ const TaskManagementContainer: React.FunctionComponent<Props> = (props) => {
   const addTaskMutate = addTaskMutation();
   const updateTaskMutate = updateTaskMutation();
   const [tasks, setTask] = useState<TaskObjectType>({});
+
+  useEffect(() => {
+    if (session) {
+      refetch();
+    }
+  }, [session]);
 
   useEffect(() => {
     if (!isLoading && data) {
@@ -161,7 +168,7 @@ const TaskManagementContainer: React.FunctionComponent<Props> = (props) => {
     }
   };
 
-  const onAddTaskSuccess = (isSuccess: boolean, data?: any) => {
+  const onAddTaskSuccess = (isSuccess: boolean) => {
     console.log("onAddTaskSuccess: ", isSuccess);
     if (isSuccess) {
       setShowModal(undefined);
@@ -172,7 +179,7 @@ const TaskManagementContainer: React.FunctionComponent<Props> = (props) => {
 
   return (
     <>
-      {/* <Spinner show={isLoading} /> */}
+      <Spinner show={isLoading} />
       <TaskManagementComponent
         setShowModal={(currentTask?: TaskItemVM) => {
           if (currentTask) {
