@@ -17,7 +17,6 @@ const SignUpComponent: React.FunctionComponent<Props> = (props) => {
     formState: { errors },
   } = useForm({ mode: "all" });
   const password = watch("password", "");
-  const [checked, setChecked] = useState<boolean>(false);
   const [submmited, setSubbmited] = useState<boolean>(false);
 
   return (
@@ -44,8 +43,7 @@ const SignUpComponent: React.FunctionComponent<Props> = (props) => {
               action="#"
               onSubmit={handleSubmit((data) => {
                 setSubbmited(true);
-                if (checked)
-                  props.onRegister(data.email, data.username, data.password);
+                props.onRegister(data.email, data.username, data.password);
               })}
             >
               <div>
