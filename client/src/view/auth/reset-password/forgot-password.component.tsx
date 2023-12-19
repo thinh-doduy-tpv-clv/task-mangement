@@ -1,6 +1,5 @@
 "use client";
 
-import { props } from "cypress/types/bluebird";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { UserVM } from "src/core/view-models/auth/user-vm";
@@ -81,10 +80,18 @@ const ForgotPasswordComponent: React.FunctionComponent<Props> = (props) => {
                 id="email"
                 className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="name@company.com"
-                {...register("email", { required: true })}
+                {...register("email", {
+                  required: true,
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: "Entered value is not a valid email address",
+                  },
+                })}
               />
               {errors.email && (
-                <p className={"error-field"}>Email is required.</p>
+                <p className={"error-field"}>
+                  {(errors.email?.message as string) || "Email is required."}
+                </p>
               )}
             </div>
             {/* <div className="flex items-start">

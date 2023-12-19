@@ -157,6 +157,7 @@ const TaskManagementContainer: React.FunctionComponent<Props> = (props) => {
     if (isSuccess) {
       setShowModal(undefined);
       toast.success("Update task successfully");
+      refetch();
     }
   };
 
