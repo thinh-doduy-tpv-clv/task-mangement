@@ -98,7 +98,6 @@ export const addTaskMutation = () => {
           { description, dueDate, status, title, userId }
         )
         .then((res: any) => {
-          console.log("added success");
           onSuccess(true, null);
         })
         .catch((err) => {

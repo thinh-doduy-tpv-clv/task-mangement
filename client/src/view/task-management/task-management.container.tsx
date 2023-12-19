@@ -173,7 +173,7 @@ const TaskManagementContainer: React.FunctionComponent<Props> = () => {
     if (isSuccess) {
       setShowModal(undefined);
       toast.success("New task has been created!");
-      // refetch();
+      refetch();
     }
   };
 
