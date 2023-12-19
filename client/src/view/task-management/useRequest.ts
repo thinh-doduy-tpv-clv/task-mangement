@@ -1,6 +1,7 @@
 import { GraphQLClient, gql } from "graphql-request";
 import { useMutation, useQuery } from "react-query";
 import { catchHandle } from "src/core/lib/catch-helper";
+import { UserVM } from "src/core/view-models/auth/user-vm";
 import { TaskItemVM } from "src/core/view-models/task/task-vm";
 
 const API_URL = `http://localhost:8000/graphql`;
@@ -151,6 +152,61 @@ export const updateTaskMutation = () => {
             }
           `,
           { description, dueDate, status, title, userId, id }
+        )
+        .then((res: any) => {
+          onSuccess(true);
+        })
+        .catch((err) => {
+          onSuccess(false);
+          catchHandle(err);
+        });
+      return data;
+    },
+  });
+};
+
+export const requestNewPasswordMutation = () => {
+  return useMutation({
+    mutationFn: async ({
+      sessionToken,
+      user,
+      onSuccess,
+    }: {
+      sessionToken: string;
+      user: UserVM;
+      onSuccess: (isSuccess: boolean) => void;
+    }) => {
+      const graphQLClient = new GraphQLClient(API_URL, {
+        headers: {
+          Authorization: `Bearer ${sessionToken}`,
+        },
+      });
+      const { email, password, userId, username } = user;
+      const data = await graphQLClient
+        .request(
+          gql`
+          mutation RequestResetPassword(
+            $username: String!
+            $email: String!
+          ) {
+            requestResetPassword(
+              input: {
+                username: $username
+                email: $email
+              } {
+                accessToken
+                createdAt
+                email
+                id
+                link
+                password
+                refreshToken
+                username
+              }
+            )
+          }
+          `,
+          { username, email }
         )
         .then((res: any) => {
           onSuccess(true);
