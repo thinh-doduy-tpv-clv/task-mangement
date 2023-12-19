@@ -30,7 +30,8 @@ Feature: Admin feature
       Given User is in the "Login Page"
       When User input <userID>, <Password>
       And User click on the "Sign" button
-      Then User go to the "Task List"
+      Then There is a message "Welcome!"
+      And User go to the "Task List"
   
       Examples:
         | userID     | Password   |
@@ -40,29 +41,29 @@ Feature: Admin feature
     #AC4: Forgot password 
     @TEST_TDRAF-143
     Scenario Outline: Reset Password successfully
-      Given User is at the "Forgot Password Page"
-      When User input <userID>, <Email>
-      And User click on the "Submit" button
-      Then There is a pop-up "Reset Password"
-      And User input new <Password>
-      And User verify it one more times
+      Given User is at the "Change Password Page"
+      When User input <Email>, new <password>, confirm <password>
+      And User click on the "Reset Password" button
+      Then There is a <message>
+      And User back to "Login page"
 
       Examples:
-        | userID | Email                             | Password |
-        | chauvu | vuminhchaucyberlogictec@gamil.com | 12345678 |
+        | Email                             | Password | message                     |
+        | vuminhchaucyberlogictec@gamil.com | 12345678 | Reset Password Successfully |
 
     @@TEST_TDRAF-144
     Scenario Outline: Reset Password unsuccessfully
-      Given User is at the "Forgot Password Page"
-      When User input <userID>, <Email>
-      And User click on the "Submit" button
-      Then User can NOT reset password
-      And There is a <message>
+      Given User is at the "Change Password Page"
+      When User input <Email>, new <password>, <confirm_password>
+      And User click on the "Reset Password" button
+      Then There is a <message>
 
       Examples:
-        | userID | Email                             | message                          |
-        |        |                                   | Please input user name and Email |
-        | chauvu | vuminhchaucyberlogictec@gamilcom  | Invalid User name and Email      |
-        | chauv  | vuminhchaucyberlogictec@gamil.com | Invalid User name and Email      |
-        | chauv  | vuminhchaucyberlogictec@gamilcom  | Invalid User name and Email      |
+        | Email                             | password  | confirm_password | message                                  |
+        |                                   |           |                  | Please input Email                       |
+        | vuminhchaucyberlogictec           |           |                  | Invalid Email, Please input new password |                    |
+        | vuminhchaucyberlogictec@gamilcom  |           |                  | Please input new Password                |
+        | vuminhchaucyberlogictec@gamil.com | 123456    |                  | Invalid password                         |
+        | vuminhchaucyberlogictec@gamil.com | 123456aB@ |                  | Please confirm password                  |
+        | vuminhchaucyberlogictec@gamilcom  | 123456aB@ | 123456aB         | Confirm password is Invalid              |                   
 
