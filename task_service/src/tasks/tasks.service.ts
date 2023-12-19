@@ -29,7 +29,9 @@ import { TASK_STATUS } from './utils/constants/constants';
 @Injectable()
 export class TasksService {
   private authService: AuthServiceClient;
-
+  get _authService(): AuthServiceClient {
+    return this.authService;
+  }
   constructor(
     @InjectRepository(Task) private readonly tasksRepository: Repository<ITask>,
     @Inject(AUTH_PACKAGE_NAME) private client: ClientGrpc,
@@ -45,7 +47,7 @@ export class TasksService {
 
   // [ ]: Get task list
   async getTasks(getTaskUserDto: IGetTaskUserDto): Promise<ITaskReponse> {
-    if (!getTaskUserDto.userId) {
+    if (!getTaskUserDto || !getTaskUserDto.userId) {
       throw new CustomException(
         HttpStatusMessages[HttpStatusConstants.USER_ID_REQUIRED],
         HttpStatusConstants.USER_ID_REQUIRED,
@@ -54,7 +56,7 @@ export class TasksService {
     const user: IAuthReponse = await lastValueFrom(
       this.authService.findOneUser({ id: `${getTaskUserDto.userId}` }),
     );
-    if (!user.data.user) {
+    if (!user.data || !user.data?.user) {
       throw new CustomException(
         HttpStatusMessages[HttpStatusConstants.USER_NOT_EXISTED],
         HttpStatusConstants.USER_NOT_EXISTED,

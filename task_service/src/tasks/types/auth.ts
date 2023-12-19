@@ -5,6 +5,11 @@ import { Observable } from "rxjs";
 
 export const protobufPackage = "auth";
 
+export interface IResetPasswordRequestDto {
+  encryptInput: string;
+  newPassword: string;
+}
+
 export interface IAuthReponse {
   data: IData | undefined;
   error: IError | undefined;
@@ -39,6 +44,7 @@ export interface IRegisterRequestDto {
 
 export interface IForgotPasswordRequestDto {
   email: string;
+  username: string;
 }
 
 export interface IRegisterResponseDto {
@@ -87,6 +93,8 @@ export interface IUser {
   password: string;
   refreshToken: string;
   createdAt: Date | undefined;
+  accessToken?: string | undefined;
+  link: string;
 }
 
 export const AUTH_PACKAGE_NAME = "auth";
@@ -118,6 +126,8 @@ export interface AuthServiceClient {
   forgotPassword(request: IForgotPasswordRequestDto): Observable<IAuthReponse>;
 
   refreshToken(request: IRefreshTokenRequestDto): Observable<IAuthReponse>;
+
+  resetPassword(request: IResetPasswordRequestDto): Observable<IAuthReponse>;
 }
 
 export interface AuthServiceController {
@@ -138,6 +148,8 @@ export interface AuthServiceController {
   forgotPassword(request: IForgotPasswordRequestDto): Promise<IAuthReponse> | Observable<IAuthReponse> | IAuthReponse;
 
   refreshToken(request: IRefreshTokenRequestDto): Promise<IAuthReponse> | Observable<IAuthReponse> | IAuthReponse;
+
+  resetPassword(request: IResetPasswordRequestDto): Promise<IAuthReponse> | Observable<IAuthReponse> | IAuthReponse;
 }
 
 export function AuthServiceControllerMethods() {
@@ -152,6 +164,7 @@ export function AuthServiceControllerMethods() {
       "register",
       "forgotPassword",
       "refreshToken",
+      "resetPassword",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
