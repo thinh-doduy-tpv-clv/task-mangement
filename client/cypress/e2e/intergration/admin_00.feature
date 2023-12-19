@@ -36,6 +36,7 @@ Feature: Admin feature
       And User click on the "Sign up" button
       Then There is a msg "Register new account success!"
       And User go to the "Login Page"
+      And User can login with new account
 
         Examples:
         | userID | Password | Email                             |
