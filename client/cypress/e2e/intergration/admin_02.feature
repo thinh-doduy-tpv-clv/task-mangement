@@ -16,12 +16,12 @@ Feature: Admin feature
     @TEST_TDRAF-139
     Scenario Outline: Change password
       Given User openned the "Change Password" pop-up
-      When User input old <Password>, new <Password>
+      When User input <Old_Password>, <New_Password>
       And User click on the "Submit" button
       Then there is a <message>
   
       Examples:
-        | Password | Password | message                      |
-        | abC#123  | abC$$123 | Chagne password successfully |
-        | abC#12   | abC$$123 | Password invalid             |
-        |          |          | Nothing change               |
+        | Old_Password | New_Password | message                      |
+        | abC#123      | abC$$123     | Chagne password successfully |
+        | abC#12       | abC$$123     | Password invalid             |
+        |              |              | Nothing change               |

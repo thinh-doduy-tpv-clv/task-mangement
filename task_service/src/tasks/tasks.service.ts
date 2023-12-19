@@ -66,6 +66,9 @@ export class TasksService {
       where: {
         user: { id: getTaskUserDto.userId },
       },
+      order: {
+        createdAt: 'DESC',
+      },
     });
     const mapTaskModel: ITaskReponse = toFormatResponse(
       tasksList,
@@ -81,19 +84,19 @@ export class TasksService {
    * @param id hold the id of the task
    * @returns the founded task
    */
-  async getTaskById(id: number, userId: number): Promise<ITaskReponse> {
+  async getTaskById(taskId: number, userId: number): Promise<ITaskReponse> {
     try {
       const task: ITask = await this.tasksRepository
         .createQueryBuilder('task')
         .leftJoinAndSelect('task.user', 'user') // Assuming the property in User entity for the many-to-many relation is named 'roles'
-        .where('task.id = :taskId', { taskId: id })
-        .where('user.id = :userId', { userId })
+        .where('task.id = :taskId', { taskId })
+        .andWhere('user.id = :userId', { userId })
         .getOne();
       return toFormatResponse([task], null, '', false);
     } catch (error) {
       // Handle the case where no task is found
       if (error.name === 'EntityNotFound') {
-        throw new NotFoundException(`Task with ID ${id} not found`);
+        throw new NotFoundException(`Task with ID ${taskId} not found`);
       }
       // Rethrow other errors
       throw error;

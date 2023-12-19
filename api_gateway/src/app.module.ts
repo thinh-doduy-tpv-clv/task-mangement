@@ -18,6 +18,7 @@ import { TasksModule } from './tasks/tasks.module';
       autoSchemaFile: join(process.cwd(), 'src/graphql/schema.gql'),
       sortSchema: true,
       formatError: (error: GraphQLError) => {
+        console.log('error: ', error);
         const originalError: any = error?.extensions?.originalError;
         if (originalError) {
           return {
@@ -28,7 +29,7 @@ import { TasksModule } from './tasks/tasks.module';
         }
         return {
           message: error.message,
-          statusCode: 'ERROR_CODE',
+          statusCode: error?.extensions.errorCode,
           errorCode: error?.extensions.code,
         };
       },

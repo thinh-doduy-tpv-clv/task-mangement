@@ -1,3 +1,5 @@
+"use client";
+
 import { DraggingStyle, NotDraggingStyle } from "@hello-pangea/dnd";
 import { TaskStatusEnum } from "src/core/lib/constants";
 

@@ -3,7 +3,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import useSession from "src/app/use-session";
-import { TaskStatusEnum } from "src/core/lib/constants";
+import { TaskHandleMode, TaskStatusEnum } from "src/core/lib/constants";
 import { TaskItemVM } from "src/core/view-models/task/task-vm";
 
 interface ComponentProps {
@@ -14,7 +14,7 @@ interface ComponentProps {
 
 type Props = ComponentProps;
 
-const CreateNewTask: React.FunctionComponent<Props> = (props) => {
+const TaskFormComponent: React.FunctionComponent<Props> = (props) => {
   const { login } = useSession();
   const {
     register,
@@ -30,7 +30,7 @@ const CreateNewTask: React.FunctionComponent<Props> = (props) => {
           createdAt: new Date().toDateString(),
           description: data.description,
           dueDate: data.dueDate,
-          id: "",
+          id: props.currentTask?.id || -1,
           status: TaskStatusEnum.Todo,
           title: data.title,
         });
@@ -49,6 +49,7 @@ const CreateNewTask: React.FunctionComponent<Props> = (props) => {
             <input
               {...register("title", { required: true })}
               id="title"
+              defaultValue={props.currentTask?.title || ""}
               className=" border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="Enter title"
             />
@@ -79,6 +80,13 @@ const CreateNewTask: React.FunctionComponent<Props> = (props) => {
               className=" border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="Nhập dueDate"
               type={"date"}
+              defaultValue={
+                props.currentTask?.dueDate
+                  ? new Date(props.currentTask?.dueDate)
+                      .toISOString()
+                      .split("T")[0]
+                  : new Date().toISOString().split("T")[0]
+              }
             />
             {errors.dueDate && (
               <p className="error-field">
@@ -100,6 +108,7 @@ const CreateNewTask: React.FunctionComponent<Props> = (props) => {
             className=" border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="Enter description"
             rows={10}
+            defaultValue={props.currentTask?.description || ""}
           />
 
           {errors.description && (
@@ -126,4 +135,4 @@ const CreateNewTask: React.FunctionComponent<Props> = (props) => {
   );
 };
 
-export default CreateNewTask;
+export default TaskFormComponent;

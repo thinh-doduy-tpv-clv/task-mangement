@@ -6,7 +6,7 @@ Feature: Admin feature
     Background:
       #@PRECOND_TDRAF-145
       Given User have registered account
-      And acouut is chauvu
+      And The account has "Username" is chauvu
       And "password" is "abC#123"
       And Email is "vuminhchaucyberlogictec@gamil.com"
     
@@ -30,7 +30,8 @@ Feature: Admin feature
       Given User is in the "Login Page"
       When User input <userID>, <Password>
       And User click on the "Sign" button
-      Then User go to the "Task List"
+      Then There is a message "Welcome!"
+      And User go to the "Task List"
   
       Examples:
         | userID     | Password   |
@@ -40,16 +41,17 @@ Feature: Admin feature
     #AC4: Forgot password 
     @TEST_TDRAF-143
     Scenario Outline: Reset Password successfully
-      Given User is at the "Forgot Password Page"
-      When User input <userID>, <Email>
-      And User click on the "Submit" button
-      Then There is a pop-up "Reset Password"
-      And User input new <Password>
+      Given User is in the "Forgot Password Page"
+      And User go to the "Reset Password Page"
+      When User update new <Password> at "Reset Password Page"
       And User verify it one more times
+      Then There is a message "Reset Password Successfully"
+      And User back to the "Login Page"
+      And User can login with new password
 
-      Examples:
-        | userID | Email                             | Password |
-        | chauvu | vuminhchaucyberlogictec@gamil.com | 12345678 |
+        Examples:
+          | Password |
+          | 12345678 |
 
     @@TEST_TDRAF-144
     Scenario Outline: Reset Password unsuccessfully
@@ -59,10 +61,10 @@ Feature: Admin feature
       Then User can NOT reset password
       And There is a <message>
 
-      Examples:
-        | userID | Email                             | message                          |
-        |        |                                   | Please input user name and Email |
-        | chauvu | vuminhchaucyberlogictec@gamilcom  | Invalid User name and Email      |
-        | chauv  | vuminhchaucyberlogictec@gamil.com | Invalid User name and Email      |
-        | chauv  | vuminhchaucyberlogictec@gamilcom  | Invalid User name and Email      |
+        Examples:
+          | userID | Email                             | message                          |
+          |        |                                   | Please input user name and Email |
+          | chauvu | vuminhchaucyberlogictec@gamilcom  | Invalid User name and Email      |
+          | chauv  | vuminhchaucyberlogictec@gamil.com | Invalid User name and Email      |
+          | chauv  | vuminhchaucyberlogictec@gamilcom  | Invalid User name and Email      |                   
 

@@ -13,7 +13,6 @@ Feature: Admin feature
       Then User go to the "Register Page"
 
     @TEST_TDRAF-146
-    
     Scenario Outline: Create a new account unsuccessfully
       Given User is in the "Register Page" 
       When User input <userID>, <Password>, <Email>
@@ -37,6 +36,7 @@ Feature: Admin feature
       And User click on the "Sign up" button
       Then There is a msg "Register new account success!"
       And User go to the "Login Page"
+      And User can login with new account
 
         Examples:
         | userID | Password | Email                             |

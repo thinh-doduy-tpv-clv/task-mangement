@@ -61,7 +61,8 @@ export class AuthController implements AuthServiceController {
   async refreshToken(
     refreshTokenRequestDto: IRefreshTokenRequestDto,
   ): Promise<IAuthReponse> {
-    return await this.authService.refreshToken(refreshTokenRequestDto);
+    // return await this.authService.refreshToken(refreshTokenRequestDto);
+    throw new Error('Method not implemented');
   }
 
   //@UseGuards(AuthGuard)

@@ -17,7 +17,6 @@ const SignUpComponent: React.FunctionComponent<Props> = (props) => {
     formState: { errors },
   } = useForm({ mode: "all" });
   const password = watch("password", "");
-  const [checked, setChecked] = useState<boolean>(false);
   const [submmited, setSubbmited] = useState<boolean>(false);
 
   return (
@@ -44,8 +43,7 @@ const SignUpComponent: React.FunctionComponent<Props> = (props) => {
               action="#"
               onSubmit={handleSubmit((data) => {
                 setSubbmited(true);
-                if (checked)
-                  props.onRegister(data.email, data.username, data.password);
+                props.onRegister(data.email, data.username, data.password);
               })}
             >
               <div>
@@ -124,11 +122,6 @@ const SignUpComponent: React.FunctionComponent<Props> = (props) => {
                 <input
                   {...register("password", {
                     required: true,
-                    pattern: {
-                      // value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*[W_]).{9,}$/,
-                      value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*[\W_]).{9,}$/,
-                      message: "Entered value does not match email format",
-                    },
                   })}
                   type="password"
                   name="password"
@@ -153,12 +146,7 @@ const SignUpComponent: React.FunctionComponent<Props> = (props) => {
                 <input
                   {...register("confirmPassword", {
                     required: true,
-                    validate: (value) =>
-                      value === password || "Passwords do not match",
-                    pattern: {
-                      value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*[\W_]).{9,}$/,
-                      message: "Entered value does not match email format",
-                    },
+                    validate: (value) => value === password || "Password is not matched"
                   })}
                   type="password"
                   name="confirmPassword"
@@ -172,38 +160,6 @@ const SignUpComponent: React.FunctionComponent<Props> = (props) => {
                       "Password is required."}
                   </p>
                 )}
-              </div>
-              <div className="flex items-start">
-                <div className="flex items-center h-5">
-                  <input
-                    checked={checked}
-                    onChange={(e) => {
-                      setChecked(e.target.checked);
-                    }}
-                    id="terms"
-                    aria-describedby="terms"
-                    type="checkbox"
-                    className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                  />
-                </div>
-                <div className="ml-3 text-sm">
-                  <label
-                    htmlFor="terms"
-                    className={`font-light text-gray-500 dark:text-gray-300 ${
-                      submmited && !checked
-                        ? "!text-red-700"
-                        : `${submmited} ${checked}`
-                    }`}
-                  >
-                    I accept the{" "}
-                    <a
-                      className={`font-medium text-primary-600 hover:underline dark:text-primary-500`}
-                      href="#"
-                    >
-                      Terms and Conditions
-                    </a>
-                  </label>
-                </div>
               </div>
               <button
                 onClick={() => setSubbmited(true)}

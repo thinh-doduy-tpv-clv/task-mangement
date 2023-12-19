@@ -29,7 +29,7 @@ const SignInContainer: React.FunctionComponent<Props> = (props) => {
         },
       }
     ).then((e) => {
-      toast.success("Wellcome!");
+      toast.success("Welcome!");
       router.push("/");
     });
   };
