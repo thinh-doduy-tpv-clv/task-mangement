@@ -12,6 +12,7 @@ import {
 } from './types/auth';
 import {
   ICreateTaskDto,
+  IFindOneTaskDto,
   IGetTaskUserDto,
   ITask,
   ITaskReponse,
@@ -203,14 +204,47 @@ export class TasksService {
     return updatedTask;
   }
 
+  async removeTaskById(findTaskDto: IFindOneTaskDto): Promise<ITaskReponse> {
+    if (!findTaskDto.id) {
+      throw new CustomException(RESPONSE_MESSAGES.TASK_ID_REQUIRED);
+    }
+    if (!findTaskDto.userId) {
+      throw new CustomException(RESPONSE_MESSAGES.USER_ID_REQUIRED);
+    }
+    // Retrieve information for user & task
+    const currentUser: IAuthReponse = await lastValueFrom(
+      this.authService.findOneUser({ id: `${findTaskDto.userId}` }),
+    );
+    const currentTaskResponse: ITaskReponse = await this.getTaskById(
+      findTaskDto.id,
+      findTaskDto.userId,
+    );
+    const currentTask: ITask = currentTaskResponse?.data[0];
+
+    if (!currentTask) {
+      throw new CustomException(RESPONSE_MESSAGES.TASK_NOT_FOUND);
+    }
+    if (!currentUser) {
+      throw new CustomException(RESPONSE_MESSAGES.USER_NOT_EXISTED);
+    }
+    await this.tasksRepository.remove(currentTask);
+    const removedTask: ITaskReponse = toFormatResponse(
+      [{ ...currentTask, id: findTaskDto.id }],
+      null,
+      '',
+      false,
+    );
+    return removedTask;
+  }
+
   mapTaskEntityToInterface = (task: ITask) => {
     return {
-      id: task.id,
-      title: task.title,
-      description: task.description,
-      dueDate: task.dueDate,
-      status: task.status,
-      createdAt: task.createdAt,
+      id: task.id || 0,
+      title: task.title || '',
+      description: task.description || '',
+      dueDate: task.dueDate || null,
+      status: task.status || '',
+      createdAt: task.createdAt || null,
     } as ITask;
   };
 }

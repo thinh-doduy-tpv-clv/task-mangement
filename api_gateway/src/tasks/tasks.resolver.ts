@@ -9,6 +9,7 @@ import { UpdateTaskDto } from './inputs/updateTaskDto';
 import { TaskModel } from './models/tasks.model';
 import { TasksService } from './tasks.service';
 import { validate } from 'class-validator';
+import { RemoveTaskDto } from './inputs/removeTaskDto';
 
 @Resolver(() => TaskModel)
 export class TaskResolver {
@@ -74,6 +75,21 @@ export class TaskResolver {
     const taskResponse: TaskModel =
       updateData && updateData.data
         ? Object.assign({} as TaskModel, updateData.data[0])
+        : new TaskModel();
+    return taskResponse;
+  }
+
+  @Mutation(() => TaskModel)
+  async removeTask(@Args('input') input: RemoveTaskDto): Promise<TaskModel> {
+    const removedTask: ITaskReponse = await lastValueFrom(
+      this.taskService.removeTask({
+        userId: input.userId,
+        id: input.id,
+      }),
+    );
+    const taskResponse: TaskModel =
+      removedTask && removedTask.data
+        ? Object.assign({} as TaskModel, removedTask.data[0])
         : new TaskModel();
     return taskResponse;
   }

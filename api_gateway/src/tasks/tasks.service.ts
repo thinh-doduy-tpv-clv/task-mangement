@@ -24,13 +24,13 @@ export class TasksService implements OnModuleInit, TasksServiceClient {
     return this.tasksService.findAllTask({ userId: request.userId });
   }
   findOneTask(request: IFindOneTaskDto): Observable<ITaskReponse> {
-    throw new Error('Method not implemented.');
+    return this.tasksService.findOneTask(request);
   }
   updateTask(request: IUpdateTaskDto): Observable<ITaskReponse> {
     return this.tasksService.updateTask(request);
   }
   removeTask(request: IFindOneTaskDto): Observable<ITaskReponse> {
-    throw new Error('Method not implemented.');
+    return this.tasksService.removeTask(request);
   }
 
   /**

@@ -48,10 +48,18 @@ export class TasksController implements TasksServiceController {
       );
     }
   }
-  removeTask(
-    request: IFindOneTaskDto,
-  ): ITaskReponse | Promise<ITaskReponse> | Observable<ITaskReponse> {
-    throw new Error('Method not implemented.');
+  async removeTask(request: IFindOneTaskDto): Promise<ITaskReponse> {
+    try {
+      const ITaskResponse = await this.tasksService.removeTaskById(request);
+      return ITaskResponse;
+    } catch (err) {
+      return toFormatResponse(
+        [],
+        { errorCode: err.statusCode, errorMsg: err.message },
+        '',
+        true,
+      );
+    }
   }
 
   // [ ]: Implement create new task
