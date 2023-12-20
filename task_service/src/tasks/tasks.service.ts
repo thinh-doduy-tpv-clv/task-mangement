@@ -110,13 +110,13 @@ export class TasksService {
    * @returns new created task
    */
   async createTask(createTaskDto: ICreateTaskDto): Promise<ITaskReponse> {
-    if (!createTaskDto.userId) {
+    if (!createTaskDto || !createTaskDto.userId) {
       throw new CustomException(RESPONSE_MESSAGES.USER_ID_REQUIRED);
     }
     const currentUser: IAuthReponse = await lastValueFrom(
       this.authService.findOneUser({ id: `${createTaskDto.userId}` }),
     );
-    if (!currentUser.data.user) {
+    if (!currentUser.data || !currentUser.data.user) {
       throw new CustomException(
         HttpStatusMessages[HttpStatusConstants.USER_NOT_EXISTED],
         HttpStatusConstants.USER_NOT_EXISTED,
@@ -133,14 +133,13 @@ export class TasksService {
       status: createTaskDto.status,
       user: { id: createTaskDto.userId },
     } as ITask;
+
     const task: ITask = await this.tasksRepository.create(newTask);
     const savedTask: ITask = await this.tasksRepository.save(task);
-
     const newCreatedTask: ITaskReponse = await this.getTaskById(
       savedTask.id,
       createTaskDto.userId,
     );
-
     // Format response
     const newTaskResponse: ITaskReponse = toFormatResponse(
       newCreatedTask.data,
@@ -152,10 +151,10 @@ export class TasksService {
   }
 
   async updateTask(updateTaskDto: IUpdateTaskDto): Promise<ITaskReponse> {
-    if (!updateTaskDto.id) {
+    if (!updateTaskDto || !updateTaskDto.id) {
       throw new CustomException(RESPONSE_MESSAGES.TASK_ID_REQUIRED);
     }
-    if (!updateTaskDto.userId) {
+    if (!updateTaskDto || !updateTaskDto.userId) {
       throw new CustomException(RESPONSE_MESSAGES.USER_ID_REQUIRED);
     }
     if (
@@ -167,6 +166,9 @@ export class TasksService {
     const currentUser: IAuthReponse = await lastValueFrom(
       this.authService.findOneUser({ id: `${updateTaskDto.userId}` }),
     );
+    if (!currentUser) {
+      throw new CustomException(RESPONSE_MESSAGES.USER_NOT_EXISTED);
+    }
     const currentTaskResponse: ITaskReponse = await this.getTaskById(
       updateTaskDto.id,
       updateTaskDto.userId,
@@ -175,9 +177,6 @@ export class TasksService {
 
     if (!currentTask) {
       throw new CustomException(RESPONSE_MESSAGES.TASK_NOT_FOUND);
-    }
-    if (!currentUser) {
-      throw new CustomException(RESPONSE_MESSAGES.USER_NOT_EXISTED);
     }
 
     // Update task info
@@ -193,6 +192,7 @@ export class TasksService {
       updateTaskDto.id,
       updateTaskDto.userId,
     );
+    console.log('Service01', updatedTaskData);
 
     // Format response
     const updatedTask: ITaskReponse = toFormatResponse(
@@ -201,6 +201,8 @@ export class TasksService {
       '',
       false,
     );
+    console.log('Service', updatedTask);
+
     return updatedTask;
   }
 
@@ -215,6 +217,9 @@ export class TasksService {
     const currentUser: IAuthReponse = await lastValueFrom(
       this.authService.findOneUser({ id: `${findTaskDto.userId}` }),
     );
+    if (!currentUser) {
+      throw new CustomException(RESPONSE_MESSAGES.USER_NOT_EXISTED);
+    }
     const currentTaskResponse: ITaskReponse = await this.getTaskById(
       findTaskDto.id,
       findTaskDto.userId,
@@ -224,9 +229,7 @@ export class TasksService {
     if (!currentTask) {
       throw new CustomException(RESPONSE_MESSAGES.TASK_NOT_FOUND);
     }
-    if (!currentUser) {
-      throw new CustomException(RESPONSE_MESSAGES.USER_NOT_EXISTED);
-    }
+
     await this.tasksRepository.remove(currentTask);
     const removedTask: ITaskReponse = toFormatResponse(
       [{ ...currentTask, id: findTaskDto.id }],
@@ -237,14 +240,14 @@ export class TasksService {
     return removedTask;
   }
 
-  mapTaskEntityToInterface = (task: ITask) => {
-    return {
-      id: task.id || 0,
-      title: task.title || '',
-      description: task.description || '',
-      dueDate: task.dueDate || null,
-      status: task.status || '',
-      createdAt: task.createdAt || null,
-    } as ITask;
-  };
+  // mapTaskEntityToInterface = (task: ITask) => {
+  //   return {
+  //     id: task.id || 0,
+  //     title: task.title || '',
+  //     description: task.description || '',
+  //     dueDate: task.dueDate || null,
+  //     status: task.status || '',
+  //     createdAt: task.createdAt || null,
+  //   } as ITask;
+  // };
 }

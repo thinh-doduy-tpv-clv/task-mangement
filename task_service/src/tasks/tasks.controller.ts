@@ -39,7 +39,6 @@ export class TasksController implements TasksServiceController {
       );
       return updatedTask;
     } catch (err) {
-      console.log('err: ', err);
       return toFormatResponse(
         [],
         { errorCode: err.statusCode, errorMsg: err.message },
@@ -84,7 +83,6 @@ export class TasksController implements TasksServiceController {
       );
       return result;
     } catch (err) {
-      console.log('err: ', err);
       return toFormatResponse(
         [],
         { errorCode: err?.status, errorMsg: err.response?.message },

@@ -76,6 +76,24 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/src/config",
+      "/src/constants",
+      "/src/middlewares",
+      "/src/tasks/dto/",
+      "src/tasks/entities" ,
+      "src/tasks/types" ,
+      "src/tasks/types/google/protobuf",
+      "src/tasks/utils/constants",
+      "src/tasks/tasks.controller.ts",
+      "src/tasks/tasks.module.ts",
+      "src/app.controller.ts",
+      "src/app.module.ts",
+      "src/app.service.ts",
+      "src/main.ts",
+      "src/auth/auth.controller.ts"
+    ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   }
