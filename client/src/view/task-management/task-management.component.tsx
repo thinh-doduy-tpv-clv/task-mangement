@@ -102,7 +102,7 @@ const TaskManagementComponent: React.FunctionComponent<ComponentProps> = (
                     </div>
 
                     {/* <h3 className=" text-center p-2">{el}</h3> */}
-                    <div className="w-100 h-100">
+                    <div className="w-100 h-[80vh] overflow-y-scroll">
                       {(props.tasks[el] || []).map(
                         (item: any, index: number) => (
                           <Draggable
