@@ -14,7 +14,7 @@ describe('Login Home Page', function() {
 
     beforeEach(function(){
         //access fixture data
-        cy.fixture('example').then(function(account){
+        cy.fixture('account').then(function(account){
            this.account=account
         })
     })
@@ -51,15 +51,17 @@ describe('Login Home Page', function() {
         cy.get('#password').type(this.account.password)
         // confirm password
         cy.get('#confirmPassword').type(this.account.password)
-        // check into checkbox
-        cy.get('#terms').check()
         // And And User click on the "Sign up" button
         cy.get('body > section > div > div > div > form > button')
+            .should('have.text','Sign up')
             .click()
 
         //Then There is a msg "Register new account success!"
         cy.get('.Toastify__toast-body > :nth-child(2)')
             .should('have.text', 'Register new account success!') //Pass
+
+        cy.wait(5000)
+
         //And User go to the "Login Page"
         cy.get('body > section > div > div > div > h1')
             .should('have.text','Sign in to your account')//Pass
@@ -73,6 +75,8 @@ describe('Login Home Page', function() {
         cy.get('.Toastify__toast-body > :nth-child(2)')
             .should('be.visible')
             .should('have.text','Welcome!') //Pass
+        cy.url()
+            .should('include','/task-management')
     })
 
     it.skip('Login in',function() {
@@ -83,7 +87,7 @@ describe('Login Home Page', function() {
         //When User input <userID>
         cy.get('#username').type(this.account.username)
         // <Password>s
-        cy.get('#password').type(this.account.password)
+        cy.get('#password').type(this.account.newpassword)
         //And User click on the "Sign" button
         cy.get('body > section > div > div > div > form > input')
             .click()
@@ -105,7 +109,7 @@ describe('Login Home Page', function() {
             .click()
         cy.get('.Toastify__toast-body > :nth-child(2)')
             .should('be.visible')
-            .should('have.text','Wellcome!')
+            .should('have.text','Welcome!')
         cy.url()
             .should('include','/task-management')
             .log('User is in "Task List"')
@@ -151,7 +155,6 @@ describe('Login Home Page', function() {
         cy.get('#username').type(this.account.username) // Input <Username>
         cy.get('#password').type(this.account.newpassword) // Input <Password>
         cy.get('body > section > div > div > div > form > input')
-            .should('have.text','Submit')
             .click()//click on the Submit button
         cy.get('.Toastify__toast-body > :nth-child(2)')
             .should('be.visible')
