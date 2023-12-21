@@ -161,3 +161,42 @@ export const requestNewPasswordMutation = () => {
     }
   );
 };
+
+export const deletetaskMutation = () => {
+  return useMutation(
+    async ({
+      sessionToken,
+      userId,
+      id,
+      onSuccess,
+    }: {
+      sessionToken: string;
+      userId: number;
+      id: number;
+      onSuccess: (isSuccess: boolean) => void;
+    }) => {
+      const graphQLClient = createGraphQLClient(sessionToken);
+
+      const variables = { userId, id };
+
+      await executeMutation(
+        graphQLClient.request.bind(graphQLClient),
+        gql`
+          mutation RemoveTask($id: Int!, $userId: Int!) {
+            removeTask(input: { id: $id, userId: $userId }) {
+              createdAt
+              description
+              dueDate
+              id
+              status
+              title
+            }
+          }
+        `,
+        variables,
+        onSuccess,
+        () => onSuccess(false)
+      );
+    }
+  );
+};

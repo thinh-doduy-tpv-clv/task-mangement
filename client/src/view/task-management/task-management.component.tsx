@@ -21,6 +21,7 @@ interface ComponentProps {
   tasks: TaskObjectType;
   swapped: (result: { source: any; destination: any }) => void;
   setMode: any; // TODO: need adding type for function setState
+  onRemoveTask: (taskId: number) => void;
 }
 
 const TaskManagementComponent: React.FunctionComponent<ComponentProps> = (
@@ -61,6 +62,7 @@ const TaskManagementComponent: React.FunctionComponent<ComponentProps> = (
               router.push(routerPaths.signin);
             });
           }}
+          id={"sign-out-btn"}
         />
         <Image src={lgo} alt={""} className="h-[4rem] w-auto" />
         <Image src={man} alt={"exit"} className="h-[3rem] w-auto" />
@@ -69,9 +71,15 @@ const TaskManagementComponent: React.FunctionComponent<ComponentProps> = (
   };
 
   function onClickTaskHandler(item: TaskItemVM, mode: TaskHandleMode) {
-    console.log(`onlick mode ${mode} - item: ${item}`);
-    props.setShowModal(item);
-    props.setMode(mode);
+    if (TaskHandleMode.EDIT === mode) {
+      console.log(`onlick mode ${mode} - item: ${item}`);
+      props.setShowModal(item);
+      props.setMode(mode);
+    }
+
+    if (TaskHandleMode.DELETE === mode) {
+      props.onRemoveTask(item.id);
+    }
   }
 
   return (
@@ -186,6 +194,7 @@ const TaskManagementComponent: React.FunctionComponent<ComponentProps> = (
               className={
                 "w-[60px] h-[60px] hover:w-[70px] hover:h-[70px] hover:text-7xl transition-all ease-linear opacity-75 ease hover:opacity-100 flex justify-center items-center bg-blue-600 rounded-[100px] text-6xl text-white font-semibold"
               }
+              id={"add-new-task-btn"}
             >
               +
             </button>

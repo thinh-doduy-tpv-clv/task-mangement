@@ -14,6 +14,7 @@ import useSession from "src/app/use-session";
 import { defaultSession } from "src/app/task-management/lib";
 import { useRouter } from "next/navigation";
 import { routerPaths } from "src/core/lib/router";
+import { deletetaskMutation } from "./query/mutations";
 
 interface ComponentProps {}
 
@@ -50,6 +51,7 @@ const TaskManagementContainer: React.FunctionComponent<Props> = () => {
   );
   const addTaskMutate = addTaskMutation();
   const updateTaskMutate = updateTaskMutation();
+  const removeTaskMutate = deletetaskMutation();
   const [tasks, setTask] = useState<TaskObjectType>({});
 
   useEffect(() => {
@@ -161,6 +163,27 @@ const TaskManagementContainer: React.FunctionComponent<Props> = () => {
     });
   };
 
+  const onRemoveTask = async (id: number) => {
+    removeTaskMutate.mutate({
+      sessionToken: session.token,
+      userId: +session.id,
+      id,
+      onSuccess: (success) => {
+        onRemoveTaskSuccess(success);
+      },
+    });
+  };
+
+  const onRemoveTaskSuccess = (success: boolean) => {
+    if (success) {
+      setShowModal(undefined);
+      toast.success("Update task successfully");
+      refetch();
+    } else {
+      toast.success("Something went wrong!");
+    }
+  };
+
   const onUpdateTaskSuccess = (isSuccess: boolean, isRefetch?: boolean) => {
     //
     if (isSuccess) {
@@ -193,6 +216,7 @@ const TaskManagementContainer: React.FunctionComponent<Props> = () => {
         tasks={tasks}
         swapped={swapped}
         setMode={setMode}
+        onRemoveTask={onRemoveTask}
       />
       <PopupComponent
         isVisible={!!showModal}
