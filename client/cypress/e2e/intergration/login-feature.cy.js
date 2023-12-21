@@ -114,7 +114,7 @@ describe('Login Home Page', function() {
             .should('include','/task-management')
             .log('User is in "Task List"')
         //When User click on the "Sign out" button
-        cy.get('.justify-between > :nth-child(1)').click()
+        cy.get('#sign-out-btn').click()
         //Then User go to the "Login Page"
         cy.get('body > section > div > div > div > h1')
             .should('have.text','Sign in to your account')

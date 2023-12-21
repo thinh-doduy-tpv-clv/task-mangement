@@ -2,9 +2,13 @@
     "username": "chau-vu_02",
     "password":"ResetPassword@01",
     "title": "add title for task 002",
-    "desciption": "Precondition: Invoice Creation is opened \n Input data in all mandatory fields \n Click Save as Draft button \n Click OK button\n==> Actual: Draft Status is hidden after showing\n==> Expected: Draft Status is not hidden after showing",
+    "dtitle": "add title for task 001",
+    "ntitle": "update title for task 002",
+    "description": "Precondition: Invoice Creation is opened \n Input data in all mandatory fields \n Click Save as Draft button \n Click OK button\n==> Actual: Draft Status is hidden after showing\n==> Expected: Draft Status is not hidden after showing",
+    "ndescription": "Add more content in case update task",
     "priority":"Normal",
     "statusa": "Todo",
     "statusb": "Inprocess",
-    "duedate": "2024-12-31"
+    "duedate": "2024-12-31",
+    "nduedate": "2024-01-11"
 }
