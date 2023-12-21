@@ -4,7 +4,7 @@
 
 body {
     background-color: rgb(244, 247, 253);
-    overflow:hidden
+    overflow: hidden;
 }
 
 .box {
@@ -79,24 +79,40 @@ body {
     height: 24px;
 }
 
+
+
 /* width */
 ::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  /* Track */
-  ::-webkit-scrollbar-track {
+    width: 4px;
+    border-radius: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 8px;
-  }
-  
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: green;
+}
+/* Handle */
+
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb {
+    background: #B8B9BB;
     border-radius: 8px;
-  }
-  
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
+}
+
+.TODO ::-webkit-scrollbar-thumb {
+    background: #B8B9BB;
+}
+
+.INPROGRESS ::-webkit-scrollbar-thumb {
+    background: #EFD279;
+}
+
+.ARCHIVED ::-webkit-scrollbar-thumb {
+    background: #677EE6;
+}
+
+.DONE ::-webkit-scrollbar-thumb {
+    background: #E477CF;
+}

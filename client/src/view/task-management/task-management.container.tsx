@@ -115,7 +115,7 @@ const TaskManagementContainer: React.FunctionComponent<Props> = () => {
       }));
       const sourceTask = tasks[source.droppableId][source.index];
       if (sourceTask) {
-        onUpdateTask({ ...sourceTask, status: destination.droppableId });
+        onUpdateTask({ ...sourceTask, status: destination.droppableId }, true);
       }
     }
   };
@@ -149,22 +149,24 @@ const TaskManagementContainer: React.FunctionComponent<Props> = () => {
     });
   };
 
-  const onUpdateTask = async (task: TaskItemVM) => {
+  const onUpdateTask = async (task: TaskItemVM, isRefetch?: boolean) => {
     console.log("updating task info: ", task);
     updateTaskMutate.mutate({
       sessionToken: session.token,
       userId: +session.id,
       task,
-      onSuccess: onUpdateTaskSuccess,
+      onSuccess: (success) => {
+        onUpdateTaskSuccess(success, isRefetch);
+      },
     });
   };
 
-  const onUpdateTaskSuccess = (isSuccess: boolean) => {
+  const onUpdateTaskSuccess = (isSuccess: boolean, isRefetch?: boolean) => {
     //
     if (isSuccess) {
       setShowModal(undefined);
       toast.success("Update task successfully");
-      refetch();
+      if (isRefetch) refetch();
     }
   };
 

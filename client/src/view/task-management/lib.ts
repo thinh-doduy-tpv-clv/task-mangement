@@ -49,7 +49,7 @@ export const getListStyle = (
   // background: isDraggingOver ? "rgba(130, 143, 163,0.4)" : "rgb(244, 247, 253)",
   background: "#FEFEFE",
   borderWidth: "1px",
-  borderTopWidth: "3px",
+  borderTopWidth: "4px",
   borderColor: "#E0E0E0",
   borderTopColor: getStatusColor(el),
 });
