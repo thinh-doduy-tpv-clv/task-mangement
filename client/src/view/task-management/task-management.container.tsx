@@ -117,7 +117,7 @@ const TaskManagementContainer: React.FunctionComponent<Props> = () => {
       }));
       const sourceTask = tasks[source.droppableId][source.index];
       if (sourceTask) {
-        onUpdateTask({ ...sourceTask, status: destination.droppableId }, true);
+        onUpdateTask({ ...sourceTask, status: destination.droppableId }, false);
       }
     }
   };
@@ -231,7 +231,7 @@ const TaskManagementContainer: React.FunctionComponent<Props> = () => {
         ) : (
           <TaskFormComponent
             currentTask={showModal?.id ? showModal : undefined}
-            onSubmit={onUpdateTask}
+            onSubmit={(task) => onUpdateTask(task, true)}
             onCancel={() => setShowModal(undefined)}
           />
         )}

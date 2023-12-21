@@ -157,7 +157,7 @@ const SignUpComponent: React.FunctionComponent<Props> = (props) => {
                 {errors.confirmPassword && (
                   <p className={"error-field"}>
                     {(errors?.confirmPassword?.message as string) ||
-                      "Password is required."}
+                      "Confirm Password is required."}
                   </p>
                 )}
               </div>

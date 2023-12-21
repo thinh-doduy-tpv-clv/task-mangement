@@ -23,6 +23,8 @@ const TaskFormComponent: React.FunctionComponent<Props> = (props) => {
     formState: { errors },
   } = useForm({ mode: "all" });
 
+  console.log("props.currentTask", props.currentTask);
+
   return (
     <form
       onSubmit={handleSubmit((data) => {
@@ -31,7 +33,7 @@ const TaskFormComponent: React.FunctionComponent<Props> = (props) => {
           description: data.description,
           dueDate: data.dueDate,
           id: props.currentTask?.id || -1,
-          status: TaskStatusEnum.Todo,
+          status: props.currentTask?.status || TaskStatusEnum.Todo,
           title: data.title,
         });
       })}
@@ -71,7 +73,7 @@ const TaskFormComponent: React.FunctionComponent<Props> = (props) => {
                 validate: (value) => {
                   // Kiểm tra nếu ngày nhập nhỏ hơn ngày hiện tại
                   return (
-                    new Date(value) > new Date() ||
+                    new Date(value) >= new Date() ||
                     "Due date must be larger then current date."
                   );
                 },

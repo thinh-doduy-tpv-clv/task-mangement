@@ -74,7 +74,7 @@ const SignInComponent: React.FunctionComponent<Props> = (props) => {
                 />
 
                 {errors.username && (
-                  <p className={"error-field"}>Last name is required.</p>
+                  <p className={"error-field"}>User name is required.</p>
                 )}
               </div>
               <div>

@@ -152,7 +152,7 @@ const TaskManagementComponent: React.FunctionComponent<ComponentProps> = (
                                         // TODO: Edit task information
                                         onClick={() =>
                                           onClickTaskHandler(
-                                            item,
+                                            { ...item, status: el },
                                             TaskHandleMode.EDIT
                                           )
                                         }
