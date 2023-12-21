@@ -76,7 +76,7 @@ const TaskFormComponent: React.FunctionComponent<Props> = (props) => {
                     new Date(value).setHours(0),
                     new Date().setHours(0)
                   );
-                  if (props.currentTask) {
+                  if (props.currentTask?.dueDate) {
                     return (
                       new Date(value) >= new Date(props.currentTask.dueDate) ||
                       "Due date must be larger then current date."

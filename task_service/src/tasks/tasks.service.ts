@@ -19,13 +19,13 @@ import {
   IUpdateTaskDto,
 } from './types/task';
 import { toFormatResponse } from './utils/commonFunctions';
+import { TASK_STATUS } from './utils/constants/constants';
 import { RESPONSE_MESSAGES } from './utils/constants/messages';
 import {
   HttpStatusConstants,
   HttpStatusMessages,
 } from './utils/constants/statusCode';
 import { CustomException } from './utils/exceptions/customException';
-import { TASK_STATUS } from './utils/constants/constants';
 
 @Injectable()
 export class TasksService {
@@ -228,6 +228,11 @@ export class TasksService {
 
     if (!currentTask) {
       throw new CustomException(RESPONSE_MESSAGES.TASK_NOT_FOUND);
+    }
+    if (currentTask.status === TASK_STATUS.ARCHIVED) {
+      throw new CustomException(
+        RESPONSE_MESSAGES.TASK_ARCHIVED_CANNOT_BE_DELETED,
+      );
     }
 
     await this.tasksRepository.remove(currentTask);
