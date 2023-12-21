@@ -70,7 +70,7 @@ const TaskManagementComponent: React.FunctionComponent<ComponentProps> = (
     );
   };
 
-  function onClickTaskHandler(item: TaskItemVM, mode: TaskHandleMode) {
+  async function onClickTaskHandler(item: TaskItemVM, mode: TaskHandleMode) {
     if (TaskHandleMode.EDIT === mode) {
       console.log(`onlick mode ${mode} - item: ${item}`);
       props.setShowModal(item);
@@ -78,7 +78,11 @@ const TaskManagementComponent: React.FunctionComponent<ComponentProps> = (
     }
 
     if (TaskHandleMode.DELETE === mode) {
-      props.onRemoveTask(item.id);
+      const confirmData = confirm(`Delete ${item.title}`);
+
+      if (confirmData) {
+        props.onRemoveTask(item.id);
+      }
     }
   }
 
