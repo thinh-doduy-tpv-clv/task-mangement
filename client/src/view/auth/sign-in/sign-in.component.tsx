@@ -98,7 +98,7 @@ const SignInComponent: React.FunctionComponent<Props> = (props) => {
               <div className="flex items-center justify-between my-2">
                 <Link
                   href="reset-password"
-                  className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500"
+                  className="text-sm font-medium text-primary-600 hover:underline dark:text-gray-500"
                 >
                   Forgot password?
                 </Link>

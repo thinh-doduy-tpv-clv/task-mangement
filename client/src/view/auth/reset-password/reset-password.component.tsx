@@ -53,43 +53,49 @@ const ResetPasswordComponent: React.FunctionComponent<Props> = (props) => {
                 htmlFor="password"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
-                New Password
+                Password
               </label>
               <input
-                type="password"
-                id="password"
-                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Abc@1234"
                 {...register("password", {
                   required: true,
-                  validate: (value) =>
-                    value === passwordConfirm || "Passwords do not match",
                 })}
+                type="password"
+                name="password"
+                id="password"
+                placeholder="••••••••"
+                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               />
               {errors.password && (
-                <p className={"error-field"}>Password is required.</p>
+                <p className={"error-field"}>
+                  {(errors?.password?.message as string) ||
+                    "Password is required."}
+                </p>
               )}
             </div>
             <div>
               <label
-                htmlFor="password"
+                htmlFor="confirm-password"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
                 Confirm password
               </label>
               <input
-                type="password"
-                id="passwordConfirm"
-                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Abc@1234"
-                {...register("passwordConfirm", {
+                {...register("confirmPassword", {
                   required: true,
                   validate: (value) =>
-                    value === password || "Passwords do not match",
+                    value === password || "Password is not matched",
                 })}
+                type="password"
+                name="confirmPassword"
+                id="confirmPassword"
+                placeholder="••••••••"
+                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               />
-              {errors.passwordConfirm && (
-                <p className={"error-field"}>Password Confirm is required.</p>
+              {errors.confirmPassword && (
+                <p className={"error-field"}>
+                  {(errors?.confirmPassword?.message as string) ||
+                    "Confirm Password is required."}
+                </p>
               )}
             </div>
             <button
