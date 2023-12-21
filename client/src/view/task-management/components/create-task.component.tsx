@@ -72,10 +72,11 @@ const TaskFormComponent: React.FunctionComponent<Props> = (props) => {
                 required: "dueDate is required.",
                 validate: (value) => {
                   // Kiểm tra nếu ngày nhập nhỏ hơn ngày hiện tại
-                  return (
-                    new Date(value) >= new Date() ||
-                    "Due date must be larger then current date."
-                  );
+                  return new Date(value) >=
+                    new Date(props.currentTask?.dueDate || "") ||
+                    props.currentTask?.dueDate
+                    ? "New due date must be large than current due date."
+                    : "Due date must be larger then current date.";
                 },
               })}
               id="dueDate"
