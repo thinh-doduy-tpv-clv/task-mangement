@@ -177,7 +177,7 @@ const TaskManagementContainer: React.FunctionComponent<Props> = () => {
   const onRemoveTaskSuccess = (success: boolean) => {
     if (success) {
       setShowModal(undefined);
-      toast.success("Update task successfully");
+      toast.warning("Remove task successfully");
       refetch();
     } else {
       toast.success("Something went wrong!");
