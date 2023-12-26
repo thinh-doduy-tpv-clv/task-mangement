@@ -21,16 +21,7 @@ export class TasksController implements TasksServiceController {
   constructor(private readonly tasksService: TasksService) {}
 
   async findOneTask(request: IFindOneTaskDto): Promise<ITaskReponse> {
-    try {
-      return await this.tasksService.getTaskById(request.id, request.userId);
-    } catch (err) {
-      return toFormatResponse(
-        [],
-        { errorCode: err.statusCode, errorMsg: err.message },
-        '',
-        true,
-      );
-    }
+    return await this.tasksService.getTaskById(request.id, request.userId);
   }
   async updateTask(request: IUpdateTaskDto): Promise<ITaskReponse> {
     try {
@@ -61,34 +52,15 @@ export class TasksController implements TasksServiceController {
     }
   }
 
-  // [ ]: Implement create new task
   async createTask(createTaskDto: ICreateTaskDto): Promise<ITaskReponse> {
-    try {
-      const ITaskResponse = await this.tasksService.createTask(createTaskDto);
-      return ITaskResponse;
-    } catch (err) {
-      return toFormatResponse(
-        [],
-        { errorCode: err.statusCode, errorMsg: err.message },
-        '',
-        true,
-      );
-    }
+    const ITaskResponse = await this.tasksService.createTask(createTaskDto);
+    return ITaskResponse;
   }
 
   async findAllTask(getTaskUserDto: IGetTaskUserDto): Promise<ITaskReponse> {
-    try {
-      const result: ITaskReponse = await this.tasksService.getTasks(
-        getTaskUserDto,
-      );
-      return result;
-    } catch (err) {
-      return toFormatResponse(
-        [],
-        { errorCode: err?.status, errorMsg: err.response?.message },
-        '',
-        true,
-      );
-    }
+    const result: ITaskReponse = await this.tasksService.getTasks(
+      getTaskUserDto,
+    );
+    return result;
   }
 }

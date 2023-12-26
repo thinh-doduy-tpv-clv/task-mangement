@@ -18,7 +18,6 @@ import { TasksModule } from './tasks/tasks.module';
       autoSchemaFile: join(process.cwd(), 'src/graphql/schema.gql'),
       sortSchema: true,
       formatError: (error: GraphQLError) => {
-        console.log('error: ', error);
         const originalError: any = error?.extensions?.originalError;
         if (originalError) {
           return {

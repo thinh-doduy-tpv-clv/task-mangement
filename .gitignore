@@ -17,3 +17,7 @@
 /task_service/.vscode
 /api_gateway/.vscode
 /api_gateway/docs
+
+/api_gateway/coverage
+/auth_service/coverage
+/task_service/coverage

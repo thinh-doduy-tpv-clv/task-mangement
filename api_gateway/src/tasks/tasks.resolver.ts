@@ -1,15 +1,17 @@
-import { BadRequestException, UseGuards, ValidationPipe } from '@nestjs/common';
+import { UseFilters, ValidationPipe } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { lastValueFrom } from 'rxjs';
-import { JwtAuthGuard } from 'src/auth/utils/jwt.guard';
 import { ITaskReponse } from 'src/types/task';
+import { ValidationExceptionFilter } from 'src/utils/exceptions/custom-filter.exception';
 import { CreateTaskDto } from './inputs/createTaskDto';
 import { GetTasksListDto } from './inputs/getTaskListDto';
+import { RemoveTaskDto } from './inputs/removeTaskDto';
 import { UpdateTaskDto } from './inputs/updateTaskDto';
 import { TaskModel } from './models/tasks.model';
 import { TasksService } from './tasks.service';
-import { validate } from 'class-validator';
-import { RemoveTaskDto } from './inputs/removeTaskDto';
+import { CustomError } from 'src/utils/exceptions/custom-exception.format';
+import { HttpStatusCodes } from 'src/utils/constants/messages';
+import { HttpStatusMessages } from 'src/utils/constants/errorCodes';
 
 @Resolver(() => TaskModel)
 export class TaskResolver {
@@ -20,31 +22,37 @@ export class TaskResolver {
    * @param input contains userId
    * @returns list of tasks of given userId
    */
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Query(() => [TaskModel])
   async getTaskList(
-    @Args('input', new ValidationPipe({ transform: true, whitelist: true }))
+    @Args('input')
     input: GetTasksListDto,
   ): Promise<TaskModel[]> {
-    const errors = validate(input);
-    if ((await errors).length > 0) {
-      console.log('error: ', errors);
-      throw new BadRequestException(errors[0].message);
-    }
-    const rawTasks: ITaskReponse = await lastValueFrom(
+    const taskResponse: ITaskReponse = await lastValueFrom(
       this.taskService.findAllTask({ userId: input.userId }),
     );
 
+    if (taskResponse.isError) {
+      throw new CustomError(
+        taskResponse.error.errorMsg,
+        taskResponse.error.errorCode,
+        HttpStatusMessages[HttpStatusCodes.BAD_REQUEST],
+      );
+    }
+
     const respTasks: TaskModel[] =
-      rawTasks && rawTasks.data && rawTasks.data.length > 0
-        ? rawTasks.data
+      taskResponse && taskResponse.data && taskResponse.data.length > 0
+        ? taskResponse.data
         : [];
     return respTasks;
   }
 
   @Mutation(() => TaskModel)
-  async createTask(@Args('input') input: CreateTaskDto): Promise<TaskModel> {
-    const newTask: ITaskReponse = await lastValueFrom(
+  async createTask(
+    @Args('input', new ValidationPipe({ transform: true, whitelist: true }))
+    input: CreateTaskDto,
+  ): Promise<TaskModel> {
+    const taskResponse: ITaskReponse = await lastValueFrom(
       this.taskService.createTask({
         title: input.title,
         description: input.description,
@@ -53,11 +61,20 @@ export class TaskResolver {
         userId: input.userId,
       }),
     );
-    const taskResponse: TaskModel =
-      newTask && newTask.data
-        ? Object.assign({} as TaskModel, newTask.data[0])
+
+    // Handle server errors
+    if (taskResponse.isError) {
+      throw new CustomError(
+        taskResponse.error.errorMsg,
+        taskResponse.error.errorCode,
+        HttpStatusMessages[HttpStatusCodes.BAD_REQUEST],
+      );
+    }
+    const newTask: TaskModel =
+      taskResponse && taskResponse.data
+        ? Object.assign({} as TaskModel, taskResponse.data[0])
         : new TaskModel();
-    return taskResponse;
+    return newTask;
   }
 
   @Mutation(() => TaskModel)

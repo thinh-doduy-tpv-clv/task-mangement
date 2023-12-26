@@ -79,6 +79,7 @@ export class AuthService implements OnModuleInit {
         originalError: new CustomError(
           resetRequestResponse.error.errorMsg,
           resetRequestResponse.error.errorCode,
+          'BAD_REQUEST',
         ),
       });
     }
@@ -111,6 +112,7 @@ export class AuthService implements OnModuleInit {
         originalError: new CustomError(
           resetResponse.error.errorMsg,
           resetResponse.error.errorCode,
+          'BAD_REQUEST',
         ),
       });
     }

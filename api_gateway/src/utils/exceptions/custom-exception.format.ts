@@ -1,11 +1,15 @@
-export class CustomError extends Error {
-  statusCode: number;
+import { GraphQLError } from 'graphql';
 
-  constructor(message: string, statusCode: number) {
-    super(message);
-    this.name = 'CustomError';
-    this.statusCode = statusCode;
-
-    Object.setPrototypeOf(this, CustomError.prototype);
+export class CustomError extends GraphQLError {
+  constructor(message: string, statusCode: number, errorCode: string) {
+    super(message, {
+      extensions: {
+        originalError: {
+          message,
+          statusCode,
+          errorCode,
+        },
+      },
+    });
   }
 }
