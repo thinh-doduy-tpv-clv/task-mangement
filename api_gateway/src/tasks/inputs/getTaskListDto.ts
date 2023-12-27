@@ -5,7 +5,6 @@ import { IsNotEmpty, IsNumber, IsNumberString, Min } from 'class-validator';
 export class GetTasksListDto {
   @Field(() => Int)
   @IsNumber()
-  @IsNotEmpty({ message: 'userId is required' })
-  @Min(1, { message: 'userId should be positive number' })
+  @Min(1, { message: 'userId must be greater than 0' })
   userId: number;
 }

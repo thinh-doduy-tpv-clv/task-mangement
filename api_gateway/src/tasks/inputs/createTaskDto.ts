@@ -1,11 +1,19 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
-import { IsDate, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsDate,
+  IsEnum,
+  IsIn,
+  IsNotEmpty,
+  IsString,
+  Max,
+} from 'class-validator';
 import { TASK_STATUS } from 'src/utils/constants';
 
 @InputType()
 export class CreateTaskDto {
   @Field()
   @IsNotEmpty()
+  // @Max(10, { message: 'title must be less than 10 characters' })
   title: string;
 
   @Field(() => String, { nullable: true })
@@ -17,7 +25,8 @@ export class CreateTaskDto {
   dueDate: Date;
 
   @Field(() => String, { defaultValue: 'TODO' })
-  @IsEnum(TASK_STATUS, { message: 'Unavailable status' })
+  // @IsEnum(TASK_STATUS, { message: 'Unavailable status' })
+  // @IsIn(['TODO', 'IN_PROGRESS', 'DONE', 'ARCHIVED'])
   @IsString()
   status: string;
 

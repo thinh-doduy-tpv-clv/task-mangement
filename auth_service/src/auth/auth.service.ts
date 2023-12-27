@@ -1,28 +1,24 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
-import { User } from './entities/user.entity';
 import {
-  IUser as UserProto,
+  IAuthReponse,
+  IData,
+  IForgotPasswordRequestDto,
   ILoginRequestDto,
   IRegisterRequestDto,
-  IRefreshTokenRequestDto,
-  IData,
-  IAuthReponse,
-  IUpdateUserDto,
-  IForgotPasswordRequestDto,
   IResetPasswordRequestDto,
+  IUser as UserProto
 } from '../shared/types/auth';
-import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
-import { ExecutionContext } from '@nestjs/common';
+import { User } from './entities/user.entity';
 
-import { Metadata } from '@grpc/grpc-js';
 import { AuthValidator } from '../shared/services/auth-validator.service';
+import { CryptoService } from '../shared/services/crypto.service';
 import { AuthResponse } from '../shared/untils';
 import { AuthErrorResponseDto } from './dto/auth-error-response.dto';
-import { CryptoService } from '../shared/services/crypto.service';
 @Injectable()
 export class AuthService {
   constructor(

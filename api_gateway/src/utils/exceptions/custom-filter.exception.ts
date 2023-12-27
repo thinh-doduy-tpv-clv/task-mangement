@@ -1,28 +1,35 @@
 import {
   ArgumentsHost,
-  BadRequestException,
   Catch,
   ExceptionFilter,
-  UnauthorizedException,
+  HttpException,
+  UnauthorizedException
 } from '@nestjs/common';
 import { GqlArgumentsHost } from '@nestjs/graphql';
 import { GraphQLError } from 'graphql';
 
-@Catch(BadRequestException)
+@Catch(HttpException)
 export class ValidationExceptionFilter implements ExceptionFilter {
-  catch(exception: BadRequestException, host: ArgumentsHost) {
-    const gqlHost = GqlArgumentsHost.create(host);
-    const ctx = gqlHost.getContext();
+  catch(exception: HttpException, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const response = exception.getResponse();
+    const status = exception.getStatus();
+    if (status === 400) {
+      const exceptionResponse = exception.getResponse();
+      const isValidationError = Array.isArray(exceptionResponse['message']);
 
-    // Extract validation errors from the exception
-    const validationErrors = exception.getResponse()['message'];
-    console.log('valid: ', validationErrors);
-
-    // Create a custom GraphQL error with the validation messages
-    const gqlError = new GraphQLError(validationErrors);
-
-    // Send the custom GraphQL error to the client
-    throw gqlError;
+      if (isValidationError) {
+        throw new GraphQLError(`${exceptionResponse['message']}`, {
+          extensions: {
+            originalError: {
+              message: exceptionResponse['message'],
+              statusCode: status,
+              errorCode: exceptionResponse['error'],
+            },
+          },
+        });
+      }
+    }
   }
 }
 

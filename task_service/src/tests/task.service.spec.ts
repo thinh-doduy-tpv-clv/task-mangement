@@ -13,7 +13,7 @@ import {
   IUpdateTaskDto,
 } from '../tasks/types/task';
 import { of } from 'rxjs';
-import { RESPONSE_MESSAGES } from '../tasks/utils/constants/messages';
+import { RESPONSE_MESSAGES } from '../tasks/utils/constants/messageStatus';
 import { NotFoundException } from '@nestjs/common';
 
 describe('Task Service', () => {
