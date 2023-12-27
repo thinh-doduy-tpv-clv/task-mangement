@@ -1,9 +1,9 @@
 {
     "username": "chau-vu_02",
     "password":"ResetPassword@01",
-    "title": "add title for task 002",
-    "dtitle": "add title for task 001",
-    "ntitle": "update title for task 002",
+    "title": "add title for task 006",
+    "dtitle": "add title for task 006 for delete",
+    "ntitle": "update title for task 006",
     "description": "Precondition: Invoice Creation is opened \n Input data in all mandatory fields \n Click Save as Draft button \n Click OK button\n==> Actual: Draft Status is hidden after showing\n==> Expected: Draft Status is not hidden after showing",
     "ndescription": "Add more content in case update task",
     "priority":"Normal",

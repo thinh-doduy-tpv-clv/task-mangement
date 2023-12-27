@@ -19,7 +19,8 @@ describe('Login Home Page', function() {
         })
     })
 
-    it.only('Create a new task',function() {
+    // it.only('Create a new task',function() {
+    it('Create a new task',function() {
         // Login to Task Mangement
         cy.visit('http://localhost:3000/sign-in')
         cy.get('#username').type(this.taskdata.username)// <Username>        
@@ -120,7 +121,7 @@ describe('Login Home Page', function() {
             .click()//click add button
 
         //Given User created a <taskname> with <status     
-        cy.get('#title').type(this.taskdata.title)
+        cy.get('#title').type(this.taskdata.dtitle)
         cy.get('#description').type(this.taskdata.description)
         //change duedate
         cy.get('#dueDate').focus().type(this.taskdata.duedate)
@@ -131,17 +132,20 @@ describe('Login Home Page', function() {
         cy.get('.Toastify__toast-body > :nth-child(2)')
             .should('be.visible')
             .should('have.text','New task has been created!')
-
+        cy.wait(4000)
         //When User click on the "Trash" icon
         cy.get('div[data-rfd-droppable-id="TODO"] > :nth-child(2)')
             .find('div[data-rfd-draggable-id]').each(($task) => {
-                if($task.children().text().includes(this.taskdata.title)){
+                if($task.children().text().includes(this.taskdata.dtitle)){
                     $task.find('[alt="Remove Task"]').click()
                 }  
             })
+        cy.get('.Toastify__toast-body > :nth-child(2)')
+            .should('be.visible')
+            .should('have.text','Update task successfully')    
     })
 
-    it('Update status of task by drag and drop', function(){
+    it.skip('Update status of task by drag and drop', function(){
          // Precondition
         //Given User was signed in
         cy.visit('http://localhost:3000/sign-in')
