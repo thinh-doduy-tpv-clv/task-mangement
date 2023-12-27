@@ -4,14 +4,13 @@ import { APP_FILTER } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { TASK_PACKAGE_NAME } from 'src/types/task';
-import { TASK_SERVICE } from '../constants/packages';
-import { TasksController } from './tasks.controller';
-import { TaskResolver } from './tasks.resolver';
-import { TasksService } from './tasks.service';
 import {
   AuthExceptionFilter,
   ValidationExceptionFilter,
 } from 'src/utils/exceptions/custom-filter.exception';
+import { TASK_SERVICE } from '../constants/packages';
+import { TaskResolver } from './tasks.resolver';
+import { TasksService } from './tasks.service';
 
 @Module({
   imports: [
@@ -28,7 +27,6 @@ import {
       },
     ]),
   ],
-  controllers: [TasksController],
   providers: [
     TasksService,
     TaskResolver,

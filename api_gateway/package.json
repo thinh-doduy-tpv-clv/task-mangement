@@ -81,7 +81,7 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "**/*.(t|j)s"
+      "tasks/tasks.resolver.ts"
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",

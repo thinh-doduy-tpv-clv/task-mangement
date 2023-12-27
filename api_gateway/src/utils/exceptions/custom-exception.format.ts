@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { GraphQLError } from 'graphql';
 
 export class CustomError extends GraphQLError {

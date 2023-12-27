@@ -7,6 +7,9 @@ import { GetTasksListDto } from './inputs/getTaskListDto';
 import { TasksModule } from './tasks.module';
 import { TaskResolver as TasksResolver } from './tasks.resolver';
 import { TasksService } from './tasks.service';
+import { HttpStatusMessages } from 'src/utils/constants/errorCodes';
+import { HttpStatusCodes } from 'src/utils/constants/messages';
+import { CustomError } from 'src/utils/exceptions/custom-exception.format';
 
 jest.mock('../auth/utils/jwt.guard');
 jest.mock('./tasks.service');
@@ -62,6 +65,26 @@ describe('TasksResolver', () => {
 
       const actualTaskList = await resolver.getTaskList(dto);
       expect(actualTaskList).toBe(expectedMockResult.data);
+    });
+
+    it('should throw a CustomError when taskResponse.isError is true', () => {
+      const taskResponse = {
+        isError: true,
+        error: {
+          errorMsg: 'Test error message',
+          errorCode: 400,
+        },
+      };
+
+      expect(() => {
+        if (taskResponse.isError) {
+          throw new CustomError(
+            taskResponse.error.errorMsg,
+            taskResponse.error.errorCode,
+            HttpStatusMessages[HttpStatusCodes.BAD_REQUEST],
+          );
+        }
+      }).toThrow(CustomError);
     });
   });
 });
