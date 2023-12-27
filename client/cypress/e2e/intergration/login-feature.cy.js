@@ -33,7 +33,61 @@ describe('Login Home Page', function() {
             .should('have.text', 'Create Your Account') //Pass
     })
 
-    it('Create a new account', function() {
+    it('Create a new account unsuccessfully', function() {
+        //Given User is in the "Register Page"  
+        cy.visit('http://localhost:3000/sign-in')
+        cy.get('body > section > div > div > div > form > p > a')
+            .click()
+        cy.get('body > section > div > div > div > h1')
+            .should('have.text', 'Create Your Account')
+            .log('User is in the "Register Page"')
+        //When User input <userID>, <Password>, <Email>
+            // email is empty
+        cy.get('#email').focus().blur()
+        cy.get('body > section > div > div > div > form > div:nth-child(1) > p')
+            .should('have.text', 'Email is required.')
+            .log('Email is empty')
+        cy.get('#email').type('abcgmail.com')
+            // check invalid email  
+        cy.get('body > section > div > div > div > form > div:nth-child(1) > p')
+            .should('have.text', 'Entered value is not a valid email address')
+            .log('Email is invalid')
+            // input email
+        cy.get('#email').clear().type('abc@gmail.com')
+            .log('Email is correct')
+
+            // username is empty
+        cy.get('#username').focus().blur()
+        cy.get('body > section > div > div > div > form > div:nth-child(2) > p')
+            .should('have.text', 'Username is required.')
+            .log('Username is empty')
+            // check invalid username 
+        cy.get('#username').type('chau.vu#$')
+        cy.get('body > section > div > div > div > form > div:nth-child(2) > p')
+            .should('have.text', 'Username can only contain letters, numbers, underscores, or hyphens.')
+            .log('Username is invalid')
+            // input username 
+        cy.get('#username').clear().type('chau-vu_01')
+            .log('Username is correct')
+
+            // password is empty
+        cy.get('#password').focus().blur()
+        cy.get('body > section > div > div > div > form > div:nth-child(3) > p')
+            .should('have.text', 'Password is required.')
+            .log('Password is empty')
+            // password is invalid
+        cy.get('#password').type('abc')
+        cy.get('body > section > div > div > div > form > div:nth-child(3) > p')
+            .should('have.text', 'faile')
+            .log('Password is invalid')
+
+        cy.get('#confirmPassword').focus().blur()
+        cy.get('body > section > div > div > div > form > div:nth-child(4) > p')
+            .should('have.text', 'Password is required.')
+            .log('ConfirmPassword is empty') 
+    })
+
+    it('Create a new account successfully', function() {
         //Given User is in the "Register Page" 
         cy.visit('http://localhost:3000/sign-in')
         cy.get('body > section > div > a')
@@ -114,7 +168,7 @@ describe('Login Home Page', function() {
             .should('include','/task-management')
             .log('User is in "Task List"')
         //When User click on the "Sign out" button
-        cy.get('.justify-between > :nth-child(1)').click()
+        cy.get('#sign-out-btn').click()
         //Then User go to the "Login Page"
         cy.get('body > section > div > div > div > h1')
             .should('have.text','Sign in to your account')

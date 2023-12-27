@@ -1,3 +1,9 @@
 [
-  {"name": "incalid","Email": " ", "username": " ", "password": " ", "Confirmpasword": " "}
+  {
+    "testname" : "test case 01",
+    "email": "abc07@gamil.com",
+    "username": "chau-vu_07",
+    "password":"ResetPassword@00",
+    "newpassword": "ResetPassword@01"
+  }
 ]

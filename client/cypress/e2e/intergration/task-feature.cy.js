@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-let account
+import '@4tw/cypress-drag-drop'
 
 describe('Login Home Page', function() {
     before(() => {
@@ -19,6 +19,7 @@ describe('Login Home Page', function() {
         })
     })
 
+    // it.only('Create a new task',function() {
     it('Create a new task',function() {
         // Login to Task Mangement
         cy.visit('http://localhost:3000/sign-in')
@@ -34,9 +35,7 @@ describe('Login Home Page', function() {
             .log('login successfully')
         // User is in Task List(Board)
         cy.url().should('include','/task-management')
-        cy.wait(4000)
-        cy.get('.w-full.justify-between > .flex')
-            .should('have.text','Add new item')
+        cy.get('#add-new-task-btn')
             .click()
         
         //Given User opens the "Task Details"
@@ -44,7 +43,7 @@ describe('Login Home Page', function() {
 
         //When User input <taskname> and <description>
         cy.get('#title').type(this.taskdata.title)
-        cy.get('#description').type(this.taskdata.desciption)
+        cy.get('#description').type(this.taskdata.description)
         //change duedate
         cy.get('#dueDate').focus().type(this.taskdata.duedate)
     
@@ -57,7 +56,7 @@ describe('Login Home Page', function() {
             .should('have.text','New task has been created!')
     })
 
-    it.only('Update date of a task', function() {
+    it('Update data of a task', function() {
         // Precondition
             //Given User was signed in
         cy.visit('http://localhost:3000/sign-in')
@@ -76,8 +75,98 @@ describe('Login Home Page', function() {
         
         //Given User opens the "Task Details"
         //cy.get('....')
-        cy.get('[data-rfd-droppable-id="TODO"] > .h-\[80vh\]') 
-            .find(cy.get('[data-rfd-draggable-id="10"] > .text-lg'))
+        //Open task detail that     
+        cy.get('div[data-rfd-droppable-id="TODO"] > :nth-child(2)')
+            .find('div[data-rfd-draggable-id]').each(($task) => {
+                if($task.children().text().includes(this.taskdata.title)){
+                    $task.find('[alt="Edit Task"]').click()
+                }
+            })
+        //When User input <taskname> and <description>
+        cy.get('#title').type('{del}{selectall}').type(this.taskdata.ntitle)
+        cy.get('#description').type(this.taskdata.ndescription)
+        //change duedate
+        cy.get('#dueDate').focus().type(this.taskdata.nduedate)
+        //And user click on the "Save" button
+        cy.get('#popup-container > div > form > div.w-100.flex.justify-end.gap-4 > button.bg-blue-400.text-white.py-2.px-4.rounded-lg')
+            .should('have.text','save')
+            .click()
+        //Then There is a <message>
+        cy.get('.Toastify__toast-body > :nth-child(2)')
+            .should('be.visible')
+            .should('have.text','Update task successfully')
+    })  
+
+    it('Delete a task', function() {
+        // Precondition
+            //Given User was signed in
+        cy.visit('http://localhost:3000/sign-in')
+        cy.get('#username').type(this.taskdata.username)//<Useranme>
+        cy.get('#password').type(this.taskdata.password)//<Password>
+           
+        cy.get('body > section > div > div > div > form > input')
+            .click()
+        //Then There is a message "Welcome!"
+        cy.get('.Toastify__toast-body > :nth-child(2)')
+            .should('be.visible')
+            .should('have.text','Welcome!')
+            .log('login successfully')
+        // User is in Task List(Board)
+        cy.url().should('include','/task-management')
         
+        //Given User opens the "Task Details"
+        //cy.get('....')
+
+        cy.get('#add-new-task-btn')
+            .click()//click add button
+
+        //Given User created a <taskname> with <status     
+        cy.get('#title').type(this.taskdata.dtitle)
+        cy.get('#description').type(this.taskdata.description)
+        //change duedate
+        cy.get('#dueDate').focus().type(this.taskdata.duedate)
+        //click save button
+        cy.get('#popup-container > div > form > div.w-100.flex.justify-end.gap-4 > button.bg-blue-400.text-white.py-2.px-4.rounded-lg')
+            .should('have.text','save')
+            .click()
+        cy.get('.Toastify__toast-body > :nth-child(2)')
+            .should('be.visible')
+            .should('have.text','New task has been created!')
+        cy.wait(4000)
+        //When User click on the "Trash" icon
+        cy.get('div[data-rfd-droppable-id="TODO"] > :nth-child(2)')
+            .find('div[data-rfd-draggable-id]').each(($task) => {
+                if($task.children().text().includes(this.taskdata.dtitle)){
+                    $task.find('[alt="Remove Task"]').click()
+                }  
+            })
+        cy.get('.Toastify__toast-body > :nth-child(2)')
+            .should('be.visible')
+            .should('have.text','Update task successfully')    
+    })
+
+    it.skip('Update status of task by drag and drop', function(){
+         // Precondition
+        //Given User was signed in
+        cy.visit('http://localhost:3000/sign-in')
+        cy.get('#username').type(this.taskdata.username)//<Useranme>
+        cy.get('#password').type(this.taskdata.password)//<Password>
+           
+        cy.get('body > section > div > div > div > form > input')
+            .click()
+        //Then There is a message "Welcome!"
+        cy.get('.Toastify__toast-body > :nth-child(2)')
+            .should('be.visible')
+            .should('have.text','Welcome!')
+            .log('login successfully')
+        // User is in Task List(Board)
+        cy.url().should('include','/task-management')
+        
+        cy.get('div[data-rfd-droppable-id="TODO"] > :nth-child(2)')
+            .find('div[data-rfd-draggable-id]').each(($task) => {
+                if($task.children().text().includes(this.taskdata.ntitle)){
+                    $task
+                }  
+            }).drag('div[data-rfd-droppable-id="IN PROGRESS"]')
     })
 })
