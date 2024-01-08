@@ -1,8 +1,7 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { AUTH } from './shared/constants';
 import { ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
@@ -10,9 +9,9 @@ async function bootstrap() {
     {
       transport: Transport.GRPC,
       options: {
-        url: 'localhost:9001',
-        protoPath: 'src/proto/auth.proto',
-        package: AUTH,
+        url: process.env.AUTH_URL || 'localhost:9001',
+        protoPath: process.env.PROTO_PATH || 'dist/proto/auth.proto',
+        package: 'auth',
       },
     },
   );

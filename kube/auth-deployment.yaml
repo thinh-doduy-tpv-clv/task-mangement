@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-mngt-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: task-mngt-deployment
+  template:
+    metadata:
+      labels:
+        app: task-mngt-deployment
+    spec:
+      containers:
+        - name: auth-service-task-mngt
+          image: thinhddo/taskmngt-auth:latest
+          ports:
+            - containerPort: 9001
+          resources:
+            limits:
+              cpu: "0.5"
+              memory: "512Mi"

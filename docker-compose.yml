@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  db:
+    build: ./db
+    volumes:
+      - ./db/data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_TYPE=postgresql
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=task-mngt
+    networks:
+      - task-mngt-networks
+  auth:
+    image: thinhddo/taskmngt-auth
+    container_name: auth-service-container
+    ports:
+      - "9001:9001"
+    depends_on:
+      - db
+    networks:
+      - task-mngt-networks
+
+networks:
+  task-mngt-networks:

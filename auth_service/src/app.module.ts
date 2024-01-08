@@ -19,7 +19,7 @@ import { AuthModule } from './auth/auth.module';
           password: configService.get('POSTGRES_PASSWORD'),
           database: configService.get('POSTGRES_DB'),
           entities: ['dist/**/*.entity.js'],
-          synchronize: true,
+          // synchronize: true,
         } as TypeOrmModuleOptions),
       inject: [ConfigService],
     }),
