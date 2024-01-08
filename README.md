@@ -32,6 +32,55 @@ Task Management! This application provides a comprehensive solution for managing
 - npm i -g @magidoc/cli@latest && magidoc generate
 - magidoc preview
 
+### Deploy to kubernetes (using minikube)
+1. Setup kubectl
+URL: https://kubernetes.io/docs/tasks/tools/
+Windows: 
+- Navigate to any directory and run:
+```sh
+curl.exe -LO "https://dl.k8s.io/release/v1.29.0/bin/windows/amd64/kubectl.exe"
+```
+Then, add kubectl cli to PATH ENV
+
+2. Setup minikube
+Download the installer for minikube: 
+```sh
+https://storage.googleapis.com/minikube/releases/latest/minikube-installer.exe
+```
+
+3. Create new cluster
+```sh
+minikube start
+```
+
+Optional: Run this command whenever need to set default context
+```sh
+# (Optional) use default context
+docker context use default
+
+# Verify cluster
+kubectl cluster-info
+```
+
+- Check cluster status
+```sh
+kubectl cluster-info
+```
+
+4. Deploy services and database to kubernetes
+```sh
+kubectl apply -f postgres-deployment.yaml
+kubectl apply -f postgres-service.yaml
+kubectl apply -f auth-deployment.yaml
+kubectl apply -f auth-service.yaml
+```
+
+5. Some useful minikube commands
+Check IP cluster: minikube ip
+Open dashboard: minikube dashboard
+
+6. Example output
+
 ## Contributor / Members
 ```
 Name          | Role
