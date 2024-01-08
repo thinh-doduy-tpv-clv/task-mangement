@@ -80,6 +80,9 @@ Check IP cluster: minikube ip
 Open dashboard: minikube dashboard
 
 6. Example output
+![Kubectl Output](./samples/kubecli-output.png)
+![Minikube Output](./samples/minikube-ouput.png)
+![Postman Output](./samples/postman-output.png)
 
 ## Contributor / Members
 ```
