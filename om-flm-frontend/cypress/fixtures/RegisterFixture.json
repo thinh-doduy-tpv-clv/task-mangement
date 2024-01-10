@@ -1,0 +1,9 @@
+{
+  "ValidAccount": {
+    "email": "abc10@gamil.com",
+    "username": "chau-vu_10",
+    "password":"ResetPassword@00",
+    "newpassword": "ResetPassword@01",
+    "successmsg": "'Register new account success!'"
+  }
+}

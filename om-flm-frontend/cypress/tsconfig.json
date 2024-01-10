@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "baseUrl": "../cypress",
+    "lib": ["es5", "dom"],
+    "types": ["cypress"],
+    "noImplicitThis": false
+  },
+  "include": ["./**/*.ts", "./types/type.d.ts"]
+}

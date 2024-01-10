@@ -1,0 +1,125 @@
+name: CI
+
+on:
+  push:
+    branches: ["develop"]
+  pull_request:
+    branches: ["develop"]
+
+jobs:
+  build-and-test:
+    name: Build & Test
+    runs-on: [om-flm-runner]
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Use node 20.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.x
+
+      - name: Setup sonarqube
+        uses: warchant/setup-sonar-scanner@v4
+
+      - name: Get node_modules cache
+        uses: actions/cache@v3.0.2
+        id: node_modules
+        with:
+          path: |
+            **/node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('**/yarn.lock') }}-20.x
+
+      - name: Install Yarn Package Manager
+        run: npm install -g yarn
+
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run Lint
+        run: yarn lint
+
+      - name: Run Unit Test
+        run: yarn test:ci
+
+      - name: Archive Coverage Report Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage
+          path: coverage
+
+      - name: Run Build
+        run: yarn build
+
+      - name: Run Sonar Scanner
+        run: |
+          sonar-scanner -Dsonar.projectBaseDir=$(pwd) \
+            -Dsonar.projectKey=$SONAR_PROJECT_KEY \
+            -Dsonar.projectName=$SONAR_PROJECT_KEY \
+            -Dsonar.branch.name=$GITHUB_HEAD_REF \
+            -Dsonar.login=$SONAR_TOKEN_OM_FLM \
+            -Dsonar.host.url=$SONAR_URL \
+            -X
+        env:
+          SONAR_TOKEN_OM_FLM: ${{ secrets.SONAR_TOKEN_OM_FLM }}
+          SONAR_URL: ${{ secrets.SONAR_URL }}
+          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+
+      - name: Check SonarQube quality gate
+        if: success()
+        id: sonarqube-quality-gate
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        timeout-minutes: 10
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_OM_FLM }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_URL }}
+
+  push_image:
+    name: Push Image to Google Artifact Registry
+    runs-on: [om-flm-runner]
+    needs: build-and-test
+    if: github.ref == 'refs/heads/develop'
+    timeout-minutes: 30
+    env:
+      AR_REGION: asia-southeast1
+      SERVICE_ACCOUNT_KEY: ${{ secrets.SERVICE_ACCOUNT_KEY }}
+      DOCKER_IMAGE_REPOSITORY: frontend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - id: "auth"
+        uses: "google-github-actions/auth@v1"
+        with:
+          credentials_json: ${{ env.SERVICE_ACCOUNT_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: "google-github-actions/setup-gcloud@v1"
+
+      - name: Use gcloud CLI
+        run: "gcloud info"
+
+      - name: Configure Docker Client
+        run: |
+          gcloud auth configure-docker --quiet
+          gcloud auth configure-docker $AR_REGION-docker.pkg.dev --quiet
+
+      - name: Push image to Artifact Registry
+        run: |
+          export IMAGE_NAME=$AR_REGION-docker.pkg.dev/one-global-chorus-flm-dev/$DOCKER_IMAGE_REPOSITORY/${{ github.event.repository.name }}:${{ github.sha }}
+          docker build -t $IMAGE_NAME . 
+          docker push $IMAGE_NAME
+
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.PAT }}
+          repository: ocean-network-express/om-flm-config
+          event-type: trigger-cd-workflow
+          client-payload: |-
+            {
+              "tag": "${{ github.sha }}",
+              "name": "${{ github.event.repository.name }}"
+            }
