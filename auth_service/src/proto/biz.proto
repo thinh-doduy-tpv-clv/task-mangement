@@ -1,0 +1,14 @@
+syntax = "proto3";
+package biz;
+
+service BizService {
+  rpc SendAmount(SendDto) returns (MyData) {}
+}
+
+message SendDto {
+  int32 amount = 1;
+}
+
+message MyData {
+  string data = 1;
+}

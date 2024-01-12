@@ -11,7 +11,7 @@ import {
   ILoginRequestDto,
   IRegisterRequestDto,
   IResetPasswordRequestDto,
-  IUser as UserProto
+  IUser as UserProto,
 } from '../shared/types/auth';
 import { User } from './entities/user.entity';
 

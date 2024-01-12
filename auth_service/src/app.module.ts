@@ -4,6 +4,8 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { BizModule } from './biz/biz.module';
+import { KafkaClientModule } from './kafka-client/kafka-client.module';
 @Module({
   imports: [
     AuthModule,
@@ -23,6 +25,8 @@ import { AuthModule } from './auth/auth.module';
         } as TypeOrmModuleOptions),
       inject: [ConfigService],
     }),
+    BizModule,
+    KafkaClientModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -34,6 +34,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "crypto": "^1.0.1",
+    "kafkajs": "^2.2.4",
     "pg": "^8.11.3",
     "postgres": "^3.4.3",
     "reflect-metadata": "^0.1.13",
@@ -71,7 +72,7 @@
       "ts"
     ],
     "rootDir": "src",
-    "testRegex":"/tests/.*\\.(test|spec)\\.ts$",
+    "testRegex": "/tests/.*\\.(test|spec)\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
@@ -82,7 +83,7 @@
       "/node_modules/",
       "/src/auth/dto/",
       "/src/auth/entities/",
-      "src/shared" ,
+      "src/shared",
       "src/shared/constants",
       "src/app.controller.ts",
       "src/app.module.ts",

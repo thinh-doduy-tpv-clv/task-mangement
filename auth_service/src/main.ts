@@ -1,21 +1,16 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { MicroserviceOptions } from '@nestjs/microservices';
+import { kafkaClientConfig } from 'utils/kafka-client-config';
 import { AppModule } from './app.module';
+import { grpcClientConfig } from 'utils/grpc-config';
 
 async function bootstrap() {
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    AppModule,
-    {
-      transport: Transport.GRPC,
-      options: {
-        url: process.env.AUTH_URL || 'localhost:9001',
-        protoPath: process.env.PROTO_PATH || 'dist/proto/auth.proto',
-        package: 'auth',
-      },
-    },
-  );
+  const app = await NestFactory.create(AppModule);
+  app.connectMicroservice<MicroserviceOptions>(grpcClientConfig);
+  app.connectMicroservice<MicroserviceOptions>(kafkaClientConfig);
   app.useGlobalPipes(new ValidationPipe());
-  await app.listen();
+  await app.startAllMicroservices();
+  app.listen(null);
 }
 bootstrap();
