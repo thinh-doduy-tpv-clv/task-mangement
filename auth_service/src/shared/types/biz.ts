@@ -1,25 +1,24 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
+import { Empty } from "./google/protobuf/empty";
 
 export const protobufPackage = "biz";
 
-export interface SendDto {
-  amount: number;
-}
-
-export interface MyData {
-  data: string;
+export interface RequestTaskDto {
+  task: string;
+  status: string;
+  key: string;
 }
 
 export const BIZ_PACKAGE_NAME = "biz";
 
 export interface BizServiceClient {
-  sendAmount(request: SendDto): Observable<MyData>;
+  sendAmount(request: RequestTaskDto): Observable<Empty>;
 }
 
 export interface BizServiceController {
-  sendAmount(request: SendDto): Promise<MyData> | Observable<MyData> | MyData | Promise<void>;
+  sendAmount(request: RequestTaskDto): void;
 }
 
 export function BizServiceControllerMethods() {

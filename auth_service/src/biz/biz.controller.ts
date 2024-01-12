@@ -5,8 +5,7 @@ import { lastValueFrom } from 'rxjs';
 import {
   BizServiceController,
   BizServiceControllerMethods,
-  MyData,
-  SendDto,
+  RequestTaskDto,
 } from 'src/shared/types/biz';
 
 @Controller('biz')
@@ -16,22 +15,18 @@ export class BizController implements BizServiceController {
     @Inject('KAFKA_SERVICE') private readonly kafkaClient: ClientKafka,
   ) {}
 
-  onModuleInit() {
-    this.kafkaClient.subscribeToResponseOf('request-task');
-  }
-
-  sleep(ms: number) {
+  async sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  sleepAndCallFunction(time: number, func: any) {
-    this.sleep(time);
+  async sleepAndCallFunction(time: number, func: any) {
+    await this.sleep(time);
     return func();
   }
 
   @EventPattern('create-task')
   async handleCreateTask(data: any, context: Message) {
-    this.sleepAndCallFunction(10000, () => {
+    await this.sleepAndCallFunction(10000, () => {
       console.log('Received message from create-task topic:', data);
     });
   }
@@ -43,16 +38,17 @@ export class BizController implements BizServiceController {
     // Handle the message here
   }
 
-  async sendAmount(request: SendDto): Promise<void> {
+  async sendAmount(request: RequestTaskDto): Promise<void> {
     console.log('sendAmount request:', request);
     try {
+      await this.kafkaClient.connect();
       console.log('client connected');
       const result = await this.kafkaClient.emit('request-task', {
         key: 'biz-grpc-service',
         value: {
           key: 'biz-grpc-service',
-          task: 'new task 01',
-          status: 'TODO',
+          task: request.task,
+          status: request.status || 'TODO',
         },
       });
       console.log('message sent to topic');

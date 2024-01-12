@@ -1,14 +1,13 @@
 syntax = "proto3";
+import "google/protobuf/empty.proto";
 package biz;
 
 service BizService {
-  rpc SendAmount(SendDto) returns (MyData) {}
+  rpc SendAmount(RequestTaskDto) returns (google.protobuf.Empty) {}
 }
 
-message SendDto {
-  int32 amount = 1;
-}
-
-message MyData {
-  string data = 1;
+message RequestTaskDto {
+  string task = 1;
+  string status = 2;
+  string key = 3;
 }
