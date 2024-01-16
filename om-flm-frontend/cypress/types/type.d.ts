@@ -6,6 +6,7 @@ declare global {
       register(email: string, username: string , password: string): Chainable<void>;
       generateFixture(): Chainable<void>;
       loginByApi(username: string, password: string): Chainable<Response<any>>;
+      findShipment(ID: string): Chainable<void>;
     }
   }
 }

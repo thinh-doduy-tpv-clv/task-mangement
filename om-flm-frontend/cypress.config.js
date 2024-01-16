@@ -15,7 +15,7 @@ export default defineConfig({
     defaultCommandTimeout: 10000,
     requestTimeout: 10000,
     responseTimeout: 10000,
-    pageLoadTimeout: 4000,
+    // pageLoadTimeout: 4000,
     video: false,
     chromeWebSecurity: true,
     retries: {

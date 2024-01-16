@@ -3214,6 +3214,13 @@ cypress-multi-reporters@^1.6.4:
     debug "^4.3.4"
     lodash "^4.17.21"
 
+cypress-recurse@^1.35.2:
+  version "1.35.2"
+  resolved "https://registry.npmjs.org/cypress-recurse/-/cypress-recurse-1.35.2.tgz"
+  integrity sha512-G6HfxP90xa7phw8oeOX4uabxcI9gE1ktkKHShcA3nCByrkMLs56+GIJVn0A+ws1tI0PGRKBz6+V9DHS5WnZX4A==
+  dependencies:
+    humanize-duration "^3.27.3"
+
 cypress@^13.6.0, cypress@>=6.2.0:
   version "13.6.0"
   resolved "https://registry.npmjs.org/cypress/-/cypress-13.6.0.tgz"
@@ -4432,6 +4439,11 @@ human-signals@^5.0.0:
   version "5.0.0"
   resolved "https://registry.npmjs.org/human-signals/-/human-signals-5.0.0.tgz"
   integrity sha512-AXcZb6vzzrFAUE61HnN4mpLqd/cSIwNQjtNWR0euPm6y0iqx3G4gOXaIDdtdDwZmhwe82LA6+zinmW4UBWVePQ==
+
+humanize-duration@^3.27.3:
+  version "3.31.0"
+  resolved "https://registry.npmjs.org/humanize-duration/-/humanize-duration-3.31.0.tgz"
+  integrity sha512-fRrehgBG26NNZysRlTq1S+HPtDpp3u+Jzdc/d5A4cEzOD86YLAkDaJyJg8krSdCi7CJ+s7ht3fwRj8Dl+Btd0w==
 
 husky@^8.0.3:
   version "8.0.3"
