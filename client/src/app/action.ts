@@ -40,7 +40,7 @@ export async function login(
 
   session.username = username;
   session.password = password;
-  session.token = token;
+  session.token = token || '';
   session.isLoggedIn = true;
   await session.save();
   revalidatePath("/task-management");

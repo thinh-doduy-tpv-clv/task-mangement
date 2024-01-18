@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "react-query";
 import { GraphQLClient, gql } from "graphql-request";
 import { catchHandle } from "src/core/lib/catch-helper";
 
-const API_URL = `http://localhost:8000/graphql`;
+const API_URL = `${process.env.BFF_ENDPOINT}/graphql`;
 
 const graphQLClient = new GraphQLClient(API_URL, {
   // headers: {

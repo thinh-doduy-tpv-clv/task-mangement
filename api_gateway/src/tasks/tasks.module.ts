@@ -21,6 +21,7 @@ import { TasksService } from './tasks.service';
         transport: Transport.GRPC,
         options: {
           url: '0.0.0.0:9000',
+          url: `${process.env.AUTH_PACKAGE_NAME}:9000`
           package: TASK_PACKAGE_NAME,
           protoPath: 'src/proto/task.proto',
         },

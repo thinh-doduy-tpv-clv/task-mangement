@@ -1,5 +1,4 @@
-import { PagingVM } from "core/view-models/paging-vm";
-import i18n from "../../assets/i18n";
+import { PagingVM } from "../view-models/paging-vm";
 
 export const example = (): boolean => {
   return true;
@@ -10,7 +9,6 @@ export const isEmpty = (value: unknown): boolean => {
 };
 
 export const setLanguage = (lang: string) => {
-  i18n.changeLanguage(lang);
   localStorage.setItem("language-code", lang);
 };
 
